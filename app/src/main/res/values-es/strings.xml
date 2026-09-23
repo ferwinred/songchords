@@ -1,0 +1,123 @@
+<resources>
+    <string name="app_name">SongChords - Acordes Cristianos</string>
+    <string name="top_bar_title">Acordes Cristianos y Alabanzas</string>
+    <string name="new_song">Nueva Canción</string>
+    <string name="back">Atrás</string>
+    <string name="back_to_list">Volver a la lista</string>
+    <string name="edit_song">Editar Canción</string>
+    <string name="save">Guardar</string>
+    <string name="favorite">Favorito</string>
+    <string name="remove_from_favorites">Quitar de favoritos</string>
+    <string name="add_to_favorites">Añadir a favoritos</string>
+    <string name="close">Cerrar</string>
+    <string name="cancel">Cancelar</string>
+
+    <!-- Selector de Idioma -->
+    <string name="theme_toggle">Cambiar modo claro/oscuro</string>
+    <string name="language_selector">Cambiar idioma</string>
+    <string name="language_english">English</string>
+    <string name="language_spanish">Español</string>
+
+    <!-- Búsqueda y Filtros -->
+    <string name="search_placeholder">Buscar alabanzas, adoración, artistas, tonos…</string>
+    <string name="search_icon_desc">Icono de búsqueda</string>
+    <string name="clear_search_desc">Limpiar búsqueda</string>
+    <string name="songs_found_one">%1$d canción encontrada</string>
+    <string name="songs_found_other">%1$d canciones encontradas</string>
+    <string name="clear_all_filters">Limpiar todo</string>
+    <string name="clear_all_filters_desc">Limpiar todos los filtros</string>
+    <string name="filter_favorites">Favoritos</string>
+    <string name="filter_favorites_desc">Filtrar favoritos</string>
+    <string name="filter_key">Tono</string>
+    <string name="filter_artist">Artista</string>
+    <string name="filter_tag">Etiqueta</string>
+    <string name="all_keys">Todos los tonos</string>
+    <string name="all_artists">Todos los artistas</string>
+    <string name="all_tags">Todas las etiquetas</string>
+    <string name="all_label_format">Todas/os (%1$s)</string>
+    <string name="filter_label_format">%1$s: %2$s</string>
+    <string name="filter_icon_desc">Icono de filtro de %1$s</string>
+    <string name="expand_menu_desc">Expandir menú de %1$s</string>
+
+    <!-- Estados Vacíos -->
+    <string name="no_songs_found">No se encontraron canciones</string>
+    <string name="empty_songs_filtered">Intenta borrar o ajustar la búsqueda y los filtros.</string>
+    <string name="empty_songs_library">No hay canciones disponibles en tu biblioteca de acordes.</string>
+    <string name="clear_filters">Limpiar Filtros</string>
+    <string name="no_song_selected">Ninguna canción seleccionada</string>
+    <string name="select_song_prompt">Selecciona una canción de la lista para ver sus detalles y acordes.</string>
+
+    <!-- Visualizador de Canciones y Controles -->
+    <string name="performance_options">Opciones de interpretación</string>
+    <string name="enable_auto_scroll">Desplazamiento automático</string>
+    <string name="fit_to_screen">Ajustar a pantalla</string>
+    <string name="text_size">Tamaño de letra</string>
+    <string name="original_key_format">Tono Original: %1$s</string>
+    <string name="key_format">Tono: %1$s</string>
+    <string name="key_original_sublabel">Original (%1$s)</string>
+    <string name="key_semitones_sublabel">%1$s semitonos</string>
+    <string name="minus_one_semitone_desc">-1 semitono</string>
+    <string name="plus_one_semitone_desc">+1 semitono</string>
+    <string name="transpose_minus_one_tone">-1 Tono</string>
+    <string name="transpose_minus_half_tone">-½ Tono</string>
+    <string name="transpose_plus_half_tone">+½ Tono</string>
+    <string name="transpose_plus_one_tone">+1 Tono</string>
+    <string name="transpose_minus_one_tone_desc">Bajar 1 tono completo (-2 semitonos)</string>
+    <string name="transpose_minus_half_tone_desc">Bajar 1/2 tono (-1 semitono)</string>
+    <string name="transpose_plus_half_tone_desc">Subir 1/2 tono (+1 semitono)</string>
+    <string name="transpose_plus_one_tone_desc">Subir 1 tono completo (+2 semitonos)</string>
+    <string name="reset_key_desc">Restablecer tono</string>
+    <string name="notation_system">Sistema de Notación</string>
+    <string name="notation_standard">Estándar (C D E)</string>
+    <string name="notation_solfege">Solfeo (Do Re Mi)</string>
+    <string name="auto_scroll">Desplazamiento Automático</string>
+    <string name="auto_scroll_start">Iniciar</string>
+    <string name="auto_scroll_playing">Pausa</string>
+    <string name="pause_auto_scroll_desc">Pausar desplazamiento</string>
+    <string name="start_auto_scroll_desc">Iniciar desplazamiento</string>
+
+    <!-- Diálogo de Diagramas de Acordes -->
+    <string name="chord_diagram_subtitle">Diagramas de Acordes y Digitación</string>
+    <string name="tab_both">Ambos</string>
+    <string name="tab_guitar">Guitarra</string>
+    <string name="tab_piano">Piano</string>
+    <string name="guitar_fretboard">Diapasón de Guitarra</string>
+    <string name="piano_keys">Teclas de Piano</string>
+
+    <!-- Pantalla de Editor de Canciones -->
+    <string name="create_custom_song">Crear Canción Personalizada</string>
+    <string name="edit_custom_song">Editar Canción Personalizada</string>
+    <string name="tab_edit_lyrics_chords">Editar Letra y Acordes</string>
+    <string name="tab_live_preview">Vista Previa</string>
+    <string name="tab_write_lyrics">✍️ Escribir Letra</string>
+    <string name="tab_live_preview_segmented">👁️ Vista Previa</string>
+    <string name="section_general_info">Información General</string>
+    <string name="section_quick_tools">Herramientas Rápidas</string>
+    <string name="section_sections_label">Secciones</string>
+    <string name="section_key_chords_label">Acordes del Tono</string>
+    <string name="section_lyrics_chords">Letra y Acordes</string>
+    <string name="lyrics_chords_instruction">Escribe los acordes entre corchetes ej: [G] Cuando desperté [C] allí&#8230;</string>
+    <string name="label_song_title">Título de la Canción *</string>
+    <string name="label_artist">Artista</string>
+    <string name="label_key">Tono</string>
+    <string name="label_tempo">Tempo (BPM)</string>
+    <string name="label_time_signature">Compás</string>
+    <string name="label_tags">Etiquetas (separadas por comas ej. Rock, Balada, Alabanza)</string>
+    <string name="quick_insert_helper">Asistente de Inserción Rápida (Inserta en el cursor)</string>
+    <string name="add_chord">+ Acorde</string>
+    <string name="label_lyrics_chord_tags">Letra y Etiquetas de Acordes (ej. [G]Tu poeta, [Cadd2]tu canción)</string>
+    <string name="insert_custom_chord_title">Insertar Etiqueta de Acorde</string>
+    <string name="label_chord_symbol">Símbolo de Acorde ej. F#/A#, Cadd2, G7</string>
+    <string name="insert">Insertar</string>
+    <string name="error_enter_title">Por favor ingrese el título de la canción.</string>
+    <string name="error_enter_lyrics">Por favor ingrese la letra de la canción con acordes.</string>
+    <string name="error_song_not_found">Canción no encontrada.</string>
+
+    <!-- Exportar y Compartir -->
+    <string name="export_song">Exportar Canción</string>
+    <string name="download_song">Guardar en Descargas</string>
+    <string name="share_song">Compartir Canción</string>
+    <string name="download_success">Guardado en la carpeta Descargas</string>
+    <string name="download_error">Error al guardar la canción</string>
+    <string name="export_options_desc">Opciones de exportación y compartir</string>
+</resources>

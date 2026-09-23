@@ -1,0 +1,123 @@
+<resources>
+    <string name="app_name">SongChords - Praise &amp; Worship</string>
+    <string name="top_bar_title">Christian Praise &amp; Worship Chords</string>
+    <string name="new_song">New Song</string>
+    <string name="back">Back</string>
+    <string name="back_to_list">Back to list</string>
+    <string name="edit_song">Edit Song</string>
+    <string name="save">Save</string>
+    <string name="favorite">Favorite</string>
+    <string name="remove_from_favorites">Remove from favorites</string>
+    <string name="add_to_favorites">Add to favorites</string>
+    <string name="close">Close</string>
+    <string name="cancel">Cancel</string>
+
+    <!-- Language Selector -->
+    <string name="theme_toggle">Toggle light/dark theme</string>
+    <string name="language_selector">Change language</string>
+    <string name="language_english">English</string>
+    <string name="language_spanish">Español</string>
+
+    <!-- Search &amp; Filters -->
+    <string name="search_placeholder">Search praise &amp; worship songs, artists, keys…</string>
+    <string name="search_icon_desc">Search icon</string>
+    <string name="clear_search_desc">Clear search query</string>
+    <string name="songs_found_one">%1$d song found</string>
+    <string name="songs_found_other">%1$d songs found</string>
+    <string name="clear_all_filters">Clear all</string>
+    <string name="clear_all_filters_desc">Clear all filters</string>
+    <string name="filter_favorites">Favorites</string>
+    <string name="filter_favorites_desc">Filter favorites</string>
+    <string name="filter_key">Key</string>
+    <string name="filter_artist">Artist</string>
+    <string name="filter_tag">Tag</string>
+    <string name="all_keys">All Keys</string>
+    <string name="all_artists">All Artists</string>
+    <string name="all_tags">All Tags</string>
+    <string name="all_label_format">All %1$ss</string>
+    <string name="filter_label_format">%1$s: %2$s</string>
+    <string name="filter_icon_desc">%1$s filter icon</string>
+    <string name="expand_menu_desc">Expand %1$s menu</string>
+
+    <!-- Empty States -->
+    <string name="no_songs_found">No songs found</string>
+    <string name="empty_songs_filtered">Try clearing or adjusting your search query and filters.</string>
+    <string name="empty_songs_library">No songs available in your chord library.</string>
+    <string name="clear_filters">Clear Filters</string>
+    <string name="no_song_selected">No song selected</string>
+    <string name="select_song_prompt">Select a song from the list to view details and chords.</string>
+
+    <!-- Song Viewer &amp; Controls -->
+    <string name="performance_options">Performance Options</string>
+    <string name="enable_auto_scroll">Auto-scroll</string>
+    <string name="fit_to_screen">Fit to screen</string>
+    <string name="text_size">Text size</string>
+    <string name="original_key_format">Original Key: %1$s</string>
+    <string name="key_format">Key: %1$s</string>
+    <string name="key_original_sublabel">Original (%1$s)</string>
+    <string name="key_semitones_sublabel">%1$s semitones</string>
+    <string name="minus_one_semitone_desc">-1 semitone</string>
+    <string name="plus_one_semitone_desc">+1 semitone</string>
+    <string name="transpose_minus_one_tone">-1 Tone</string>
+    <string name="transpose_minus_half_tone">-½ Tone</string>
+    <string name="transpose_plus_half_tone">+½ Tone</string>
+    <string name="transpose_plus_one_tone">+1 Tone</string>
+    <string name="transpose_minus_one_tone_desc">Transpose down 1 full tone (-2 semitones)</string>
+    <string name="transpose_minus_half_tone_desc">Transpose down 1/2 tone (-1 semitone)</string>
+    <string name="transpose_plus_half_tone_desc">Transpose up 1/2 tone (+1 semitone)</string>
+    <string name="transpose_plus_one_tone_desc">Transpose up 1 full tone (+2 semitones)</string>
+    <string name="reset_key_desc">Reset Key</string>
+    <string name="notation_system">Notation System</string>
+    <string name="notation_standard">Standard (C D E)</string>
+    <string name="notation_solfege">Solfege (Do Re Mi)</string>
+    <string name="auto_scroll">Auto-Scroll</string>
+    <string name="auto_scroll_start">Start</string>
+    <string name="auto_scroll_playing">Playing</string>
+    <string name="pause_auto_scroll_desc">Pause Auto Scroll</string>
+    <string name="start_auto_scroll_desc">Start Auto Scroll</string>
+
+    <!-- Chord Diagram Dialog -->
+    <string name="chord_diagram_subtitle">Chord Diagram &amp; Fingerings</string>
+    <string name="tab_both">Both</string>
+    <string name="tab_guitar">Guitar</string>
+    <string name="tab_piano">Piano</string>
+    <string name="guitar_fretboard">Guitar Fretboard</string>
+    <string name="piano_keys">Piano Keys</string>
+
+    <!-- Song Editor Screen -->
+    <string name="create_custom_song">Create Custom Song</string>
+    <string name="edit_custom_song">Edit Custom Song</string>
+    <string name="tab_edit_lyrics_chords">Edit Lyrics &amp; Chords</string>
+    <string name="tab_live_preview">Live Preview</string>
+    <string name="tab_write_lyrics">✍️ Write Lyrics</string>
+    <string name="tab_live_preview_segmented">👁️ Live Preview</string>
+    <string name="section_general_info">General Information</string>
+    <string name="section_quick_tools">Quick Insertion Helper</string>
+    <string name="section_sections_label">Sections</string>
+    <string name="section_key_chords_label">Key Chords</string>
+    <string name="section_lyrics_chords">Lyrics &amp; Chords</string>
+    <string name="lyrics_chords_instruction">Write chords in brackets e.g. [G] When I woke up [C] there&#8230;</string>
+    <string name="label_song_title">Song Title *</string>
+    <string name="label_artist">Artist</string>
+    <string name="label_key">Key</string>
+    <string name="label_tempo">Tempo (BPM)</string>
+    <string name="label_time_signature">Time Sig</string>
+    <string name="label_tags">Tags (comma separated e.g. Rock, Ballad, Worship)</string>
+    <string name="quick_insert_helper">Quick Insert Helper (Inserts at cursor)</string>
+    <string name="add_chord">+ Chord</string>
+    <string name="label_lyrics_chord_tags">Lyrics &amp; Chord Tags (e.g. [G]Tu poeta, [Cadd2]tu canción)</string>
+    <string name="insert_custom_chord_title">Insert Custom Chord Tag</string>
+    <string name="label_chord_symbol">Chord Symbol e.g., F#/A#, Cadd2, G7</string>
+    <string name="insert">Insert</string>
+    <string name="error_enter_title">Please enter a song title.</string>
+    <string name="error_enter_lyrics">Please enter song lyrics with chords.</string>
+    <string name="error_song_not_found">Song not found.</string>
+
+    <!-- Export &amp; Share -->
+    <string name="export_song">Export Song Sheet</string>
+    <string name="download_song">Save to Downloads</string>
+    <string name="share_song">Share Song Sheet</string>
+    <string name="download_success">Saved to Downloads folder</string>
+    <string name="download_error">Failed to save song sheet</string>
+    <string name="export_options_desc">Export and share options</string>
+</resources>
