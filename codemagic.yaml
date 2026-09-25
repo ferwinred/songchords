@@ -1,5 +1,5 @@
 # codemagic.yaml - SongChords Production CI/CD Pipeline
-# Supports iOS Workflow (TestFlight/App Store) & Android Workflow (APK/AAB)
+# Supports iOS Workflow (TestFlight/App Store), Android Workflow (APK/AAB) & iOS Simulator Workflow (Appetize.io)
 
 definitions:
   cache_paths: &cache_paths
@@ -94,7 +94,61 @@ workflows:
         submit_to_testflight: true
 
   # --------------------------------------------------------------------------
-  # 2) Android Workflow: Gradle APK & AAB Release Builds
+  # 2) iOS Simulator Workflow: KMP Framework, Simulator Build & Appetize.io
+  # --------------------------------------------------------------------------
+  ios-simulator-workflow:
+    name: iOS KMP - Simulador (video + Appetize)
+    instance_type: mac_mini_m2
+    max_build_duration: 120
+    environment:
+      java: 17
+      xcode: latest
+      cocoapods: default
+    triggering:
+      events:
+        - push
+        - tag
+      branch_patterns:
+        - pattern: "main"
+          include: true
+          source: true
+    cache:
+      cache_paths: *cache_paths
+    scripts:
+      - name: Set executable permissions for Gradle wrapper
+        script: chmod +x ./gradlew
+
+      - name: Build Gradle KMP framework
+        script: |
+          ./gradlew embedAndSignAppleFrameworkForXcode
+
+      - name: Build iOS Simulator App
+        script: |
+          xcodebuild -project iosApp.xcodeproj -scheme iosApp -sdk iphonesimulator -configuration Debug -derivedDataPath build/ios
+
+      - name: Zip .app bundle for simulator
+        script: |
+          mkdir -p build/simulator
+          zip -r build/simulator/ios-simulator-app.zip build/ios/Build/Products/Debug-iphonesimulator/*.app
+
+      - name: Upload to Appetize.io API
+        script: |
+          if [ -n "$APPETIZE_API_TOKEN" ]; then
+            echo "Uploading build/simulator/ios-simulator-app.zip to Appetize.io..."
+            curl --fail -X POST "https://api.appetize.io/v1/apps" \
+              -F "file=@build/simulator/ios-simulator-app.zip" \
+              -F "token=$APPETIZE_API_TOKEN" \
+              -F "platform=ios"
+          else
+            echo "APPETIZE_API_TOKEN is not present. Saving zip artifact for browser testing."
+          fi
+
+    artifacts:
+      - build/simulator/*.zip
+      - build/ios/Build/Products/Debug-iphonesimulator/*.app
+
+  # --------------------------------------------------------------------------
+  # 3) Android Workflow: Gradle APK & AAB Release Builds
   # --------------------------------------------------------------------------
   android-workflow:
     name: Android Release Build
