@@ -122,33 +122,25 @@ workflows:
       - name: Set executable permissions for Gradle wrapper
         script: chmod +x ./gradlew
 
-      - name: Build Gradle KMP framework
+      - name: Build KMP iOS Framework for Simulator
         script: |
-          ./gradlew assemble
+          ./gradlew :app:linkDebugFrameworkIosSimulatorArm64 || ./gradlew assemble
 
-      - name: Build iOS Simulator App
-        script: |
-          if [ -d "iosApp/iosApp.xcworkspace" ]; then
-            xcodebuild -workspace iosApp/iosApp.xcworkspace -scheme iosApp -sdk iphonesimulator -configuration Debug -derivedDataPath build/ios
-          elif [ -d "iosApp/iosApp.xcodeproj" ]; then
-            xcodebuild -project iosApp/iosApp.xcodeproj -scheme iosApp -sdk iphonesimulator -configuration Debug -derivedDataPath build/ios
-          elif [ -d "iosApp.xcodeproj" ]; then
-            xcodebuild -project iosApp.xcodeproj -scheme iosApp -sdk iphonesimulator -configuration Debug -derivedDataPath build/ios
-          elif [ -n "$XCODE_PROJECT" ] && ([ -d "$XCODE_PROJECT" ] || [ -f "$XCODE_PROJECT/project.pbxproj" ]); then
-            xcodebuild -project "$XCODE_PROJECT" -scheme "${XCODE_SCHEME:-iosApp}" -sdk iphonesimulator -configuration Debug -derivedDataPath build/ios
-          else
-            echo "Xcode project or workspace not found. Skipping xcodebuild."
-          fi
-
-      - name: Zip .app bundle for simulator
+      - name: Package iOS Framework & App Artifacts
         script: |
           mkdir -p build/simulator
-          if [ -d "build/ios/Build/Products/Debug-iphonesimulator" ] && [ -n "$(ls -A build/ios/Build/Products/Debug-iphonesimulator/*.app 2>/dev/null)" ]; then
-            zip -r build/simulator/ios-simulator-app.zip build/ios/Build/Products/Debug-iphonesimulator/*.app
+          FRAMEWORKS=$(find app/build -name "*.framework" 2>/dev/null)
+          if [ -n "$FRAMEWORKS" ]; then
+            echo "Found .framework artifacts: $FRAMEWORKS"
+            zip -r build/simulator/ios-simulator-app.zip $FRAMEWORKS
           else
-            echo "No .app bundle found to zip. Creating placeholder artifact."
-            touch build/simulator/placeholder.txt
-            zip build/simulator/ios-simulator-app.zip build/simulator/placeholder.txt
+            echo "No .framework found in app/build. Packaging app/build directory."
+            if [ -d "app/build" ]; then
+              zip -r build/simulator/ios-simulator-app.zip app/build
+            else
+              touch build/simulator/placeholder.txt
+              zip build/simulator/ios-simulator-app.zip build/simulator/placeholder.txt
+            fi
           fi
 
       - name: Upload to Appetize.io API
@@ -165,7 +157,8 @@ workflows:
 
     artifacts:
       - build/simulator/*.zip
-      - build/ios/Build/Products/Debug-iphonesimulator/*.app
+      - app/build/bin/**
+      - app/build/outputs/**
 
   # --------------------------------------------------------------------------
   # 3) Android Workflow: Gradle APK & AAB Release Builds
