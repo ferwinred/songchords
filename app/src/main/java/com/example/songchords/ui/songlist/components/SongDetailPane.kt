@@ -19,6 +19,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -38,11 +39,9 @@ import androidx.compose.material.icons.rounded.FavoriteBorder
 import androidx.compose.material.icons.rounded.FormatQuote
 import androidx.compose.material.icons.rounded.LinearScale
 import androidx.compose.material.icons.rounded.MusicNote
-import androidx.compose.material.icons.rounded.Person
 import androidx.compose.material.icons.rounded.PictureAsPdf
 import androidx.compose.material.icons.rounded.PlayArrow
 import androidx.compose.material.icons.rounded.Share
-import androidx.compose.material.icons.rounded.Speed
 import androidx.compose.material.icons.rounded.Tune
 import androidx.compose.material3.AssistChip
 import androidx.compose.material3.AssistChipDefaults
@@ -51,8 +50,6 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.FilledTonalButton
-import androidx.compose.material3.FilterChip
-import androidx.compose.material3.FilterChipDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -80,6 +77,7 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.text.rememberTextMeasurer
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.IntOffset
@@ -214,6 +212,25 @@ fun SongDetailPane(
         groupLinesIntoSections(currentParsedSong.lines)
     }
 
+    val metadataText = remember(song) {
+        buildList {
+            if (song.originalKey.isNotBlank()) {
+                add("🎵 ${song.originalKey}")
+            }
+            song.tempo?.let { tempo ->
+                if (tempo > 0) {
+                    add("$tempo BPM")
+                }
+            }
+            song.timeSignature?.takeIf { it.isNotBlank() }?.let { timeSig ->
+                add(timeSig)
+            }
+            if (song.tags.isNotEmpty()) {
+                add(song.tags.joinToString(", "))
+            }
+        }.joinToString("  •  ")
+    }
+
     val lineCount = currentParsedSong.lines.size
     val fitScale = when {
         lineCount > 35 -> 0.65f
@@ -297,28 +314,6 @@ fun SongDetailPane(
                             style = MaterialTheme.typography.titleMedium,
                             color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
-                    }
-
-                    val isOwner = song.isOwnedBy(currentUserId)
-
-                    if (isOwner) {
-                        if (onEditSongClick != null) {
-                            IconButton(onClick = { onEditSongClick(song.id) }) {
-                                Icon(
-                                    imageVector = Icons.Rounded.Edit,
-                                    contentDescription = stringResource(R.string.edit_song),
-                                    tint = MaterialTheme.colorScheme.primary
-                                )
-                            }
-                        }
-                    } else {
-                        IconButton(onClick = { onDuplicateSongClick?.invoke(song) }) {
-                            Icon(
-                                imageVector = Icons.Rounded.ContentCopy,
-                                contentDescription = stringResource(R.string.duplicate_song),
-                                tint = MaterialTheme.colorScheme.primary
-                            )
-                        }
                     }
 
                     IconButton(onClick = { onToggleFavorite(song.id) }) {
@@ -439,133 +434,71 @@ fun SongDetailPane(
                     }
                 }
 
-                Spacer(modifier = Modifier.height(12.dp))
-            }
+                Spacer(modifier = Modifier.height(8.dp))
 
-            val isOwner = song.isOwnedBy(currentUserId)
-            val authorName = song.createdByName ?: song.createdByUserId
+                val isOwner = song.isOwnedBy(currentUserId)
 
-            // Metadata Chips Row
-            FlowRow(
-                horizontalArrangement = Arrangement.spacedBy(8.dp),
-                verticalArrangement = Arrangement.spacedBy(8.dp)
-            ) {
-                if (!authorName.isNullOrBlank()) {
-                    AssistChip(
-                        onClick = {},
-                        label = { Text(stringResource(R.string.created_by, authorName), style = MaterialTheme.typography.labelMedium) },
-                        leadingIcon = {
-                            Icon(
-                                imageVector = Icons.Rounded.Person,
-                                contentDescription = null,
-                                modifier = Modifier.size(14.dp)
-                            )
-                        },
-                        colors = AssistChipDefaults.assistChipColors(
-                            containerColor = MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.5f)
-                        )
-                    )
-                }
-
-                if (!isOwner) {
-                    AssistChip(
-                        onClick = { onDuplicateSongClick?.invoke(song) },
-                        label = { Text(stringResource(R.string.duplicate_song), style = MaterialTheme.typography.labelMedium) },
-                        leadingIcon = {
-                            Icon(
-                                imageVector = Icons.Rounded.ContentCopy,
-                                contentDescription = null,
-                                modifier = Modifier.size(14.dp)
-                            )
-                        },
-                        colors = AssistChipDefaults.assistChipColors(
-                            containerColor = MaterialTheme.colorScheme.primaryContainer,
-                            labelColor = MaterialTheme.colorScheme.onPrimaryContainer,
-                            leadingIconContentColor = MaterialTheme.colorScheme.onPrimaryContainer
-                        )
-                    )
-                }
-                Surface(
-                    shape = RoundedCornerShape(8.dp),
-                    color = MaterialTheme.colorScheme.tertiaryContainer,
-                    contentColor = MaterialTheme.colorScheme.onTertiaryContainer
+                // Compact Song Metadata Bar
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .heightIn(min = 32.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceBetween
                 ) {
-                    Row(
-                        modifier = Modifier.padding(horizontal = 10.dp, vertical = 6.dp),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Icon(
-                            imageVector = Icons.Rounded.MusicNote,
-                            contentDescription = null,
-                            modifier = Modifier.size(16.dp)
-                        )
-                        Spacer(modifier = Modifier.width(4.dp))
-                        Text(
-                            text = stringResource(R.string.original_key_format, song.originalKey),
-                            style = MaterialTheme.typography.labelMedium,
-                            fontWeight = FontWeight.Bold
+                    Text(
+                        text = metadataText,
+                        style = MaterialTheme.typography.labelMedium,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
+                        modifier = Modifier.weight(1f)
+                    )
+
+                    Spacer(modifier = Modifier.width(8.dp))
+
+                    if (isOwner) {
+                        if (onEditSongClick != null) {
+                            IconButton(
+                                onClick = { onEditSongClick(song.id) },
+                                modifier = Modifier.size(32.dp)
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Rounded.Edit,
+                                    contentDescription = stringResource(R.string.edit_song),
+                                    tint = MaterialTheme.colorScheme.primary,
+                                    modifier = Modifier.size(18.dp)
+                                )
+                            }
+                        }
+                    } else {
+                        AssistChip(
+                            onClick = { onDuplicateSongClick?.invoke(song) },
+                            label = {
+                                Text(
+                                    text = stringResource(R.string.duplicate_song),
+                                    style = MaterialTheme.typography.labelSmall
+                                )
+                            },
+                            leadingIcon = {
+                                Icon(
+                                    imageVector = Icons.Rounded.ContentCopy,
+                                    contentDescription = null,
+                                    modifier = Modifier.size(14.dp)
+                                )
+                            },
+                            colors = AssistChipDefaults.assistChipColors(
+                                containerColor = MaterialTheme.colorScheme.primaryContainer,
+                                labelColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                                leadingIconContentColor = MaterialTheme.colorScheme.onPrimaryContainer
+                            ),
+                            modifier = Modifier.height(28.dp)
                         )
                     }
                 }
 
-                song.tempo?.let { tempo ->
-                    AssistChip(
-                        onClick = {},
-                        label = { Text("$tempo BPM", style = MaterialTheme.typography.labelMedium) },
-                        leadingIcon = {
-                            Icon(
-                                imageVector = Icons.Rounded.Speed,
-                                contentDescription = null,
-                                modifier = Modifier.size(14.dp)
-                            )
-                        }
-                    )
-                }
-
-                song.timeSignature?.let { timeSig ->
-                    AssistChip(
-                        onClick = {},
-                        label = { Text(timeSig, style = MaterialTheme.typography.labelMedium) }
-                    )
-                }
-
-                song.tags.forEach { tag ->
-                    AssistChip(
-                        onClick = {},
-                        label = { Text(tag, style = MaterialTheme.typography.labelMedium) },
-                        colors = AssistChipDefaults.assistChipColors(
-                            containerColor = MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.6f)
-                        )
-                    )
-                }
-
-                // Options / Performance Options Chip
-                FilterChip(
-                    selected = isControlsExpanded,
-                    onClick = { isControlsExpanded = !isControlsExpanded },
-                    label = {
-                        Text(
-                            text = stringResource(R.string.performance_options),
-                            style = MaterialTheme.typography.labelMedium,
-                            fontWeight = FontWeight.SemiBold
-                        )
-                    },
-                    leadingIcon = {
-                        Icon(
-                            imageVector = Icons.Rounded.Tune,
-                            contentDescription = null,
-                            modifier = Modifier.size(16.dp)
-                        )
-                    },
-                    colors = FilterChipDefaults.filterChipColors(
-                        selectedContainerColor = MaterialTheme.colorScheme.primaryContainer,
-                        selectedLabelColor = MaterialTheme.colorScheme.onPrimaryContainer,
-                        selectedLeadingIconColor = MaterialTheme.colorScheme.onPrimaryContainer
-                    )
-                )
+                Spacer(modifier = Modifier.height(12.dp))
             }
-
-            Spacer(modifier = Modifier.height(16.dp))
 
             // Interactive Performance Controls Panel
             AnimatedVisibility(

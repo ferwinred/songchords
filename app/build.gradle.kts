@@ -7,8 +7,17 @@ plugins {
 
 android {
     namespace = "com.example.songchords"
-    compileSdk {
-        version = release(37)
+    compileSdk = 37
+
+    sourceSets {
+        getByName("main") {
+            kotlin.directories.add("src/main/java")
+            kotlin.directories.add("src/androidMain/kotlin")
+        }
+        getByName("test") {
+            kotlin.directories.add("src/test/java")
+            kotlin.directories.add("src/androidMain/kotlin")
+        }
     }
 
     defaultConfig {
@@ -34,6 +43,13 @@ android {
     }
     buildFeatures {
         compose = true
+    }
+}
+
+tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
+    compilerOptions {
+        freeCompilerArgs.add("-Xexpect-actual-classes")
+        freeCompilerArgs.add("-Xmulti-platform")
     }
 }
 

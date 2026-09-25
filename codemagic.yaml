@@ -1,0 +1,129 @@
+# codemagic.yaml - SongChords Production CI/CD Pipeline
+# Supports iOS Workflow (TestFlight/App Store) & Android Workflow (APK/AAB)
+
+definitions:
+  cache_paths: &cache_paths
+    - $HOME/.gradle/caches
+    - $HOME/.gradle/wrapper
+    - $HOME/.konan
+
+workflows:
+
+  # --------------------------------------------------------------------------
+  # 1) iOS Workflow: KMP Framework, Xcode Archive, IPA Packaging & TestFlight
+  # --------------------------------------------------------------------------
+  ios-workflow:
+    name: iOS Build & TestFlight Deployment
+    instance_type: mac_mini_m2
+    max_build_duration: 120
+    integrations:
+      app_store_connect: codemagic-api-key
+    environment:
+      java: 17
+      xcode: 15.4
+      cocoapods: default
+      vars:
+        APP_STORE_CONNECT_ISSUER_ID: Encrypted(...)
+        APP_STORE_CONNECT_KEY_IDENTIFIER: Encrypted(...)
+        APP_STORE_CONNECT_PRIVATE_KEY: Encrypted(...)
+        XCODE_PROJECT: "iosApp/iosApp.xcodeproj"
+        XCODE_SCHEME: "iosApp"
+        BUNDLE_ID: "com.example.songchords"
+        APP_STORE_APPLE_ID: 1234567890
+      ios_signing:
+        distribution_type: app_store
+        bundle_identifier: com.example.songchords
+    triggering:
+      events:
+        - push
+        - tag
+      branch_patterns:
+        - pattern: "main"
+          include: true
+          source: true
+    cache:
+      cache_paths: *cache_paths
+    scripts:
+      - name: Set executable permissions for Gradle wrapper
+        script: chmod +x ./gradlew
+
+      - name: Install CocoaPods dependencies
+        script: |
+          if [ -f iosApp/Podfile ]; then
+            cd iosApp && pod install
+          fi
+
+      - name: Build Gradle KMP framework
+        script: |
+          ./gradlew embedAndSignAppleFrameworkForXcode
+
+      - name: Configure code signing
+        script: xcode-project use-profiles
+
+      - name: Increment build number
+        script: |
+          LATEST_BUILD=$(app-store-connect get-latest-testflight-build-number "$APP_STORE_APPLE_ID" || echo 0)
+          NEW_BUILD=$((LATEST_BUILD + 1))
+          if [ -d iosApp ]; then
+            cd iosApp
+            agvtool new-version -all "$NEW_BUILD"
+          fi
+
+      - name: Xcode Archive & IPA Packaging
+        script: |
+          xcodebuild \
+            -project "$XCODE_PROJECT" \
+            -scheme "$XCODE_SCHEME" \
+            -configuration Release \
+            -archivePath build/ios/archive/iosApp.xcarchive \
+            archive
+
+          xcode-project build-ipa \
+            --project "$XCODE_PROJECT" \
+            --scheme "$XCODE_SCHEME"
+
+    artifacts:
+      - build/ios/ipa/*.ipa
+      - build/ios/archive/*.xcarchive
+
+    publishing:
+      app_store_connect:
+        auth: integration
+        api_key: $APP_STORE_CONNECT_PRIVATE_KEY
+        key_id: $APP_STORE_CONNECT_KEY_IDENTIFIER
+        issuer_id: $APP_STORE_CONNECT_ISSUER_ID
+        submit_to_testflight: true
+        submit_to_app_store: false
+
+  # --------------------------------------------------------------------------
+  # 2) Android Workflow: Gradle APK & AAB Release Builds
+  # --------------------------------------------------------------------------
+  android-workflow:
+    name: Android Release Build
+    instance_type: mac_mini_m2
+    max_build_duration: 60
+    environment:
+      java: 17
+    triggering:
+      events:
+        - push
+        - tag
+      branch_patterns:
+        - pattern: "main"
+          include: true
+          source: true
+    cache:
+      cache_paths: *cache_paths
+    scripts:
+      - name: Set executable permissions for Gradle wrapper
+        script: chmod +x ./gradlew
+
+      - name: Build Android APK
+        script: ./gradlew assembleRelease
+
+      - name: Build Android App Bundle
+        script: ./gradlew bundleRelease
+
+    artifacts:
+      - app/build/outputs/apk/release/*.apk
+      - app/build/outputs/bundle/release/*.aab
