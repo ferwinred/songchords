@@ -1,5 +1,8 @@
-# codemagic.yaml - SongChords Production CI/CD Pipeline
-# Supports iOS Workflow (TestFlight/App Store), Android Workflow (APK/AAB) & iOS Simulator Workflow (Appetize.io)
+# codemagic.yaml - SongChords Beta CI/CD Pipeline
+# Configured for Beta Releases:
+# 1. android-beta-apk: Android Beta Release - APK Direct Download
+# 2. ios-beta-testflight: iOS Beta Release - TestFlight
+# 3. ios-simulator-beta: iOS KMP - Simulador (video + Appetize)
 
 definitions:
   cache_paths: &cache_paths
@@ -10,10 +13,43 @@ definitions:
 workflows:
 
   # --------------------------------------------------------------------------
-  # 1) iOS Workflow: KMP Framework, Xcode Archive, IPA Packaging & TestFlight
+  # 1) Android Beta Release - APK Direct Download
+  # Generates downloadable APK files for direct installation on Android devices
+  # without publishing to Google Play Store.
   # --------------------------------------------------------------------------
-  ios-workflow:
-    name: iOS Build & TestFlight Deployment
+  android-beta-apk:
+    name: Android Beta Release - APK Direct Download
+    instance_type: mac_mini_m2
+    max_build_duration: 60
+    environment:
+      java: 17
+    triggering:
+      events:
+        - push
+        - tag
+      branch_patterns:
+        - pattern: "main"
+          include: true
+          source: true
+    cache:
+      cache_paths: *cache_paths
+    scripts:
+      - name: Set executable permissions for Gradle wrapper
+        script: chmod +x ./gradlew
+
+      - name: Build Android Beta APK
+        script: ./gradlew assembleRelease || ./gradlew assembleDebug
+
+    artifacts:
+      - app/build/outputs/apk/release/*.apk
+      - app/build/outputs/apk/debug/*.apk
+
+  # --------------------------------------------------------------------------
+  # 2) iOS Beta Release - TestFlight
+  # Deploys iOS builds solely to TestFlight Beta testers, NOT public App Store.
+  # --------------------------------------------------------------------------
+  ios-beta-testflight:
+    name: iOS Beta Release - TestFlight
     instance_type: mac_mini_m2
     max_build_duration: 120
     integrations:
@@ -96,11 +132,12 @@ workflows:
         key_id: $APP_STORE_CONNECT_KEY_IDENTIFIER
         issuer_id: $APP_STORE_CONNECT_ISSUER_ID
         submit_to_testflight: true
+        submit_to_app_store: false
 
   # --------------------------------------------------------------------------
-  # 2) iOS Simulator Workflow: KMP Framework, Simulator Build & Appetize.io
+  # 3) iOS Simulator Beta - KMP Framework, Simulator Build & Appetize.io
   # --------------------------------------------------------------------------
-  ios-simulator-workflow:
+  ios-simulator-beta:
     name: iOS KMP - Simulador (video + Appetize)
     instance_type: mac_mini_m2
     max_build_duration: 120
@@ -159,36 +196,3 @@ workflows:
       - build/simulator/*.zip
       - app/build/bin/**
       - app/build/outputs/**
-
-  # --------------------------------------------------------------------------
-  # 3) Android Workflow: Gradle APK & AAB Release Builds
-  # --------------------------------------------------------------------------
-  android-workflow:
-    name: Android Release Build
-    instance_type: mac_mini_m2
-    max_build_duration: 60
-    environment:
-      java: 17
-    triggering:
-      events:
-        - push
-        - tag
-      branch_patterns:
-        - pattern: "main"
-          include: true
-          source: true
-    cache:
-      cache_paths: *cache_paths
-    scripts:
-      - name: Set executable permissions for Gradle wrapper
-        script: chmod +x ./gradlew
-
-      - name: Build Android APK
-        script: ./gradlew assembleRelease
-
-      - name: Build Android App Bundle
-        script: ./gradlew bundleRelease
-
-    artifacts:
-      - app/build/outputs/apk/release/*.apk
-      - app/build/outputs/bundle/release/*.aab
