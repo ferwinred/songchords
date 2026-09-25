@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -28,13 +29,17 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.ArrowBack
 import androidx.compose.material.icons.automirrored.rounded.QueueMusic
-import androidx.compose.material.icons.rounded.Download
+import androidx.compose.material.icons.rounded.ContentCopy
+import androidx.compose.material.icons.rounded.DataObject
+import androidx.compose.material.icons.rounded.Description
 import androidx.compose.material.icons.rounded.Edit
 import androidx.compose.material.icons.rounded.Favorite
 import androidx.compose.material.icons.rounded.FavoriteBorder
 import androidx.compose.material.icons.rounded.FormatQuote
 import androidx.compose.material.icons.rounded.LinearScale
 import androidx.compose.material.icons.rounded.MusicNote
+import androidx.compose.material.icons.rounded.Person
+import androidx.compose.material.icons.rounded.PictureAsPdf
 import androidx.compose.material.icons.rounded.PlayArrow
 import androidx.compose.material.icons.rounded.Share
 import androidx.compose.material.icons.rounded.Speed
@@ -45,6 +50,7 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.FilterChipDefaults
 import androidx.compose.material3.Icon
@@ -52,6 +58,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.VerticalDivider
 import androidx.compose.ui.graphics.Color
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -78,8 +85,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import kotlin.math.round
 import kotlin.math.roundToInt
 import com.example.songchords.R
+import com.example.songchords.auth.UserIdentityManager
 import com.example.songchords.engine.ChordParser
 import com.example.songchords.engine.SectionTitleLocalizer
 import com.example.songchords.model.Chord
@@ -92,6 +101,8 @@ import com.example.songchords.ui.theme.SongChordsTheme
 import com.example.songchords.ui.viewer.components.ChordDiagramDialog
 import com.example.songchords.ui.viewer.components.SongViewerControls
 import com.example.songchords.utils.SongExportUtils
+import com.example.songchords.utils.SongJsonUtils
+import com.example.songchords.utils.SongPdfUtils
 import java.util.Locale
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.delay
@@ -134,6 +145,8 @@ fun SongDetailPane(
     modifier: Modifier = Modifier,
     onBackClick: (() -> Unit)? = null,
     onEditSongClick: ((String) -> Unit)? = null,
+    onDuplicateSongClick: ((Song) -> Unit)? = null,
+    currentUserId: String = UserIdentityManager.currentUserId,
     showHeader: Boolean = true
 ) {
     if (song == null) {
@@ -233,323 +246,552 @@ fun SongDetailPane(
         }
     }
 
-    Column(
-        modifier = modifier
-            .fillMaxSize()
-            .pointerInput(isAutoScrolling) {
-                if (!isAutoScrolling) return@pointerInput
-                awaitPointerEventScope {
-                    while (isAutoScrolling) {
-                        val event = awaitPointerEvent(PointerEventPass.Initial)
-                        if (event.type == PointerEventType.Move) {
-                            if (event.changes.any { it.pressed }) {
-                                isAutoScrolling = false
+    Box(
+        modifier = modifier.fillMaxSize()
+    ) {
+        // Child 1 (Scroll Container)
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .pointerInput(isAutoScrolling) {
+                    if (!isAutoScrolling) return@pointerInput
+                    awaitPointerEventScope {
+                        while (isAutoScrolling) {
+                            val event = awaitPointerEvent(PointerEventPass.Initial)
+                            if (event.type == PointerEventType.Move) {
+                                if (event.changes.any { it.pressed }) {
+                                    isAutoScrolling = false
+                                }
                             }
                         }
                     }
                 }
-            }
-            .verticalScroll(scrollState)
-            .padding(start = 16.dp, top = 16.dp, end = 16.dp, bottom = 96.dp)
-    ) {
-        if (showHeader) {
-            // Top Header Row with Title, Artist, Actions & Language Selector
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                if (onBackClick != null) {
-                    IconButton(onClick = onBackClick) {
-                        Icon(
-                            imageVector = Icons.AutoMirrored.Rounded.ArrowBack,
-                            contentDescription = stringResource(R.string.back_to_list)
-                        )
-                    }
-                    Spacer(modifier = Modifier.width(8.dp))
-                }
-
-                Column(modifier = Modifier.weight(1f)) {
-                    Text(
-                        text = song.title,
-                        style = MaterialTheme.typography.headlineSmall,
-                        fontWeight = FontWeight.Bold,
-                        color = MaterialTheme.colorScheme.onSurface
-                    )
-                    Text(
-                        text = song.artist,
-                        style = MaterialTheme.typography.titleMedium,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
-                    )
-                }
-
-                if (onEditSongClick != null) {
-                    IconButton(onClick = { onEditSongClick(song.id) }) {
-                        Icon(
-                            imageVector = Icons.Rounded.Edit,
-                            contentDescription = stringResource(R.string.edit_song),
-                            tint = MaterialTheme.colorScheme.primary
-                        )
-                    }
-                }
-
-                IconButton(onClick = { onToggleFavorite(song.id) }) {
-                    Icon(
-                        imageVector = if (song.isFavorite) Icons.Rounded.Favorite else Icons.Rounded.FavoriteBorder,
-                        contentDescription = stringResource(R.string.favorite),
-                        tint = if (song.isFavorite) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant
-                    )
-                }
-
-                // Export & Share Dropdown Menu
-                Box {
-                    IconButton(onClick = { showExportMenu = true }) {
-                        Icon(
-                            imageVector = Icons.Rounded.Share,
-                            contentDescription = stringResource(R.string.export_options_desc),
-                            tint = MaterialTheme.colorScheme.primary
-                        )
-                    }
-
-                    DropdownMenu(
-                        expanded = showExportMenu,
-                        onDismissRequest = { showExportMenu = false }
-                    ) {
-                        DropdownMenuItem(
-                            text = { Text(stringResource(R.string.download_song)) },
-                            leadingIcon = {
-                                Icon(
-                                    imageVector = Icons.Rounded.Download,
-                                    contentDescription = null
-                                )
-                            },
-                            onClick = {
-                                showExportMenu = false
-                                val formattedText = SongExportUtils.generateFormattedText(
-                                    song = song,
-                                    parsedSong = currentParsedSong,
-                                    notationSystem = notationSystem
-                                )
-                                val savedUri = SongExportUtils.saveToDownloads(
-                                    context = context,
-                                    songTitle = song.title,
-                                    content = formattedText
-                                )
-                                val message = if (savedUri != null) {
-                                    context.getString(R.string.download_success)
-                                } else {
-                                    context.getString(R.string.download_error)
-                                }
-                                Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
-                            }
-                        )
-
-                        DropdownMenuItem(
-                            text = { Text(stringResource(R.string.share_song)) },
-                            leadingIcon = {
-                                Icon(
-                                    imageVector = Icons.Rounded.Share,
-                                    contentDescription = null
-                                )
-                            },
-                            onClick = {
-                                showExportMenu = false
-                                val formattedText = SongExportUtils.generateFormattedText(
-                                    song = song,
-                                    parsedSong = currentParsedSong,
-                                    notationSystem = notationSystem
-                                )
-                                SongExportUtils.shareSongSheet(
-                                    context = context,
-                                    songTitle = song.title,
-                                    artist = song.artist,
-                                    content = formattedText
-                                )
-                            }
-                        )
-                    }
-                }
-            }
-
-            Spacer(modifier = Modifier.height(12.dp))
-        }
-
-        // Metadata Chips Row
-        FlowRow(
-            horizontalArrangement = Arrangement.spacedBy(8.dp),
-            verticalArrangement = Arrangement.spacedBy(8.dp)
+                .verticalScroll(scrollState)
+                .padding(start = 16.dp, top = 16.dp, end = 16.dp, bottom = 130.dp)
         ) {
-            Surface(
-                shape = RoundedCornerShape(8.dp),
-                color = MaterialTheme.colorScheme.tertiaryContainer,
-                contentColor = MaterialTheme.colorScheme.onTertiaryContainer
-            ) {
+            if (showHeader) {
+                // Top Header Row with Title, Artist, Actions & Language Selector
                 Row(
-                    modifier = Modifier.padding(horizontal = 10.dp, vertical = 6.dp),
+                    modifier = Modifier.fillMaxWidth(),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Icon(
-                        imageVector = Icons.Rounded.MusicNote,
-                        contentDescription = null,
-                        modifier = Modifier.size(16.dp)
+                    if (onBackClick != null) {
+                        IconButton(onClick = onBackClick) {
+                            Icon(
+                                imageVector = Icons.AutoMirrored.Rounded.ArrowBack,
+                                contentDescription = stringResource(R.string.back_to_list)
+                            )
+                        }
+                        Spacer(modifier = Modifier.width(8.dp))
+                    }
+
+                    Column(modifier = Modifier.weight(1f)) {
+                        Text(
+                            text = song.title,
+                            style = MaterialTheme.typography.headlineSmall,
+                            fontWeight = FontWeight.Bold,
+                            color = MaterialTheme.colorScheme.onSurface
+                        )
+                        Text(
+                            text = song.artist,
+                            style = MaterialTheme.typography.titleMedium,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                    }
+
+                    val isOwner = song.isOwnedBy(currentUserId)
+
+                    if (isOwner) {
+                        if (onEditSongClick != null) {
+                            IconButton(onClick = { onEditSongClick(song.id) }) {
+                                Icon(
+                                    imageVector = Icons.Rounded.Edit,
+                                    contentDescription = stringResource(R.string.edit_song),
+                                    tint = MaterialTheme.colorScheme.primary
+                                )
+                            }
+                        }
+                    } else {
+                        IconButton(onClick = { onDuplicateSongClick?.invoke(song) }) {
+                            Icon(
+                                imageVector = Icons.Rounded.ContentCopy,
+                                contentDescription = stringResource(R.string.duplicate_song),
+                                tint = MaterialTheme.colorScheme.primary
+                            )
+                        }
+                    }
+
+                    IconButton(onClick = { onToggleFavorite(song.id) }) {
+                        Icon(
+                            imageVector = if (song.isFavorite) Icons.Rounded.Favorite else Icons.Rounded.FavoriteBorder,
+                            contentDescription = stringResource(R.string.favorite),
+                            tint = if (song.isFavorite) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                    }
+
+                    // Export & Share Dropdown Menu
+                    Box {
+                        IconButton(onClick = { showExportMenu = true }) {
+                            Icon(
+                                imageVector = Icons.Rounded.Share,
+                                contentDescription = stringResource(R.string.export_options_desc),
+                                tint = MaterialTheme.colorScheme.primary
+                            )
+                        }
+
+                        DropdownMenu(
+                            expanded = showExportMenu,
+                            onDismissRequest = { showExportMenu = false }
+                        ) {
+                            // 1. PDF Document (.pdf)
+                            DropdownMenuItem(
+                                text = { Text(stringResource(R.string.export_pdf)) },
+                                leadingIcon = {
+                                    Icon(
+                                        imageVector = Icons.Rounded.PictureAsPdf,
+                                        contentDescription = null
+                                    )
+                                },
+                                onClick = {
+                                    showExportMenu = false
+                                    val savedUri = SongPdfUtils.savePdfToDownloads(
+                                        context = context,
+                                        song = song,
+                                        parsedSong = currentParsedSong,
+                                        notationSystem = notationSystem
+                                    )
+                                    if (savedUri != null) {
+                                        Toast.makeText(context, context.getString(R.string.pdf_saved_success), Toast.LENGTH_SHORT).show()
+                                        SongPdfUtils.sharePdf(
+                                            context = context,
+                                            song = song,
+                                            parsedSong = currentParsedSong,
+                                            notationSystem = notationSystem
+                                        )
+                                    } else {
+                                        Toast.makeText(context, context.getString(R.string.export_failed), Toast.LENGTH_SHORT).show()
+                                    }
+                                }
+                            )
+
+                            // 2. JSON Backup (.json)
+                            DropdownMenuItem(
+                                text = { Text(stringResource(R.string.export_json)) },
+                                leadingIcon = {
+                                    Icon(
+                                        imageVector = Icons.Rounded.DataObject,
+                                        contentDescription = null
+                                    )
+                                },
+                                onClick = {
+                                    showExportMenu = false
+                                    val savedUri = SongJsonUtils.saveJsonToDownloads(
+                                        context = context,
+                                        song = song
+                                    )
+                                    if (savedUri != null) {
+                                        Toast.makeText(context, context.getString(R.string.json_saved_success), Toast.LENGTH_SHORT).show()
+                                        SongJsonUtils.shareJson(
+                                            context = context,
+                                            song = song
+                                        )
+                                    } else {
+                                        Toast.makeText(context, context.getString(R.string.export_failed), Toast.LENGTH_SHORT).show()
+                                    }
+                                }
+                            )
+
+                            // 3. Plain Text (.txt)
+                            DropdownMenuItem(
+                                text = { Text(stringResource(R.string.export_txt)) },
+                                leadingIcon = {
+                                    Icon(
+                                        imageVector = Icons.Rounded.Description,
+                                        contentDescription = null
+                                    )
+                                },
+                                onClick = {
+                                    showExportMenu = false
+                                    val formattedText = SongExportUtils.generateFormattedText(
+                                        song = song,
+                                        parsedSong = currentParsedSong,
+                                        notationSystem = notationSystem
+                                    )
+                                    val savedUri = SongExportUtils.saveToDownloads(
+                                        context = context,
+                                        songTitle = song.title,
+                                        content = formattedText
+                                    )
+                                    if (savedUri != null) {
+                                        Toast.makeText(context, context.getString(R.string.download_success), Toast.LENGTH_SHORT).show()
+                                        SongExportUtils.shareSongSheet(
+                                            context = context,
+                                            songTitle = song.title,
+                                            artist = song.artist,
+                                            content = formattedText
+                                        )
+                                    } else {
+                                        Toast.makeText(context, context.getString(R.string.download_error), Toast.LENGTH_SHORT).show()
+                                    }
+                                }
+                            )
+                        }
+                    }
+                }
+
+                Spacer(modifier = Modifier.height(12.dp))
+            }
+
+            val isOwner = song.isOwnedBy(currentUserId)
+            val authorName = song.createdByName ?: song.createdByUserId
+
+            // Metadata Chips Row
+            FlowRow(
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                verticalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                if (!authorName.isNullOrBlank()) {
+                    AssistChip(
+                        onClick = {},
+                        label = { Text(stringResource(R.string.created_by, authorName), style = MaterialTheme.typography.labelMedium) },
+                        leadingIcon = {
+                            Icon(
+                                imageVector = Icons.Rounded.Person,
+                                contentDescription = null,
+                                modifier = Modifier.size(14.dp)
+                            )
+                        },
+                        colors = AssistChipDefaults.assistChipColors(
+                            containerColor = MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.5f)
+                        )
                     )
-                    Spacer(modifier = Modifier.width(4.dp))
-                    Text(
-                        text = stringResource(R.string.original_key_format, song.originalKey),
-                        style = MaterialTheme.typography.labelMedium,
-                        fontWeight = FontWeight.Bold
+                }
+
+                if (!isOwner) {
+                    AssistChip(
+                        onClick = { onDuplicateSongClick?.invoke(song) },
+                        label = { Text(stringResource(R.string.duplicate_song), style = MaterialTheme.typography.labelMedium) },
+                        leadingIcon = {
+                            Icon(
+                                imageVector = Icons.Rounded.ContentCopy,
+                                contentDescription = null,
+                                modifier = Modifier.size(14.dp)
+                            )
+                        },
+                        colors = AssistChipDefaults.assistChipColors(
+                            containerColor = MaterialTheme.colorScheme.primaryContainer,
+                            labelColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                            leadingIconContentColor = MaterialTheme.colorScheme.onPrimaryContainer
+                        )
                     )
+                }
+                Surface(
+                    shape = RoundedCornerShape(8.dp),
+                    color = MaterialTheme.colorScheme.tertiaryContainer,
+                    contentColor = MaterialTheme.colorScheme.onTertiaryContainer
+                ) {
+                    Row(
+                        modifier = Modifier.padding(horizontal = 10.dp, vertical = 6.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Icon(
+                            imageVector = Icons.Rounded.MusicNote,
+                            contentDescription = null,
+                            modifier = Modifier.size(16.dp)
+                        )
+                        Spacer(modifier = Modifier.width(4.dp))
+                        Text(
+                            text = stringResource(R.string.original_key_format, song.originalKey),
+                            style = MaterialTheme.typography.labelMedium,
+                            fontWeight = FontWeight.Bold
+                        )
+                    }
+                }
+
+                song.tempo?.let { tempo ->
+                    AssistChip(
+                        onClick = {},
+                        label = { Text("$tempo BPM", style = MaterialTheme.typography.labelMedium) },
+                        leadingIcon = {
+                            Icon(
+                                imageVector = Icons.Rounded.Speed,
+                                contentDescription = null,
+                                modifier = Modifier.size(14.dp)
+                            )
+                        }
+                    )
+                }
+
+                song.timeSignature?.let { timeSig ->
+                    AssistChip(
+                        onClick = {},
+                        label = { Text(timeSig, style = MaterialTheme.typography.labelMedium) }
+                    )
+                }
+
+                song.tags.forEach { tag ->
+                    AssistChip(
+                        onClick = {},
+                        label = { Text(tag, style = MaterialTheme.typography.labelMedium) },
+                        colors = AssistChipDefaults.assistChipColors(
+                            containerColor = MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.6f)
+                        )
+                    )
+                }
+
+                // Options / Performance Options Chip
+                FilterChip(
+                    selected = isControlsExpanded,
+                    onClick = { isControlsExpanded = !isControlsExpanded },
+                    label = {
+                        Text(
+                            text = stringResource(R.string.performance_options),
+                            style = MaterialTheme.typography.labelMedium,
+                            fontWeight = FontWeight.SemiBold
+                        )
+                    },
+                    leadingIcon = {
+                        Icon(
+                            imageVector = Icons.Rounded.Tune,
+                            contentDescription = null,
+                            modifier = Modifier.size(16.dp)
+                        )
+                    },
+                    colors = FilterChipDefaults.filterChipColors(
+                        selectedContainerColor = MaterialTheme.colorScheme.primaryContainer,
+                        selectedLabelColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                        selectedLeadingIconColor = MaterialTheme.colorScheme.onPrimaryContainer
+                    )
+                )
+            }
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            // Interactive Performance Controls Panel
+            AnimatedVisibility(
+                visible = isControlsExpanded,
+                enter = fadeIn() + expandVertically(),
+                exit = fadeOut() + shrinkVertically()
+            ) {
+                Column {
+                    SongViewerControls(
+                        currentKeyName = currentParsedSong.currentKey?.name(notationSystem) ?: song.originalKey,
+                        originalKeyName = song.originalKey,
+                        transpositionSemitones = transpositionSemitones,
+                        onTranspose = { delta -> transpositionSemitones += delta },
+                        onResetTransposition = { transpositionSemitones = 0 },
+                        notationSystem = notationSystem,
+                        onNotationChange = { notationSystem = it },
+                        isAutoScrolling = isAutoScrolling,
+                        onToggleAutoScroll = { isAutoScrolling = !isAutoScrolling },
+                        scrollSpeed = scrollSpeed,
+                        onSpeedChange = { scrollSpeed = it },
+                        isFitToScreen = isFitToScreen,
+                        onFitToScreenToggle = { isFitToScreen = !isFitToScreen },
+                        fontScale = fontScale,
+                        onFontScaleChange = { fontScale = it }
+                    )
+                    Spacer(modifier = Modifier.height(16.dp))
                 }
             }
 
-            song.tempo?.let { tempo ->
-                AssistChip(
-                    onClick = {},
-                    label = { Text("$tempo BPM", style = MaterialTheme.typography.labelMedium) },
-                    leadingIcon = {
-                        Icon(
-                            imageVector = Icons.Rounded.Speed,
-                            contentDescription = null,
-                            modifier = Modifier.size(14.dp)
-                        )
-                    }
-                )
-            }
+            Spacer(modifier = Modifier.height(16.dp))
 
-            song.timeSignature?.let { timeSig ->
-                AssistChip(
-                    onClick = {},
-                    label = { Text(timeSig, style = MaterialTheme.typography.labelMedium) }
-                )
-            }
+            // Render Song Sections as Structured Material 3 Section Cards
+            val cardInnerPadding = if (isFitToScreen) 6.dp else (16 * effectiveFontScale).dp.coerceAtLeast(8.dp)
+            val cardBottomMargin = if (isFitToScreen) 8.dp else (16 * effectiveFontScale).dp.coerceAtLeast(8.dp)
+            val emptyLineSpacing = if (isFitToScreen) 4.dp else (10 * effectiveFontScale).dp.coerceAtLeast(4.dp)
 
-            song.tags.forEach { tag ->
-                AssistChip(
-                    onClick = {},
-                    label = { Text(tag, style = MaterialTheme.typography.labelMedium) },
-                    colors = AssistChipDefaults.assistChipColors(
-                        containerColor = MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.6f)
-                    )
-                )
-            }
-
-            // Options / Performance Options Chip
-            FilterChip(
-                selected = isControlsExpanded,
-                onClick = { isControlsExpanded = !isControlsExpanded },
-                label = {
-                    Text(
-                        text = stringResource(R.string.performance_options),
-                        style = MaterialTheme.typography.labelMedium,
-                        fontWeight = FontWeight.SemiBold
-                    )
-                },
-                leadingIcon = {
-                    Icon(
-                        imageVector = Icons.Rounded.Tune,
-                        contentDescription = null,
-                        modifier = Modifier.size(16.dp)
-                    )
-                },
-                colors = FilterChipDefaults.filterChipColors(
-                    selectedContainerColor = MaterialTheme.colorScheme.primaryContainer,
-                    selectedLabelColor = MaterialTheme.colorScheme.onPrimaryContainer,
-                    selectedLeadingIconColor = MaterialTheme.colorScheme.onPrimaryContainer
-                )
-            )
-        }
-
-        Spacer(modifier = Modifier.height(16.dp))
-
-        // Interactive Performance Controls Panel
-        AnimatedVisibility(
-            visible = isControlsExpanded,
-            enter = fadeIn() + expandVertically(),
-            exit = fadeOut() + shrinkVertically()
-        ) {
-            Column {
-                SongViewerControls(
-                    currentKeyName = currentParsedSong.currentKey?.name(notationSystem) ?: song.originalKey,
-                    originalKeyName = song.originalKey,
-                    transpositionSemitones = transpositionSemitones,
-                    onTranspose = { delta -> transpositionSemitones += delta },
-                    onResetTransposition = { transpositionSemitones = 0 },
-                    notationSystem = notationSystem,
-                    onNotationChange = { notationSystem = it },
-                    isAutoScrolling = isAutoScrolling,
-                    onToggleAutoScroll = { isAutoScrolling = !isAutoScrolling },
-                    scrollSpeed = scrollSpeed,
-                    onSpeedChange = { scrollSpeed = it },
-                    isFitToScreen = isFitToScreen,
-                    onFitToScreenToggle = { isFitToScreen = !isFitToScreen },
-                    fontScale = fontScale,
-                    onFontScaleChange = { fontScale = it }
-                )
-                Spacer(modifier = Modifier.height(16.dp))
-            }
-        }
-
-        Spacer(modifier = Modifier.height(16.dp))
-
-        // Render Song Sections as Structured Material 3 Section Cards
-        val cardInnerPadding = if (isFitToScreen) 6.dp else (16 * effectiveFontScale).dp.coerceAtLeast(8.dp)
-        val cardBottomMargin = if (isFitToScreen) 8.dp else (16 * effectiveFontScale).dp.coerceAtLeast(8.dp)
-        val emptyLineSpacing = if (isFitToScreen) 4.dp else (10 * effectiveFontScale).dp.coerceAtLeast(4.dp)
-
-        songSections.forEach { section ->
-            Card(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(bottom = cardBottomMargin),
-                shape = RoundedCornerShape(0.dp),
-                colors = CardDefaults.cardColors(
-                    containerColor = Color.Transparent
-                ),
-                border = null,
-                elevation = CardDefaults.cardElevation(defaultElevation = 0.dp)
-            ) {
-                Column(
+            songSections.forEach { section ->
+                Card(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(cardInnerPadding)
+                        .padding(bottom = cardBottomMargin),
+                    shape = RoundedCornerShape(0.dp),
+                    colors = CardDefaults.cardColors(
+                        containerColor = Color.Transparent
+                    ),
+                    border = null,
+                    elevation = CardDefaults.cardElevation(defaultElevation = 0.dp)
                 ) {
-                    section.title?.let { title ->
-                        SectionTitleBadge(
-                            title = title,
-                            effectiveFontScale = effectiveFontScale,
-                            isFitToScreen = isFitToScreen
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(cardInnerPadding)
+                    ) {
+                        section.title?.let { title ->
+                            SectionTitleBadge(
+                                title = title,
+                                effectiveFontScale = effectiveFontScale,
+                                isFitToScreen = isFitToScreen
+                            )
+                        }
+
+                        section.lines.forEach { line ->
+                            when (line) {
+                                is ChordLyricsLine.ChordLyrics -> {
+                                    if (isChordOnlyLine(line)) {
+                                        RenderChordOnlyLine(
+                                            chordPositions = line.chordPositions,
+                                            notationSystem = notationSystem,
+                                            preferFlats = currentParsedSong.preferFlats,
+                                            effectiveFontScale = effectiveFontScale,
+                                            isFitToScreen = isFitToScreen,
+                                            onChordClick = { chord -> selectedChordForDiagram = chord }
+                                        )
+                                    } else {
+                                        RenderChordLyricsLine(
+                                            line = line,
+                                            notationSystem = notationSystem,
+                                            preferFlats = currentParsedSong.preferFlats,
+                                            effectiveFontScale = effectiveFontScale,
+                                            isFitToScreen = isFitToScreen,
+                                            onChordClick = { chord -> selectedChordForDiagram = chord }
+                                        )
+                                    }
+                                }
+                                is ChordLyricsLine.EmptyLine -> {
+                                    Spacer(modifier = Modifier.height(emptyLineSpacing))
+                                }
+                                is ChordLyricsLine.SectionHeader -> {
+                                    // Handled at section level
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        // Child 2 (Sticky Floating Controls Bar)
+        Box(
+            modifier = Modifier
+                .align(Alignment.BottomCenter)
+                .padding(16.dp)
+        ) {
+            Surface(
+                shape = RoundedCornerShape(28.dp),
+                color = MaterialTheme.colorScheme.surfaceContainerHigh.copy(alpha = 0.95f),
+                shadowElevation = 6.dp,
+                tonalElevation = 6.dp
+            ) {
+                Row(
+                    modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(6.dp)
+                ) {
+                    // Transposition Quick Buttons: [-1 Tono], Key Badge, [+1 Tono]
+                    FilledTonalButton(
+                        onClick = { transpositionSemitones -= 2 },
+                        shape = RoundedCornerShape(16.dp),
+                        contentPadding = PaddingValues(horizontal = 8.dp, vertical = 4.dp),
+                        modifier = Modifier.height(36.dp)
+                    ) {
+                        Text(
+                            text = stringResource(R.string.transpose_minus_one_tone),
+                            style = MaterialTheme.typography.labelMedium,
+                            fontWeight = FontWeight.Bold
                         )
                     }
 
-                    section.lines.forEach { line ->
-                        when (line) {
-                            is ChordLyricsLine.ChordLyrics -> {
-                                if (isChordOnlyLine(line)) {
-                                    RenderChordOnlyLine(
-                                        chordPositions = line.chordPositions,
-                                        notationSystem = notationSystem,
-                                        preferFlats = currentParsedSong.preferFlats,
-                                        effectiveFontScale = effectiveFontScale,
-                                        isFitToScreen = isFitToScreen,
-                                        onChordClick = { chord -> selectedChordForDiagram = chord }
-                                    )
-                                } else {
-                                    RenderChordLyricsLine(
-                                        line = line,
-                                        notationSystem = notationSystem,
-                                        preferFlats = currentParsedSong.preferFlats,
-                                        effectiveFontScale = effectiveFontScale,
-                                        isFitToScreen = isFitToScreen,
-                                        onChordClick = { chord -> selectedChordForDiagram = chord }
-                                    )
-                                }
-                            }
-                            is ChordLyricsLine.EmptyLine -> {
-                                Spacer(modifier = Modifier.height(emptyLineSpacing))
-                            }
-                            is ChordLyricsLine.SectionHeader -> {
-                                // Handled at section level
-                            }
-                        }
+                    Surface(
+                        shape = RoundedCornerShape(8.dp),
+                        color = MaterialTheme.colorScheme.primaryContainer,
+                        contentColor = MaterialTheme.colorScheme.onPrimaryContainer
+                    ) {
+                        Text(
+                            text = currentParsedSong.currentKey?.name(notationSystem) ?: song.originalKey,
+                            style = MaterialTheme.typography.titleSmall,
+                            fontWeight = FontWeight.Bold,
+                            modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp)
+                        )
+                    }
+
+                    FilledTonalButton(
+                        onClick = { transpositionSemitones += 2 },
+                        shape = RoundedCornerShape(16.dp),
+                        contentPadding = PaddingValues(horizontal = 8.dp, vertical = 4.dp),
+                        modifier = Modifier.height(36.dp)
+                    ) {
+                        Text(
+                            text = stringResource(R.string.transpose_plus_one_tone),
+                            style = MaterialTheme.typography.labelMedium,
+                            fontWeight = FontWeight.Bold
+                        )
+                    }
+
+                    VerticalDivider(
+                        modifier = Modifier
+                            .height(20.dp)
+                            .padding(horizontal = 2.dp),
+                        color = MaterialTheme.colorScheme.outlineVariant
+                    )
+
+                    // Text Scaling Quick Buttons: [- A], Percentage Badge, [A +]
+                    FilledTonalButton(
+                        onClick = {
+                            val newScale = (round((fontScale - 0.1f) * 100) / 100f).coerceIn(0.65f, 1.35f)
+                            fontScale = newScale
+                        },
+                        enabled = fontScale > 0.65f,
+                        shape = RoundedCornerShape(16.dp),
+                        contentPadding = PaddingValues(horizontal = 8.dp, vertical = 4.dp),
+                        modifier = Modifier.height(36.dp)
+                    ) {
+                        Text(
+                            text = "- A",
+                            style = MaterialTheme.typography.labelMedium,
+                            fontWeight = FontWeight.Bold
+                        )
+                    }
+
+                    Surface(
+                        shape = RoundedCornerShape(8.dp),
+                        color = MaterialTheme.colorScheme.primaryContainer,
+                        contentColor = MaterialTheme.colorScheme.onPrimaryContainer
+                    ) {
+                        Text(
+                            text = "${(fontScale * 100).roundToInt()}%",
+                            style = MaterialTheme.typography.labelSmall,
+                            fontWeight = FontWeight.Bold,
+                            modifier = Modifier.padding(horizontal = 6.dp, vertical = 4.dp)
+                        )
+                    }
+
+                    FilledTonalButton(
+                        onClick = {
+                            val newScale = (round((fontScale + 0.1f) * 100) / 100f).coerceIn(0.65f, 1.35f)
+                            fontScale = newScale
+                        },
+                        enabled = fontScale < 1.35f,
+                        shape = RoundedCornerShape(16.dp),
+                        contentPadding = PaddingValues(horizontal = 8.dp, vertical = 4.dp),
+                        modifier = Modifier.height(36.dp)
+                    ) {
+                        Text(
+                            text = "A +",
+                            style = MaterialTheme.typography.labelMedium,
+                            fontWeight = FontWeight.Bold
+                        )
+                    }
+
+                    VerticalDivider(
+                        modifier = Modifier
+                            .height(20.dp)
+                            .padding(horizontal = 2.dp),
+                        color = MaterialTheme.colorScheme.outlineVariant
+                    )
+
+                    // Expand Options Button: 🎛️ icon button
+                    IconButton(
+                        onClick = { isControlsExpanded = !isControlsExpanded },
+                        modifier = Modifier.size(36.dp)
+                    ) {
+                        Icon(
+                            imageVector = Icons.Rounded.Tune,
+                            contentDescription = stringResource(R.string.performance_options),
+                            tint = if (isControlsExpanded) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant
+                        )
                     }
                 }
             }

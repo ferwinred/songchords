@@ -1,6 +1,6 @@
 <resources>
     <string name="app_name">SongChords - Acordes Cristianos</string>
-    <string name="top_bar_title">Acordes Cristianos y Alabanzas</string>
+    <string name="top_bar_title">""</string>
     <string name="new_song">Nueva Canción</string>
     <string name="back">Atrás</string>
     <string name="back_to_list">Volver a la lista</string>
@@ -18,8 +18,17 @@
     <string name="language_english">English</string>
     <string name="language_spanish">Español</string>
 
+    <!-- Sincronización en la Nube -->
+    <string name="cloud_sync">Sincronización en la nube</string>
+    <string name="cloud_synced">Sincronizado</string>
+    <string name="cloud_syncing">Sincronizando…</string>
+    <string name="cloud_offline">Sin conexión a la nube</string>
+    <string name="manual_sync">Sincronización manual</string>
+    <string name="sync_success_toast">Canciones sincronizadas con la nube</string>
+    <string name="sync_error_toast">Error de sincronización en la nube. Modo sin conexión activo.</string>
+
     <!-- Búsqueda y Filtros -->
-    <string name="search_placeholder">Buscar alabanzas, adoración, artistas, tonos…</string>
+    <string name="search_placeholder">Buscar alabanzas, adoración, artistas…</string>
     <string name="search_icon_desc">Icono de búsqueda</string>
     <string name="clear_search_desc">Limpiar búsqueda</string>
     <string name="songs_found_one">%1$d canción encontrada</string>
@@ -120,4 +129,55 @@
     <string name="download_success">Guardado en la carpeta Descargas</string>
     <string name="download_error">Error al guardar la canción</string>
     <string name="export_options_desc">Opciones de exportación y compartir</string>
+    <string name="export_pdf">📄 Documento PDF (.pdf)</string>
+    <string name="export_json">💾 Archivo JSON (.json)</string>
+    <string name="export_txt">📝 Texto Plano (.txt)</string>
+    <string name="pdf_saved_success">PDF guardado en la carpeta Descargas</string>
+    <string name="json_saved_success">Archivo JSON guardado en la carpeta Descargas</string>
+    <string name="import_json">Importar JSON</string>
+    <string name="import_json_desc">Importar canción personalizada desde archivo JSON</string>
+    <string name="import_json_success">Canción \"%1$s\" importada correctamente</string>
+    <string name="import_json_error">Error al importar la canción desde el archivo JSON</string>
+    <string name="export_failed">Error al exportar la canción</string>
+
+    <!-- Afinador y Herramientas -->
+    <string name="nav_tools">Herramientas</string>
+    <string name="tools_title">Herramientas para Músicos</string>
+    <string name="tuner_title">Afinador Interactivo de Instrumento</string>
+    <string name="instrument_guitar">Guitarra (6 Cuerdas)</string>
+    <string name="instrument_bass_4">Bajo (4 Cuerdas)</string>
+    <string name="instrument_bass_5">Bajo (5 Cuerdas)</string>
+    <string name="play_sound">🔊 Reproducir Tono de Referencia</string>
+    <string name="stop_sound">⏹️ Detener Tono</string>
+    <string name="cents_format">%1$+.1f cents</string>
+    <string name="status_in_tune">Afinado</string>
+    <string name="status_flat">Bajo</string>
+    <string name="status_sharp">Alto</string>
+    <string name="target_frequency">Objetivo: %1$.2f Hz</string>
+    <string name="detected_frequency">Detectado: %1$.2f Hz</string>
+    <string name="string_label">Cuerda %1$d: %2$s</string>
+    <string name="pitch_adjust_label">Desviación Simulación (-50 a +50 cents)</string>
+
+    <!-- Biblioteca de Acordes -->
+    <string name="chord_library_title">Biblioteca de Acordes</string>
+    <string name="root_note_label">Nota Raíz</string>
+    <string name="chord_quality_label">Tipo de Acorde</string>
+    <string name="tab_tuner">Afinador</string>
+    <string name="tab_chord_library">Biblioteca</string>
+    <string name="quality_major">Mayor</string>
+    <string name="quality_minor">Menor</string>
+    <string name="quality_7">7</string>
+    <string name="quality_m7">m7</string>
+    <string name="quality_maj7">maj7</string>
+    <string name="quality_sus2">sus2</string>
+    <string name="quality_sus4">sus4</string>
+    <string name="quality_add9">add9</string>
+    <string name="quality_dim">dim</string>
+    <string name="quality_aug">aug</string>
+
+    <!-- Propiedad de Canción y Permisos -->
+    <string name="created_by">Creado por %1$s</string>
+    <string name="duplicate_song">Crear mi versión</string>
+    <string name="read_only_mode">Modo de solo lectura</string>
+    <string name="version_created_toast">Versión personal creada</string>
 </resources>

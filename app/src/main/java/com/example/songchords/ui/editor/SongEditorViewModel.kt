@@ -198,6 +198,10 @@ class SongEditorViewModel(
             _uiState.update { it.copy(isLoading = true) }
 
             val existingId = state.songId ?: UUID.randomUUID().toString()
+            val existingSong = if (state.songId != null) repository.getSongById(state.songId) else null
+            val currentUserId = com.example.songchords.auth.UserIdentityManager.currentUserId
+            val currentUserName = com.example.songchords.auth.UserIdentityManager.currentUserName
+
             val songToSave = Song(
                 id = existingId,
                 title = state.title.trim(),
@@ -206,7 +210,11 @@ class SongEditorViewModel(
                 content = state.contentTextFieldValue.text,
                 tempo = tempoInt,
                 timeSignature = state.timeSignature.ifBlank { "4/4" },
-                tags = tagList
+                tags = tagList,
+                isFavorite = existingSong?.isFavorite ?: false,
+                createdAt = existingSong?.createdAt ?: System.currentTimeMillis(),
+                createdByUserId = existingSong?.createdByUserId ?: currentUserId,
+                createdByName = existingSong?.createdByName ?: currentUserName
             )
 
             if (state.isNewSong) {
@@ -220,6 +228,29 @@ class SongEditorViewModel(
                     isLoading = false,
                     isSaved = true
                 )
+            }
+        }
+    }
+
+    fun importFromJsonUri(context: android.content.Context, uri: android.net.Uri, onResult: (Boolean) -> Unit) {
+        viewModelScope.launch {
+            val importedSong = com.example.songchords.utils.SongJsonUtils.importSongFromUri(context, uri)
+            if (importedSong != null) {
+                _uiState.update {
+                    it.copy(
+                        title = importedSong.title,
+                        artist = importedSong.artist,
+                        originalKey = importedSong.originalKey,
+                        tempoText = importedSong.tempo?.toString() ?: "",
+                        timeSignature = importedSong.timeSignature ?: "4/4",
+                        tagsText = importedSong.tags.joinToString(", "),
+                        contentTextFieldValue = TextFieldValue(importedSong.content),
+                        errorMessage = null
+                    )
+                }
+                onResult(true)
+            } else {
+                onResult(false)
             }
         }
     }

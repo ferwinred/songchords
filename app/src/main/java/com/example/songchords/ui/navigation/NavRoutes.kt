@@ -11,3 +11,12 @@ data class SongDetailRoute(val songId: String) : NavKey
 
 @Serializable
 data class SongEditorRoute(val songId: String? = null) : NavKey
+
+@Serializable
+data object ToolsRoute : NavKey
+
+@Serializable
+data object TunerRoute : NavKey
+
+@Serializable
+data object ChordLibraryRoute : NavKey

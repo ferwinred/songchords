@@ -1,6 +1,6 @@
 <resources>
     <string name="app_name">SongChords - Praise &amp; Worship</string>
-    <string name="top_bar_title">Christian Praise &amp; Worship Chords</string>
+    <string name="top_bar_title">""</string>
     <string name="new_song">New Song</string>
     <string name="back">Back</string>
     <string name="back_to_list">Back to list</string>
@@ -18,8 +18,17 @@
     <string name="language_english">English</string>
     <string name="language_spanish">Español</string>
 
+    <!-- Cloud Sync -->
+    <string name="cloud_sync">Cloud Sync</string>
+    <string name="cloud_synced">Synced</string>
+    <string name="cloud_syncing">Syncing…</string>
+    <string name="cloud_offline">Cloud Offline</string>
+    <string name="manual_sync">Manual Sync</string>
+    <string name="sync_success_toast">Songs synchronized with cloud</string>
+    <string name="sync_error_toast">Cloud sync failed. Offline mode active.</string>
+
     <!-- Search &amp; Filters -->
-    <string name="search_placeholder">Search praise &amp; worship songs, artists, keys…</string>
+    <string name="search_placeholder">Search praise &amp; worship songs, artists…</string>
     <string name="search_icon_desc">Search icon</string>
     <string name="clear_search_desc">Clear search query</string>
     <string name="songs_found_one">%1$d song found</string>
@@ -120,4 +129,55 @@
     <string name="download_success">Saved to Downloads folder</string>
     <string name="download_error">Failed to save song sheet</string>
     <string name="export_options_desc">Export and share options</string>
+    <string name="export_pdf">📄 PDF Document (.pdf)</string>
+    <string name="export_json">💾 JSON Backup (.json)</string>
+    <string name="export_txt">📝 Plain Text (.txt)</string>
+    <string name="pdf_saved_success">PDF saved to Downloads folder</string>
+    <string name="json_saved_success">JSON backup saved to Downloads folder</string>
+    <string name="import_json">Import JSON</string>
+    <string name="import_json_desc">Import custom song from JSON backup file</string>
+    <string name="import_json_success">Song \"%1$s\" imported successfully</string>
+    <string name="import_json_error">Failed to import song from JSON file</string>
+    <string name="export_failed">Failed to export song sheet</string>
+
+    <!-- Tuner &amp; Musician Tools -->
+    <string name="nav_tools">Tools</string>
+    <string name="tools_title">Musician Tools</string>
+    <string name="tuner_title">Interactive Instrument Tuner</string>
+    <string name="instrument_guitar">Guitar (6 Strings)</string>
+    <string name="instrument_bass_4">Bass (4 Strings)</string>
+    <string name="instrument_bass_5">Bass (5 Strings)</string>
+    <string name="play_sound">🔊 Play Reference Tone</string>
+    <string name="stop_sound">⏹️ Stop Tone</string>
+    <string name="cents_format">%1$+.1f cents</string>
+    <string name="status_in_tune">In Tune</string>
+    <string name="status_flat">Flat</string>
+    <string name="status_sharp">Sharp</string>
+    <string name="target_frequency">Target: %1$.2f Hz</string>
+    <string name="detected_frequency">Detected: %1$.2f Hz</string>
+    <string name="string_label">String %1$d: %2$s</string>
+    <string name="pitch_adjust_label">Simulated Pitch Offset (-50 to +50 cents)</string>
+
+    <!-- Chord Library -->
+    <string name="chord_library_title">Chord Library</string>
+    <string name="root_note_label">Root Note</string>
+    <string name="chord_quality_label">Chord Quality</string>
+    <string name="tab_tuner">Afinador</string>
+    <string name="tab_chord_library">Biblioteca</string>
+    <string name="quality_major">Major</string>
+    <string name="quality_minor">Minor</string>
+    <string name="quality_7">7</string>
+    <string name="quality_m7">m7</string>
+    <string name="quality_maj7">maj7</string>
+    <string name="quality_sus2">sus2</string>
+    <string name="quality_sus4">sus4</string>
+    <string name="quality_add9">add9</string>
+    <string name="quality_dim">dim</string>
+    <string name="quality_aug">aug</string>
+
+    <!-- Song Ownership &amp; Permissions -->
+    <string name="created_by">Created by %1$s</string>
+    <string name="duplicate_song">Duplicate &amp; Customize</string>
+    <string name="read_only_mode">Read-only mode</string>
+    <string name="version_created_toast">Personal version created</string>
 </resources>

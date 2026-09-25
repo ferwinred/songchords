@@ -1,5 +1,9 @@
 package com.example.songchords.ui.editor
 
+import android.net.Uri
+import android.widget.Toast
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
@@ -20,6 +24,7 @@ import androidx.compose.material.icons.automirrored.rounded.ArrowBack
 import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material.icons.rounded.Check
 import androidx.compose.material.icons.rounded.EditNote
+import androidx.compose.material.icons.rounded.FileOpen
 import androidx.compose.material.icons.rounded.FlashOn
 import androidx.compose.material.icons.rounded.Info
 import androidx.compose.material.icons.rounded.Key
@@ -62,6 +67,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
@@ -102,6 +108,22 @@ fun SongEditorScreen(
         }
     }
 
+    val context = LocalContext.current
+    val importJsonLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.OpenDocument()
+    ) { uri: Uri? ->
+        uri?.let {
+            viewModel.importFromJsonUri(context, it) { success ->
+                val message = if (success) {
+                    context.getString(R.string.import_json_success, viewModel.uiState.value.title)
+                } else {
+                    context.getString(R.string.import_json_error)
+                }
+                Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+
     Scaffold(
         modifier = modifier.fillMaxSize(),
         snackbarHost = { SnackbarHost(snackbarHostState) },
@@ -123,6 +145,15 @@ fun SongEditorScreen(
                     }
                 },
                 actions = {
+                    IconButton(
+                        onClick = { importJsonLauncher.launch(arrayOf("application/json", "*/*")) }
+                    ) {
+                        Icon(
+                            imageVector = Icons.Rounded.FileOpen,
+                            contentDescription = stringResource(R.string.import_json_desc),
+                            tint = MaterialTheme.colorScheme.primary
+                        )
+                    }
                     LanguageSelector()
                     Spacer(modifier = Modifier.width(4.dp))
                     if (uiState.isLoading) {
@@ -132,19 +163,13 @@ fun SongEditorScreen(
                                 .padding(end = 12.dp)
                         )
                     } else {
-                        Button(
-                            onClick = viewModel::saveSong,
-                            modifier = Modifier.padding(end = 12.dp)
+                        IconButton(
+                            onClick = viewModel::saveSong
                         ) {
                             Icon(
                                 imageVector = Icons.Rounded.Check,
-                                contentDescription = null,
-                                modifier = Modifier.size(20.dp)
-                            )
-                            Spacer(modifier = Modifier.width(6.dp))
-                            Text(
-                                text = stringResource(R.string.save),
-                                fontWeight = FontWeight.Bold
+                                contentDescription = stringResource(R.string.save),
+                                tint = MaterialTheme.colorScheme.primary
                             )
                         }
                     }

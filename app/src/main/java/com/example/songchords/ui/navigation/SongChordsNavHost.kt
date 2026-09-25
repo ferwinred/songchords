@@ -12,18 +12,20 @@ import androidx.navigation3.runtime.rememberNavBackStack
 import androidx.navigation3.ui.NavDisplay
 import androidx.navigationevent.compose.LocalNavigationEventDispatcherOwner
 import androidx.navigationevent.compose.rememberNavigationEventDispatcherOwner
-import com.example.songchords.repository.LocalSongRepository
+import com.example.songchords.repository.CloudSyncRepository
 import com.example.songchords.repository.SongRepository
 import com.example.songchords.ui.editor.SongEditorScreen
 import com.example.songchords.ui.editor.SongEditorViewModel
 import com.example.songchords.ui.songlist.SongListDetailScreen
 import com.example.songchords.ui.songlist.SongListViewModel
 import com.example.songchords.ui.songlist.components.SongDetailPane
+import com.example.songchords.ui.tools.ToolsScreen
+import com.example.songchords.ui.tools.ToolsTab
 
 @Composable
 fun SongChordsNavHost(
     modifier: Modifier = Modifier,
-    repository: SongRepository = remember { LocalSongRepository() }
+    repository: SongRepository = remember { CloudSyncRepository() }
 ) {
     val backStack = rememberNavBackStack(SongListRoute)
     val songListViewModel: SongListViewModel = viewModel(
@@ -52,7 +54,46 @@ fun SongChordsNavHost(
                                 viewModel = songListViewModel,
                                 onOpenEditor = { songId ->
                                     backStack.add(SongEditorRoute(songId))
+                                },
+                                onOpenTools = {
+                                    backStack.add(ToolsRoute)
                                 }
+                            )
+                        }
+                    }
+                    is ToolsRoute -> {
+                        NavEntry(key) {
+                            ToolsScreen(
+                                onNavigateBack = {
+                                    if (backStack.size > 1) {
+                                        backStack.removeAt(backStack.size - 1)
+                                    }
+                                },
+                                initialTab = ToolsTab.TUNER
+                            )
+                        }
+                    }
+                    is TunerRoute -> {
+                        NavEntry(key) {
+                            ToolsScreen(
+                                onNavigateBack = {
+                                    if (backStack.size > 1) {
+                                        backStack.removeAt(backStack.size - 1)
+                                    }
+                                },
+                                initialTab = ToolsTab.TUNER
+                            )
+                        }
+                    }
+                    is ChordLibraryRoute -> {
+                        NavEntry(key) {
+                            ToolsScreen(
+                                onNavigateBack = {
+                                    if (backStack.size > 1) {
+                                        backStack.removeAt(backStack.size - 1)
+                                    }
+                                },
+                                initialTab = ToolsTab.CHORD_LIBRARY
                             )
                         }
                     }
@@ -94,6 +135,9 @@ fun SongChordsNavHost(
                             viewModel = songListViewModel,
                             onOpenEditor = { songId ->
                                 backStack.add(SongEditorRoute(songId))
+                            },
+                            onOpenTools = {
+                                backStack.add(ToolsRoute)
                             }
                         )
                     }

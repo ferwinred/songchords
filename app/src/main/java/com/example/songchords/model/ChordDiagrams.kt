@@ -31,50 +31,84 @@ object ChordDiagramProvider {
         "C" to GuitarChordDiagram(listOf(-1, 3, 2, 0, 1, 0), 1, listOf(0, 3, 2, 0, 1, 0)),
         "Cm" to GuitarChordDiagram(listOf(-1, 3, 5, 5, 4, 3), 3, listOf(0, 1, 3, 4, 2, 1)),
         "C7" to GuitarChordDiagram(listOf(-1, 3, 2, 3, 1, 0), 1, listOf(0, 3, 2, 4, 1, 0)),
+        "Cm7" to GuitarChordDiagram(listOf(-1, 3, 5, 3, 4, 3), 3, listOf(0, 1, 3, 1, 2, 1)),
         "Cmaj7" to GuitarChordDiagram(listOf(-1, 3, 2, 0, 0, 0), 1, listOf(0, 3, 2, 0, 0, 0)),
-        "Cadd2" to GuitarChordDiagram(listOf(-1, 3, 2, 0, 3, 0), 1, listOf(0, 2, 1, 0, 3, 0)),
+        "Csus2" to GuitarChordDiagram(listOf(-1, 3, 0, 0, 1, 0), 1, listOf(0, 3, 0, 0, 1, 0)),
         "Csus4" to GuitarChordDiagram(listOf(-1, 3, 3, 0, 1, 1), 1, listOf(0, 3, 4, 0, 1, 1)),
+        "Cadd9" to GuitarChordDiagram(listOf(-1, 3, 2, 0, 3, 0), 1, listOf(0, 2, 1, 0, 3, 0)),
+        "Cadd2" to GuitarChordDiagram(listOf(-1, 3, 2, 0, 3, 0), 1, listOf(0, 2, 1, 0, 3, 0)),
+        "Cdim" to GuitarChordDiagram(listOf(-1, 3, 4, 2, 4, -1), 1, listOf(0, 2, 3, 1, 4, 0)),
+        "Caug" to GuitarChordDiagram(listOf(-1, 3, 2, 1, 1, 0), 1, listOf(0, 4, 3, 1, 2, 0)),
 
         // D Chords
         "D" to GuitarChordDiagram(listOf(-1, -1, 0, 2, 3, 2), 1, listOf(0, 0, 0, 1, 3, 2)),
         "Dm" to GuitarChordDiagram(listOf(-1, -1, 0, 2, 3, 1), 1, listOf(0, 0, 0, 2, 3, 1)),
         "D7" to GuitarChordDiagram(listOf(-1, -1, 0, 2, 1, 2), 1, listOf(0, 0, 0, 2, 1, 3)),
+        "Dm7" to GuitarChordDiagram(listOf(-1, -1, 0, 2, 1, 1), 1, listOf(0, 0, 0, 2, 1, 1)),
         "Dmaj7" to GuitarChordDiagram(listOf(-1, -1, 0, 2, 2, 2), 1, listOf(0, 0, 0, 1, 1, 1)),
+        "Dsus2" to GuitarChordDiagram(listOf(-1, -1, 0, 2, 3, 0), 1, listOf(0, 0, 0, 1, 2, 0)),
         "Dsus4" to GuitarChordDiagram(listOf(-1, -1, 0, 2, 3, 3), 1, listOf(0, 0, 0, 1, 2, 3)),
+        "Dadd9" to GuitarChordDiagram(listOf(-1, -1, 0, 2, 3, 0), 1, listOf(0, 0, 0, 1, 2, 0)),
+        "Ddim" to GuitarChordDiagram(listOf(-1, -1, 0, 1, 3, 1), 1, listOf(0, 0, 0, 1, 3, 2)),
+        "Daug" to GuitarChordDiagram(listOf(-1, -1, 0, 3, 3, 2), 1, listOf(0, 0, 0, 2, 3, 1)),
 
         // E Chords
         "E" to GuitarChordDiagram(listOf(0, 2, 2, 1, 0, 0), 1, listOf(0, 2, 3, 1, 0, 0)),
         "Em" to GuitarChordDiagram(listOf(0, 2, 2, 0, 0, 0), 1, listOf(0, 2, 3, 0, 0, 0)),
         "E7" to GuitarChordDiagram(listOf(0, 2, 0, 1, 0, 0), 1, listOf(0, 2, 0, 1, 0, 0)),
+        "Em7" to GuitarChordDiagram(listOf(0, 2, 0, 0, 0, 0), 1, listOf(0, 2, 0, 0, 0, 0)),
         "Emaj7" to GuitarChordDiagram(listOf(0, 2, 1, 1, 0, 0), 1, listOf(0, 3, 1, 2, 0, 0)),
+        "Esus2" to GuitarChordDiagram(listOf(0, 2, 4, 1, 0, 0), 1, listOf(0, 1, 3, 2, 0, 0)),
+        "Esus4" to GuitarChordDiagram(listOf(0, 2, 2, 2, 0, 0), 1, listOf(0, 2, 3, 4, 0, 0)),
+        "Eadd9" to GuitarChordDiagram(listOf(0, 2, 2, 1, 0, 2), 1, listOf(0, 2, 3, 1, 0, 4)),
+        "Edim" to GuitarChordDiagram(listOf(0, 1, 2, 0, 2, 0), 1, listOf(0, 1, 2, 0, 3, 0)),
+        "Eaug" to GuitarChordDiagram(listOf(0, 3, 2, 1, 1, 0), 1, listOf(0, 4, 3, 1, 2, 0)),
 
         // F Chords
         "F" to GuitarChordDiagram(listOf(1, 3, 3, 2, 1, 1), 1, listOf(1, 3, 4, 2, 1, 1)),
         "Fm" to GuitarChordDiagram(listOf(1, 3, 3, 1, 1, 1), 1, listOf(1, 3, 4, 1, 1, 1)),
         "F7" to GuitarChordDiagram(listOf(1, 3, 1, 2, 1, 1), 1, listOf(1, 3, 1, 2, 1, 1)),
-        "F#m" to GuitarChordDiagram(listOf(2, 4, 4, 2, 2, 2), 2, listOf(1, 3, 4, 1, 1, 1)),
+        "Fm7" to GuitarChordDiagram(listOf(1, 3, 1, 1, 1, 1), 1, listOf(1, 3, 1, 1, 1, 1)),
+        "Fmaj7" to GuitarChordDiagram(listOf(-1, -1, 3, 2, 1, 0), 1, listOf(0, 0, 3, 2, 1, 0)),
+        "Fsus2" to GuitarChordDiagram(listOf(-1, 3, 3, 0, 1, 1), 1, listOf(0, 3, 4, 0, 1, 1)),
+        "Fsus4" to GuitarChordDiagram(listOf(1, 3, 3, 3, 1, 1), 1, listOf(1, 2, 3, 4, 1, 1)),
+        "Fadd9" to GuitarChordDiagram(listOf(1, 3, 3, 2, 1, 3), 1, listOf(1, 2, 3, 1, 1, 4)),
+        "Fdim" to GuitarChordDiagram(listOf(-1, -1, 3, 1, 0, 1), 1, listOf(0, 0, 3, 1, 0, 2)),
+        "Faug" to GuitarChordDiagram(listOf(-1, -1, 3, 2, 2, 1), 1, listOf(0, 0, 3, 2, 2, 1)),
 
         // G Chords
         "G" to GuitarChordDiagram(listOf(3, 2, 0, 0, 0, 3), 1, listOf(3, 2, 0, 0, 0, 4)),
         "Gm" to GuitarChordDiagram(listOf(3, 5, 5, 3, 3, 3), 3, listOf(1, 3, 4, 1, 1, 1)),
         "G7" to GuitarChordDiagram(listOf(3, 2, 0, 0, 0, 1), 1, listOf(3, 2, 0, 0, 0, 1)),
+        "Gm7" to GuitarChordDiagram(listOf(3, 5, 3, 3, 3, 3), 3, listOf(1, 3, 1, 1, 1, 1)),
         "Gmaj7" to GuitarChordDiagram(listOf(3, 2, 0, 0, 0, 2), 1, listOf(3, 2, 0, 0, 0, 1)),
+        "Gsus2" to GuitarChordDiagram(listOf(3, 0, 0, 2, 0, 3), 1, listOf(2, 0, 0, 1, 0, 3)),
+        "Gsus4" to GuitarChordDiagram(listOf(3, 3, 0, 0, 1, 3), 1, listOf(3, 4, 0, 0, 1, 2)),
+        "Gadd9" to GuitarChordDiagram(listOf(3, 2, 0, 2, 0, 3), 1, listOf(2, 1, 0, 3, 0, 4)),
+        "Gdim" to GuitarChordDiagram(listOf(3, -1, 2, 3, 2, -1), 1, listOf(2, 0, 1, 3, 1, 0)),
+        "Gaug" to GuitarChordDiagram(listOf(3, 2, 1, 0, 0, 3), 1, listOf(3, 2, 1, 0, 0, 4)),
 
         // A Chords
         "A" to GuitarChordDiagram(listOf(-1, 0, 2, 2, 2, 0), 1, listOf(0, 0, 1, 2, 3, 0)),
         "Am" to GuitarChordDiagram(listOf(-1, 0, 2, 2, 1, 0), 1, listOf(0, 0, 2, 3, 1, 0)),
         "A7" to GuitarChordDiagram(listOf(-1, 0, 2, 0, 2, 0), 1, listOf(0, 0, 2, 0, 3, 0)),
+        "Am7" to GuitarChordDiagram(listOf(-1, 0, 2, 0, 1, 0), 1, listOf(0, 0, 2, 0, 1, 0)),
         "Amaj7" to GuitarChordDiagram(listOf(-1, 0, 2, 1, 2, 0), 1, listOf(0, 0, 2, 1, 3, 0)),
+        "Asus2" to GuitarChordDiagram(listOf(-1, 0, 2, 2, 0, 0), 1, listOf(0, 0, 1, 2, 0, 0)),
+        "Asus4" to GuitarChordDiagram(listOf(-1, 0, 2, 2, 3, 0), 1, listOf(0, 0, 1, 2, 3, 0)),
+        "Aadd9" to GuitarChordDiagram(listOf(-1, 0, 2, 4, 2, 0), 1, listOf(0, 0, 1, 3, 2, 0)),
+        "Adim" to GuitarChordDiagram(listOf(-1, 0, 1, 2, 1, -1), 1, listOf(0, 0, 1, 3, 2, 0)),
+        "Aaug" to GuitarChordDiagram(listOf(-1, 0, 3, 2, 2, 1), 1, listOf(0, 0, 4, 2, 3, 1)),
 
         // B Chords
         "B" to GuitarChordDiagram(listOf(-1, 2, 4, 4, 4, 2), 2, listOf(0, 1, 2, 3, 4, 1)),
         "Bm" to GuitarChordDiagram(listOf(-1, 2, 4, 4, 3, 2), 2, listOf(0, 1, 3, 4, 2, 1)),
         "B7" to GuitarChordDiagram(listOf(-1, 2, 1, 2, 0, 2), 1, listOf(0, 2, 1, 3, 0, 4)),
-
-        // Bb / Eb / Ab
-        "Bb" to GuitarChordDiagram(listOf(-1, 1, 3, 3, 3, 1), 1, listOf(0, 1, 2, 3, 4, 1)),
-        "Eb" to GuitarChordDiagram(listOf(-1, -1, 1, 3, 4, 3), 1, listOf(0, 0, 1, 2, 4, 3)),
-        "Ab" to GuitarChordDiagram(listOf(4, 6, 6, 5, 4, 4), 4, listOf(1, 3, 4, 2, 1, 1))
+        "Bm7" to GuitarChordDiagram(listOf(-1, 2, 0, 2, 0, 2), 1, listOf(0, 2, 0, 3, 0, 4)),
+        "Bmaj7" to GuitarChordDiagram(listOf(-1, 2, 4, 3, 4, 2), 2, listOf(0, 1, 3, 2, 4, 1)),
+        "Bsus2" to GuitarChordDiagram(listOf(-1, 2, 4, 4, 2, 2), 2, listOf(0, 1, 3, 4, 1, 1)),
+        "Bsus4" to GuitarChordDiagram(listOf(-1, 2, 4, 4, 5, 2), 2, listOf(0, 1, 2, 3, 4, 1)),
+        "Bdim" to GuitarChordDiagram(listOf(-1, 2, 3, 2, 3, -1), 1, listOf(0, 1, 3, 2, 4, 0))
     )
 
     fun getGuitarDiagram(chord: Chord): GuitarChordDiagram {
@@ -97,24 +131,26 @@ object ChordDiagramProvider {
         // 3. Fallback: Algorithmic E-shape or A-shape barre chord transposition
         val pitch = chord.root.pitchClass
         val isMinor = chord.suffix.contains("m") && !chord.suffix.contains("maj")
+        val is7 = chord.suffix.contains("7") && !chord.suffix.contains("maj")
 
-        return if (isMinor) {
-            // Em shape barre chord
-            val fretOffset = (pitch - Note.E.pitchClass).mod(12)
-            if (fretOffset == 0) {
-                GuitarChordDiagram(listOf(0, 2, 2, 0, 0, 0), 1)
-            } else {
-                GuitarChordDiagram(listOf(fretOffset, fretOffset + 2, fretOffset + 2, fretOffset, fretOffset, fretOffset), fretOffset)
-            }
+        val fretOffset = (pitch - Note.E.pitchClass).mod(12)
+        val baseFret = if (fretOffset == 0) 1 else fretOffset
+
+        val frets = if (isMinor && is7) {
+            if (fretOffset == 0) listOf(0, 2, 0, 0, 0, 0)
+            else listOf(baseFret, baseFret + 2, baseFret, baseFret, baseFret, baseFret)
+        } else if (isMinor) {
+            if (fretOffset == 0) listOf(0, 2, 2, 0, 0, 0)
+            else listOf(baseFret, baseFret + 2, baseFret + 2, baseFret, baseFret, baseFret)
+        } else if (is7) {
+            if (fretOffset == 0) listOf(0, 2, 0, 1, 0, 0)
+            else listOf(baseFret, baseFret + 2, baseFret, baseFret + 1, baseFret, baseFret)
         } else {
-            // E shape barre chord
-            val fretOffset = (pitch - Note.E.pitchClass).mod(12)
-            if (fretOffset == 0) {
-                GuitarChordDiagram(listOf(0, 2, 2, 1, 0, 0), 1)
-            } else {
-                GuitarChordDiagram(listOf(fretOffset, fretOffset + 2, fretOffset + 2, fretOffset + 1, fretOffset, fretOffset), fretOffset)
-            }
+            if (fretOffset == 0) listOf(0, 2, 2, 1, 0, 0)
+            else listOf(baseFret, baseFret + 2, baseFret + 2, baseFret + 1, baseFret, baseFret)
         }
+
+        return GuitarChordDiagram(frets, baseFret)
     }
 
     fun getPianoNotes(chord: Chord): PianoChordNotes {

@@ -1,0 +1,15 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /songs/{songId} {
+      // Public read access for all songs
+      allow read: if true;
+
+      // Allow creation for authenticated users setting createdByUserId to their UID
+      allow create: if request.auth != null && request.resource.data.createdByUserId == request.auth.uid;
+
+      // Owner-only update and delete permissions
+      allow update, delete: if request.auth != null && resource.data.createdByUserId == request.auth.uid;
+    }
+  }
+}

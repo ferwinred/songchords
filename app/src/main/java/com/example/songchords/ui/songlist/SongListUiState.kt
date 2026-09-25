@@ -1,6 +1,7 @@
 package com.example.songchords.ui.songlist
 
 import com.example.songchords.model.Song
+import com.example.songchords.repository.SyncStatus
 
 /**
  * State representing the UI for Song List & Search screen.
@@ -17,7 +18,9 @@ data class SongListUiState(
     val availableTags: List<String> = emptyList(),
     val selectedSongId: String? = null,
     val selectedSong: Song? = null,
-    val isLoading: Boolean = false
+    val isLoading: Boolean = false,
+    val syncStatus: SyncStatus = SyncStatus.IDLE,
+    val lastSyncedAt: Long? = null
 ) {
     val isAnyFilterActive: Boolean
         get() = searchQuery.isNotBlank() ||

@@ -4,11 +4,14 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.example.songchords.model.Song
+import com.example.songchords.repository.CloudSyncRepository
 import com.example.songchords.repository.LocalSongRepository
 import com.example.songchords.repository.SongRepository
+import com.example.songchords.repository.SyncStatus
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
@@ -32,6 +35,12 @@ class SongListViewModel(
     private val selectedTag = MutableStateFlow<String?>(null)
     private val showOnlyFavorites = MutableStateFlow(false)
     private val selectedSongId = MutableStateFlow<String?>(null)
+
+    private val syncStatusFlow: StateFlow<SyncStatus> = (repository as? CloudSyncRepository)?.syncStatus
+        ?: MutableStateFlow(SyncStatus.IDLE).asStateFlow()
+
+    private val lastSyncedAtFlow: StateFlow<Long?> = (repository as? CloudSyncRepository)?.lastSyncedAt
+        ?: MutableStateFlow(null).asStateFlow()
 
     private val baseFilters = combine(
         searchQuery,
@@ -58,8 +67,10 @@ class SongListViewModel(
 
     val uiState: StateFlow<SongListUiState> = combine(
         repository.getSongs(),
-        filterState
-    ) { allSongs: List<Song>, filters: FilterState ->
+        filterState,
+        syncStatusFlow,
+        lastSyncedAtFlow
+    ) { allSongs: List<Song>, filters: FilterState, syncStatus: SyncStatus, lastSyncedAt: Long? ->
 
         val availableArtists = allSongs.map { it.artist }.distinct().sorted()
         val availableKeys = allSongs.map { it.originalKey }.distinct().sorted()
@@ -112,13 +123,26 @@ class SongListViewModel(
             availableTags = availableTags,
             selectedSongId = currentSelectedSong?.id ?: filters.selectedSongId,
             selectedSong = currentSelectedSong,
-            isLoading = false
+            isLoading = false,
+            syncStatus = syncStatus,
+            lastSyncedAt = lastSyncedAt
         )
     }.stateIn(
         scope = viewModelScope,
         started = SharingStarted.Eagerly,
         initialValue = SongListUiState(isLoading = true)
     )
+
+    fun triggerSync(onResult: (SyncStatus) -> Unit = {}) {
+        viewModelScope.launch {
+            if (repository is CloudSyncRepository) {
+                val status = repository.triggerSync()
+                onResult(status)
+            } else {
+                onResult(SyncStatus.SYNCED)
+            }
+        }
+    }
 
     fun onSearchQueryChange(query: String) {
         searchQuery.value = query
@@ -163,6 +187,34 @@ class SongListViewModel(
             repository.deleteSong(songId)
             if (selectedSongId.value == songId) {
                 selectedSongId.value = null
+            }
+        }
+    }
+
+    fun duplicateSong(song: Song, onComplete: ((Song) -> Unit)? = null) {
+        viewModelScope.launch {
+            val currentUserId = com.example.songchords.auth.UserIdentityManager.currentUserId
+            val currentUserName = com.example.songchords.auth.UserIdentityManager.currentUserName
+            val duplicatedSong = song.cloneForUser(currentUserId, currentUserName)
+            repository.addSong(duplicatedSong)
+            selectedSongId.value = duplicatedSong.id
+            onComplete?.invoke(duplicatedSong)
+        }
+    }
+
+    fun importSongFromUri(context: android.content.Context, uri: android.net.Uri, onResult: (Boolean, String) -> Unit) {
+        viewModelScope.launch {
+            try {
+                val importedSong = com.example.songchords.utils.SongJsonUtils.importSongFromUri(context, uri)
+                if (importedSong != null) {
+                    repository.addSong(importedSong)
+                    selectedSongId.value = importedSong.id
+                    onResult(true, importedSong.title)
+                } else {
+                    onResult(false, "")
+                }
+            } catch (e: Exception) {
+                onResult(false, e.message ?: "")
             }
         }
     }
