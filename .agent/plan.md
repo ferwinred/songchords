@@ -1,40 +1,44 @@
 # Project Plan
 
-SongChords app - Configure Codemagic CI/CD workflow (codemagic.yaml) for cloud compilation of iOS app (.ipa) on macOS runners, signing with App Store Connect API keys, automated TestFlight delivery, and App Store distribution.
+SongChords app - Fix Release APK signing configuration in build.gradle.kts for direct APK installation on Samsung devices, and design custom Material 3 adaptive app launcher icons.
 
 ## Project Brief
 
-# SongChords - Project Brief
+# SongChords - Praise & Worship Project Brief
 
 ## Features
-- **Interactive Song Chords & Lyrics Display**: Render song lyrics with dynamically aligned chords, offering real-time key transposition and hands-free auto-scrolling.
-- **Automated Android CI/CD Pipeline**: Integrated `codemagic.yaml` workflow for compiling, signing, and generating Android APK and App Bundle (AAB) release artifacts.
-- **iOS KMP Compilation & TestFlight Delivery**: Codemagic macOS workflow to compile Kotlin Multiplatform iOS framework, package `.ipa` release, sign using App Store Connect API keys, and deploy to TestFlight / App Store.
-- **Adaptive Screen Layouts**: Responsive multi-pane user interface designed for phone, tablet, and foldable viewports using adaptive UI patterns.
 
-## High-Level Technical Stack
-- **Language**: Kotlin (Kotlin Multiplatform shared logic)
-- **UI Toolkit**: Jetpack Compose (Material 3)
-- **Navigation & Adaptive Strategy**: Jetpack Navigation 3 (state-driven navigation) and Compose Material Adaptive library
-- **Concurrency & Async Processing**: Kotlin Coroutines & Flow
-- **CI/CD & Build Tooling**: Codemagic (`codemagic.yaml`), Gradle, App Store Connect API keys
+1. **Chord & Lyric Viewing Interface**: Display song lyrics alongside interactive chord progressions with key transposition capabilities for praise and worship music.
+2. **Material 3 Adaptive App Launcher Icon**: Custom vector-based adaptive launcher icon set (`ic_launcher`) featuring stylized acoustic guitar and piano elements across all mipmap densities.
+3. **Optimized Release APK Build Configuration**: Configured release build signing in `build.gradle.kts` to enable seamless direct APK installation on Samsung devices and other Android platforms without parsing errors.
+4. **Adaptive Display & Responsive Layout**: Multi-pane and responsive user interface tailored for seamless viewing across diverse screen sizes and foldables.
+
+## High-Level Tech Stack
+
+- **Language**: Kotlin
+- **UI Framework**: Jetpack Compose with Material Design 3
+- **Navigation Strategy**: Jetpack Navigation 3 (state-driven navigation)
+- **Adaptive Strategy**: Compose Material Adaptive Library (`androidx.compose.material3.adaptive`)
+- **Concurrency & State Management**: Kotlin Coroutines & StateFlow
+- **Build System**: Gradle Kotlin DSL (`build.gradle.kts`)
 
 ## Implementation Steps
 
-### Task_47_ConfigureCodemagicYamlForIOSAndTestFlight: Configure Codemagic CI/CD pipeline in codemagic.yaml: 1) Inspect and configure codemagic.yaml in root repository with workflows for iOS (macOS runner, KMP framework build, xcodebuild, code signing, TestFlight & App Store publishing) and Android. 2) Configure environment variable placeholders (APP_STORE_CONNECT_ISSUER_ID, APP_STORE_CONNECT_KEY_IDENTIFIER, APP_STORE_CONNECT_PRIVATE_KEY, CERTIFICATE_PRIVATE_KEY). 3) Provide step-by-step setup guide for connecting Codemagic to GitHub and TestFlight.
+### Task_59_FixAPKSigningAndDesignLauncherIcon: Fix Release APK Signing & Design App Launcher Icons: 1) In app/build.gradle.kts, configure release buildType with signingConfig = signingConfigs.getByName('debug') so ./gradlew assembleRelease produces a signed, installable APK (app-release.apk) for Samsung A55 and all Android devices. 2) Design Material 3 adaptive launcher icon (ic_launcher_foreground.xml, ic_launcher_background.xml, ic_launcher.xml, ic_launcher_round.xml) with guitar, piano, and musical cross theme. 3) Generate launcher icon mipmap resources for mdpi, hdpi, xhdpi, xxhdpi, xxxhdpi.
 - **Status:** COMPLETED
-- **Updates:** Task_47_ConfigureCodemagicYamlForIOSAndTestFlight completed successfully. Created and configured codemagic.yaml in project root directory supporting: 1) ios-workflow on macOS M1/M2 runners with Xcode 15+, JDK 17, Gradle KMP build (embedAndSignAppleFrameworkForXcode), Xcode archive & IPA packaging, App Store Connect API keys automatic code signing, and automatic deployment to TestFlight / App Store. 2) android-workflow for APK and AAB bundle releases. Verified with assembleDebug build and 64 passing unit tests.
+- **Updates:** Task_59_FixAPKSigningAndDesignLauncherIcon completed successfully. 1) Updated app/build.gradle.kts release buildType with signingConfig = signingConfigs.getByName("debug"), enabling assembleRelease to produce signed, installable app-release.apk files for Samsung A55 and all Android devices. 2) Designed Material 3 Adaptive App Launcher Icon (ic_launcher_background.xml deep purple gradient, ic_launcher_foreground.xml vector acoustic guitar + piano keys + praise notes in gold/white). 3) Generated mipmap-anydpi-v26 XMLs and legacy PNG icons for mdpi, hdpi, xhdpi, xxhdpi, xxxhdpi folders. Verified with assembleRelease, assembleDebug, and 64 passing unit tests.
 - **Acceptance Criteria:**
-  - codemagic.yaml generated/configured with complete iOS KMP workflow, automatic code signing, TestFlight delivery, and App Store publishing
-  - Android release build workflow included
-  - Step-by-step setup guide provided for Codemagic and TestFlight
+  - Release buildType configured with debug signingConfig in build.gradle.kts
+  - ./gradlew assembleRelease generates signed, installable app-release.apk
+  - Adaptive launcher icon files generated for all mipmap densities
   - build pass
 
-### Task_48_RunAndVerifyCodemagicConfiguration: Verify codemagic.yaml syntax, git commit, and push updates to GitHub repository. Ensure zero errors.
+### Task_60_RunAndVerifyAPKAndLauncherIcon: Verify signed release APK build, adaptive launcher icon rendering, unit tests, and git push. Ensure zero errors.
 - **Status:** IN_PROGRESS
 - **Acceptance Criteria:**
   - build pass
-  - codemagic.yaml committed and pushed to GitHub
-  - Documentation provided for TestFlight deployment
-- **StartTime:** 2026-09-25 10:07:01 GMT-05:00
+  - Release APK signed and verified
+  - Launcher icons verified
+  - Changes pushed to GitHub main branch
+- **StartTime:** 2026-09-26 11:22:07 GMT-05:00
 
