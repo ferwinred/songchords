@@ -1,43 +1,43 @@
 # Project Plan
 
-SongChords app - Unify TopAppBar (eliminate duplicate stacked headers), make Bottom Navigation Bar icon-only and keyboard-aware, and reorganize Song Editor metadata fields (full-width Tags field, 2-column Key/Time Sig & Tempo/Notes).
+SongChords app - Implement single '#' comment syntax (# Comentario), docked floating quick helper toolbar in editor, smart chord/section/comment autocomplete, and remove duplicate viewer footer bar.
 
 ## Project Brief
 
-# SongChords - Project Brief
+# Project Brief: SongChords App
 
 ## Features
-- **Unified Top Navigation Header**: A single, non-stacked `TopAppBar` across all screens featuring a Dark Navy background (`#020873` Light / `#1E2558` Dark), single-line title with ellipsis truncation ("Acordes Cristianos y Alabanzas"), and icon-only action buttons (Cloud, Tools, Import, Theme, Language).
-- **Keyboard-Aware Icon-Only Bottom Navigation**: Clean, icon-only bottom navigation bar (Songs 🎵, Tuner 🎸, Chord Library 🎹, New Song ➕) without text labels that automatically hides when the soft keyboard is active to prevent vertical screen squashing.
-- **Structured Song Editor Form**: Reorganized metadata card UI featuring spacious full-width rows (Title, Artist, Tags) and 2-column grid rows (Key & Time Signature, Tempo BPM & Notes/Comments) ensuring zero element clipping or squashing.
-- **Song & Chord Library View**: Centralized screen layout for managing, editing, and displaying Christian songs and chord sheets.
+1. **Single '#' Comment Syntax**: Strictly supports `#` for comment lines (e.g., `# Tocar suave con piano`). Renders comments with distinct italicized info highlighting in the editor and as styled callout badges with info icons in the song viewer.
+2. **Docked Floating Quick Helper Toolbar**: A toolbar docked directly above the editor text field for 1-tap insertion of common sections (`[Intro]`, `[Coro]`), key chords (`[G]`, `[C]`), and comment prefixes (`#`).
+3. **Smart Autocomplete**: Context-aware autocomplete suggestion chips triggered when typing `[` or `#` for instant chord, section, and comment insertion with auto-closing bracket handling.
+4. **Streamlined Song Viewer Layout**: Clean and clutter-free song viewing experience achieved by removing duplicate floating footer bars and maintaining a clean fixed Bottom Navigation Bar.
 
-## High-Level Technical Stack
+## High-Level Tech Stack
 - **Language**: Kotlin
 - **UI Framework**: Jetpack Compose (Material 3)
-- **Navigation Strategy**: Jetpack Navigation 3 (state-driven navigation)
-- **Adaptive Layouts**: Compose Material Adaptive library (`androidx.compose.material3.adaptive`)
-- **Async & State Management**: Kotlin Coroutines & StateFlow
-- **System Insets Handling**: Compose Window Insets (`WindowInsets.ime` for soft keyboard reactivity)
+- **Navigation Strategy**: Jetpack Navigation 3 (State-driven)
+- **Adaptive Strategy**: Compose Material Adaptive Library
+- **Architecture & Concurrency**: MVVM (ViewModel, StateFlow) & Kotlin Coroutines
 
 ## Implementation Steps
-**Total Duration:** 16m 50s
+**Total Duration:** 2m 33s
 
-### Task_69_FixTopBarBottomBarAndSongEditorLayout: Fix 3 Critical UI/UX Bugs from Screenshots: 1) Unify TopAppBar into a SINGLE non-stacked header bar across all screens (eliminate duplicate purple top bar), with brand Dark Navy background (#020873 Light / #1E2558 Dark), single-line title ('Acordes Cristianos y Alabanzas'), and icon-only action buttons. 2) Make Bottom Navigation Bar icon-only without text labels (label = null, alwaysShowLabel = false) and hide when soft keyboard is open (WindowInsets.ime). 3) Reorganize Song Editor metadata card into full-width Title, Artist, Tags, and 2-column Key/Time Sig & Tempo/Notes fields.
+### Task_71_ImplementSingleHashCommentSyntaxAndDockedEditorToolbar: Implement Single '#' Comment Syntax, Docked Floating Editor Toolbar, Smart Autocomplete, and Streamlined Viewer: 1) In ChordParser.kt, parse lines starting with '#' (e.g. '# Tocar suave con piano') into ChordLyricsLine.Comment. 2) In SongDetailPane.kt, render '#' comment lines as distinct italicized callout badges with Info icon and tertiaryContainer background. Remove duplicate floating footer bar in SongDetailPane.kt. 3) In SongEditorScreen.kt, dock the Quick Helper Toolbar (# Comentario, [Intro], [Coro], [G], [C], [D], [Em]) directly above the editor text field so tools stay floating/docked at 1-tap while typing. 4) Add smart autocomplete chips when typing '[' or '#' in editor with auto-closing bracket ']'.
 - **Status:** COMPLETED
-- **Updates:** Task_69_FixTopBarBottomBarAndSongEditorLayout completed successfully. Resolved 3 critical UI/UX issues from user screenshots: 1) Unified TopAppBar into a single clean non-stacked header bar across all screens with single-line title ('Acordes Cristianos y Alabanzas' with TextOverflow.Ellipsis) and Brand Dark Navy background (#020873 Light / #1E2558 Dark). 2) Made Bottom Navigation Bar icon-only (label = null, alwaysShowLabel = false) and keyboard-aware (hides automatically when WindowInsets.ime soft keyboard is active). 3) Reorganized Song Editor metadata card into 5 spacious rows (full-width Title, Artist, Tags, and 2-column Key/Time Sig & Tempo/Notes fields). Verified with assembleDebug build and 66 passing unit tests.
+- **Updates:** Task_71_ImplementSingleHashCommentSyntaxAndDockedEditorToolbar completed successfully. Implemented 4 key features: 1) Single '#' comment syntax: ChordParser parses lines starting with '#' (e.g. '# Tocar suave con piano') into ChordLyricsLine.Comment and renders them in SongDetailPane as distinct italicized callout badges with Info icon and tertiaryContainer background. 2) Removed duplicate floating footer bar in SongDetailPane.kt, leaving the fixed Bottom Navigation Bar clean and un-obscured. 3) Docked Floating Quick Helper Toolbar in SongEditorScreen.kt directly above the editor text field with '# Comentario' button, section chips ([Intro], [Coro]), and key chord chips ([G], [C]). 4) Smart autocomplete & auto-closing brackets in SongEditorScreen when typing '[' or '#' with 1-tap insertion. Verified with assembleDebug build and 67 passing unit tests.
 - **Acceptance Criteria:**
-  - TopAppBar is unified into a single clean header without double stacking
-  - Bottom Navigation Bar is icon-only and hides when soft keyboard is active
-  - Song Editor Tags field has full-width layout and never squashes or wraps placeholder text awkwardly
+  - Comment lines starting with '#' parsed and rendered as distinct italicized callout badges
+  - Duplicate floating footer bar removed in SongDetailPane.kt
+  - SongEditorScreen has docked Floating Quick Helper Toolbar above text field
+  - Smart autocomplete suggestions triggered when typing '[' or '#' in editor
   - build pass
 
-### Task_70_RunAndVerifyUIFixesScreenshots: Verify unified top bar, icon-only/keyboard-aware bottom bar, and reorganized song editor on emulator with critic_agent. Ensure zero crashes.
+### Task_72_RunAndVerifySingleHashCommentsAndDockedEditorToolbar: Verify '#' comment syntax, docked editor toolbar, smart autocomplete, and streamlined viewer layout on emulator with critic_agent. Ensure zero crashes.
 - **Status:** COMPLETED
-- **Updates:** Task_70_RunAndVerifyUIFixesScreenshots completed successfully. Verified on device/emulator with 0 crashes. Confirmed all screenshot UI fixes: 1) Native purple ActionBar disabled in themes.xml (parent=NoActionBar), leaving strictly ONE Compose TopAppBar with crisp white title 'Acordes Cristianos y Alabanzas' on Brand Dark Navy background (#020873 / #1E2558). 2) Bottom Navigation Bar is icon-only without text labels (label = null, alwaysShowLabel = false) and keyboard-aware (hides automatically when soft keyboard is active). 3) Reorganized Song Editor metadata card with 2-column rows for Key/Time Sig & Tempo/Notes, full-width Tags/Etiquetas field at the bottom, and 24.dp bottom padding. All 66 unit tests pass.
+- **Updates:** Task_72_RunAndVerifySingleHashCommentsAndDockedEditorToolbar completed successfully. Verified on emulator with 0 crashes. Confirmed all requested features: 1) Removed duplicate floating footer bar in Song Viewer, leaving fixed Bottom Navigation Bar clean and un-obscured. 2) Docked Quick Tools Toolbar in Song Editor directly above the text field for 1-tap insertion while typing. 3) Single '#' comment syntax (# Tocar suave con piano) parsed and rendered in Vista Previa as a distinct italicized callout badge with Info icon and tertiaryContainer background. 4) Smart autocomplete suggestion chips triggered when typing '[' or '#' with auto-closing bracket ']' handling. All 67 unit tests pass cleanly.
 - **Acceptance Criteria:**
   - build pass
   - app does not crash
-  - Unified top bar, icon-only bottom bar, and song editor layout verified clean on emulator
-- **Duration:** 16m 50s
+  - Single '#' comments, docked editor toolbar, smart autocomplete, and streamlined viewer verified clean on emulator
+- **Duration:** 2m 33s
 

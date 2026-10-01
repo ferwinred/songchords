@@ -133,6 +133,14 @@ class CoreEngineTest {
         val curlyCComment = ChordParser.parseLine("{c: Solo de guitarra}")
         assertTrue(curlyCComment is ChordLyricsLine.Comment)
         assertEquals("Solo de guitarra", (curlyCComment as ChordLyricsLine.Comment).comment)
+
+        val singleHashComment1 = ChordParser.parseLine("# Tocar suave con piano")
+        assertTrue(singleHashComment1 is ChordLyricsLine.Comment)
+        assertEquals("Tocar suave con piano", (singleHashComment1 as ChordLyricsLine.Comment).comment)
+
+        val singleHashComment2 = ChordParser.parseLine("# Nota: Entrada con batería")
+        assertTrue(singleHashComment2 is ChordLyricsLine.Comment)
+        assertEquals("Nota: Entrada con batería", (singleHashComment2 as ChordLyricsLine.Comment).comment)
     }
 
     @Test

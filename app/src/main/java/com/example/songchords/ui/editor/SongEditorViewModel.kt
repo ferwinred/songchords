@@ -16,6 +16,19 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.util.UUID
 
+data class AutocompleteSuggestion(
+    val label: String,
+    val textToInsert: String,
+    val isBracket: Boolean = true
+)
+
+data class AutocompleteState(
+    val isBracket: Boolean,
+    val triggerIndex: Int,
+    val typedPrefix: String,
+    val suggestions: List<AutocompleteSuggestion>
+)
+
 data class SongEditorUiState(
     val songId: String? = null,
     val isNewSong: Boolean = true,
@@ -64,6 +77,92 @@ data class SongEditorUiState(
                 "Am" -> listOf("Am", "Bdim", "C", "Dm", "Em", "F", "G", "E7")
                 else -> listOf("C", "Dm", "Em", "F", "G", "Am", "G7", "Bb", "D", "E")
             }
+        }
+
+    val autocompleteState: AutocompleteState?
+        get() {
+            val text = contentTextFieldValue.text
+            val cursorPos = contentTextFieldValue.selection.start
+            if (cursorPos <= 0 || cursorPos > text.length) return null
+
+            val lineStart = text.lastIndexOf('\n', cursorPos - 1).let { if (it == -1) 0 else it + 1 }
+            val textOnLine = text.substring(lineStart, cursorPos)
+
+            // Check for '[' trigger
+            val lastBracket = textOnLine.lastIndexOf('[')
+            if (lastBracket != -1) {
+                val closingBracket = textOnLine.indexOf(']', lastBracket)
+                if (closingBracket == -1) {
+                    val globalBracketIdx = lineStart + lastBracket
+                    val prefix = textOnLine.substring(lastBracket + 1)
+
+                    val chordSuggestions = quickChordsForKey.map { chord ->
+                        AutocompleteSuggestion(
+                            label = "$chord]",
+                            textToInsert = "$chord]",
+                            isBracket = true
+                        )
+                    }
+                    val sectionSuggestions = listOf("Intro", "Estrofa", "Coro", "Puente", "Final", "Verse 1", "Chorus", "Bridge", "Outro").map { sec ->
+                        AutocompleteSuggestion(
+                            label = "$sec]",
+                            textToInsert = "$sec]",
+                            isBracket = true
+                        )
+                    }
+
+                    val allBracketSuggestions = (chordSuggestions + sectionSuggestions).filter {
+                        prefix.isEmpty() || it.label.removeSuffix("]").contains(prefix, ignoreCase = true)
+                    }
+
+                    if (allBracketSuggestions.isNotEmpty()) {
+                        return AutocompleteState(
+                            isBracket = true,
+                            triggerIndex = globalBracketIdx,
+                            typedPrefix = prefix,
+                            suggestions = allBracketSuggestions
+                        )
+                    }
+                }
+            }
+
+            // Check for '#' trigger
+            val lastHash = textOnLine.lastIndexOf('#')
+            if (lastHash != -1) {
+                val globalHashIdx = lineStart + lastHash
+                val prefix = textOnLine.substring(lastHash + 1).trimStart()
+
+                val commentTemplates = listOf(
+                    "Tocar suave con piano",
+                    "Nota: Entrada con batería",
+                    "Nota: ",
+                    "Solo de guitarra",
+                    "Repetir coro",
+                    "Usar Capo en traste 2"
+                ).map { comment ->
+                    val textToInsert = if (comment.startsWith(" ")) comment else " $comment"
+                    AutocompleteSuggestion(
+                        label = comment.trim(),
+                        textToInsert = textToInsert,
+                        isBracket = false
+                    )
+                }
+
+                val filteredComments = commentTemplates.filter {
+                    prefix.isEmpty() || it.label.contains(prefix, ignoreCase = true)
+                }
+
+                if (filteredComments.isNotEmpty()) {
+                    return AutocompleteState(
+                        isBracket = false,
+                        triggerIndex = globalHashIdx,
+                        typedPrefix = prefix,
+                        suggestions = filteredComments
+                    )
+                }
+            }
+
+            return null
         }
 }
 
@@ -187,6 +286,28 @@ class SongEditorViewModel(
         }
     }
 
+    fun insertCommentPrefix() {
+        val currentTFV = _uiState.value.contentTextFieldValue
+        val textToInsert = "# "
+        val currentText = currentTFV.text
+        val selection = currentTFV.selection
+
+        val newText = StringBuilder(currentText)
+            .insert(selection.start, textToInsert)
+            .toString()
+
+        val newCursorPos = selection.start + textToInsert.length
+
+        _uiState.update {
+            it.copy(
+                contentTextFieldValue = TextFieldValue(
+                    text = newText,
+                    selection = TextRange(newCursorPos)
+                )
+            )
+        }
+    }
+
     fun insertCommentTag(commentText: String = "...") {
         val currentTFV = _uiState.value.contentTextFieldValue
         val tagToInsert = "[Comentario: $commentText]"
@@ -198,6 +319,36 @@ class SongEditorViewModel(
             .toString()
 
         val newCursorPos = selection.start + tagToInsert.length
+
+        _uiState.update {
+            it.copy(
+                contentTextFieldValue = TextFieldValue(
+                    text = newText,
+                    selection = TextRange(newCursorPos)
+                )
+            )
+        }
+    }
+
+    fun applyAutocompleteSuggestion(suggestion: AutocompleteSuggestion) {
+        val state = _uiState.value.autocompleteState ?: return
+        val currentTFV = _uiState.value.contentTextFieldValue
+        val text = currentTFV.text
+        val cursorPos = currentTFV.selection.start
+
+        val triggerIdx = state.triggerIndex
+        if (triggerIdx >= text.length) return
+
+        val replaceStart = triggerIdx + 1
+        val suffixStartsWithBracket = state.isBracket && text.substring(cursorPos).startsWith("]")
+        val suffixStartsWithSpace = !state.isBracket && text.substring(cursorPos).startsWith(" ")
+        val replaceEnd = if (suffixStartsWithBracket || suffixStartsWithSpace) cursorPos + 1 else cursorPos
+
+        val newText = StringBuilder(text)
+            .replace(replaceStart, replaceEnd, suggestion.textToInsert)
+            .toString()
+
+        val newCursorPos = replaceStart + suggestion.textToInsert.length
 
         _uiState.update {
             it.copy(

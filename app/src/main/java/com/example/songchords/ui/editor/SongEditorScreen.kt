@@ -4,10 +4,15 @@ import android.net.Uri
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.expandVertically
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.shrinkVertically
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
-import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -15,6 +20,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
@@ -22,7 +29,6 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.ArrowBack
 import androidx.compose.material.icons.automirrored.rounded.Comment
-import androidx.compose.ui.graphics.Color
 import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material.icons.rounded.Check
 import androidx.compose.material.icons.rounded.EditNote
@@ -45,6 +51,8 @@ import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.ExposedDropdownMenuDefaults
+import androidx.compose.material3.FilterChip
+import androidx.compose.material3.FilterChipDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -57,6 +65,7 @@ import androidx.compose.material3.SegmentedButtonDefaults
 import androidx.compose.material3.SingleChoiceSegmentedButtonRow
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
@@ -69,6 +78,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontFamily
@@ -421,120 +431,7 @@ fun SongEditorScreen(
                             }
                         }
 
-                        // Card 2: Quick Insertion Helper Toolbar (Herramientas Rápidas)
-                        OutlinedCard(
-                            modifier = Modifier.fillMaxWidth(),
-                            shape = RoundedCornerShape(16.dp),
-                            colors = CardDefaults.outlinedCardColors(
-                                containerColor = MaterialTheme.colorScheme.surfaceContainerLow
-                            )
-                        ) {
-                            Column(
-                                modifier = Modifier.padding(16.dp),
-                                verticalArrangement = Arrangement.spacedBy(10.dp)
-                            ) {
-                                // Section Header
-                                Row(
-                                    verticalAlignment = Alignment.CenterVertically,
-                                    horizontalArrangement = Arrangement.spacedBy(8.dp)
-                                ) {
-                                    Icon(
-                                        imageVector = Icons.Rounded.FlashOn,
-                                        contentDescription = null,
-                                        tint = MaterialTheme.colorScheme.primary,
-                                        modifier = Modifier.size(20.dp)
-                                    )
-                                    Text(
-                                        text = stringResource(R.string.section_quick_tools),
-                                        style = MaterialTheme.typography.titleMedium,
-                                        fontWeight = FontWeight.Bold,
-                                        color = MaterialTheme.colorScheme.primary
-                                    )
-                                }
-
-                                // Secciones Row
-                                Text(
-                                    text = stringResource(R.string.section_sections_label),
-                                    style = MaterialTheme.typography.labelMedium,
-                                    fontWeight = FontWeight.Bold,
-                                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                                )
-
-                                FlowRow(
-                                    horizontalArrangement = Arrangement.spacedBy(6.dp),
-                                    verticalArrangement = Arrangement.spacedBy(6.dp)
-                                ) {
-                                    listOf("Intro", "Estrofa", "Coro", "Puente", "Final", "Verse 1", "Verse 2", "Chorus", "Bridge", "Outro").forEach { section ->
-                                        AssistChip(
-                                            onClick = { viewModel.insertSectionHeader(section) },
-                                            label = {
-                                                Text(
-                                                    text = "[$section]",
-                                                    style = MaterialTheme.typography.labelSmall,
-                                                    fontWeight = FontWeight.Medium
-                                                )
-                                            }
-                                        )
-                                    }
-                                }
-
-                                // Acordes del Tono Row
-                                Text(
-                                    text = stringResource(R.string.section_key_chords_label),
-                                    style = MaterialTheme.typography.labelMedium,
-                                    fontWeight = FontWeight.Bold,
-                                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                                )
-
-                                FlowRow(
-                                    horizontalArrangement = Arrangement.spacedBy(6.dp),
-                                    verticalArrangement = Arrangement.spacedBy(6.dp)
-                                ) {
-                                    uiState.quickChordsForKey.forEach { chord ->
-                                        AssistChip(
-                                            onClick = { viewModel.insertChordTag(chord) },
-                                            label = {
-                                                Text(
-                                                    text = "[$chord]",
-                                                    style = MaterialTheme.typography.labelSmall,
-                                                    fontWeight = FontWeight.Bold
-                                                )
-                                            },
-                                            colors = AssistChipDefaults.assistChipColors(
-                                                containerColor = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.85f),
-                                                labelColor = MaterialTheme.colorScheme.onPrimaryContainer
-                                            )
-                                        )
-                                    }
-
-                                    AssistChip(
-                                        onClick = { showCustomChordDialog = true },
-                                        label = { Text(stringResource(R.string.add_chord), style = MaterialTheme.typography.labelSmall) },
-                                        leadingIcon = {
-                                            Icon(
-                                                imageVector = Icons.Rounded.Add,
-                                                contentDescription = null,
-                                                modifier = Modifier.size(14.dp)
-                                            )
-                                        }
-                                    )
-
-                                    AssistChip(
-                                        onClick = { viewModel.insertCommentTag("...") },
-                                        label = { Text(stringResource(R.string.insert_comment), style = MaterialTheme.typography.labelSmall) },
-                                        leadingIcon = {
-                                            Icon(
-                                                imageVector = Icons.Rounded.Add,
-                                                contentDescription = null,
-                                                modifier = Modifier.size(14.dp)
-                                            )
-                                        }
-                                    )
-                                }
-                            }
-                        }
-
-                        // Card 3: Spacious Editor Container (Letra y Acordes)
+                        // Card 2: Spacious Editor Container (Letra y Acordes)
                         OutlinedCard(
                             modifier = Modifier.fillMaxWidth(),
                             shape = RoundedCornerShape(16.dp),
@@ -570,6 +467,177 @@ fun SongEditorScreen(
                                     style = MaterialTheme.typography.bodySmall,
                                     color = MaterialTheme.colorScheme.onSurfaceVariant
                                 )
+
+                                // Docked Floating Quick Helper Toolbar & Smart Autocomplete Bar
+                                Surface(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    shape = RoundedCornerShape(12.dp),
+                                    color = MaterialTheme.colorScheme.surfaceContainerHigh,
+                                    tonalElevation = 4.dp,
+                                    shadowElevation = 2.dp,
+                                    border = BorderStroke(1.dp, MaterialTheme.colorScheme.primary.copy(alpha = 0.3f))
+                                ) {
+                                    Column(
+                                        modifier = Modifier.padding(8.dp),
+                                        verticalArrangement = Arrangement.spacedBy(6.dp)
+                                    ) {
+                                        // 1. Smart Autocomplete Row (Visible when typing '[' or '#')
+                                        val autocompleteState = uiState.autocompleteState
+                                        AnimatedVisibility(
+                                            visible = autocompleteState != null,
+                                            enter = fadeIn() + expandVertically(),
+                                            exit = fadeOut() + shrinkVertically()
+                                        ) {
+                                            autocompleteState?.let { state ->
+                                                Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                                                    Row(
+                                                        verticalAlignment = Alignment.CenterVertically,
+                                                        horizontalArrangement = Arrangement.spacedBy(6.dp)
+                                                    ) {
+                                                        Icon(
+                                                            imageVector = Icons.Rounded.FlashOn,
+                                                            contentDescription = null,
+                                                            tint = MaterialTheme.colorScheme.primary,
+                                                            modifier = Modifier.size(16.dp)
+                                                        )
+                                                        Text(
+                                                            text = if (state.isBracket) stringResource(R.string.autocomplete_bracket_title) else stringResource(R.string.autocomplete_comment_title),
+                                                            style = MaterialTheme.typography.labelSmall,
+                                                            fontWeight = FontWeight.Bold,
+                                                            color = MaterialTheme.colorScheme.primary
+                                                        )
+                                                    }
+
+                                                    LazyRow(
+                                                        horizontalArrangement = Arrangement.spacedBy(6.dp),
+                                                        verticalAlignment = Alignment.CenterVertically
+                                                    ) {
+                                                        items(state.suggestions) { suggestion ->
+                                                            FilterChip(
+                                                                selected = true,
+                                                                onClick = { viewModel.applyAutocompleteSuggestion(suggestion) },
+                                                                label = {
+                                                                    Text(
+                                                                        text = suggestion.label,
+                                                                        style = MaterialTheme.typography.labelMedium,
+                                                                        fontWeight = FontWeight.Bold
+                                                                    )
+                                                                },
+                                                                colors = FilterChipDefaults.filterChipColors(
+                                                                    selectedContainerColor = MaterialTheme.colorScheme.primaryContainer,
+                                                                    selectedLabelColor = MaterialTheme.colorScheme.onPrimaryContainer
+                                                                )
+                                                            )
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+
+                                        // 2. Docked Herramientas Rápidas Toolbar
+                                        Row(
+                                            verticalAlignment = Alignment.CenterVertically,
+                                            horizontalArrangement = Arrangement.spacedBy(6.dp)
+                                        ) {
+                                            Icon(
+                                                imageVector = Icons.Rounded.FlashOn,
+                                                contentDescription = null,
+                                                tint = MaterialTheme.colorScheme.primary,
+                                                modifier = Modifier.size(16.dp)
+                                            )
+                                            Text(
+                                                text = stringResource(R.string.section_quick_tools),
+                                                style = MaterialTheme.typography.labelSmall,
+                                                fontWeight = FontWeight.Bold,
+                                                color = MaterialTheme.colorScheme.primary
+                                            )
+                                        }
+
+                                        LazyRow(
+                                            horizontalArrangement = Arrangement.spacedBy(6.dp),
+                                            verticalAlignment = Alignment.CenterVertically
+                                        ) {
+                                            // # Comentario Button
+                                            item {
+                                                AssistChip(
+                                                    onClick = { viewModel.insertCommentPrefix() },
+                                                    label = {
+                                                        Text(
+                                                            text = "# Comentario",
+                                                            style = MaterialTheme.typography.labelSmall,
+                                                            fontWeight = FontWeight.Bold
+                                                        )
+                                                    },
+                                                    leadingIcon = {
+                                                        Icon(
+                                                            imageVector = Icons.AutoMirrored.Rounded.Comment,
+                                                            contentDescription = null,
+                                                            modifier = Modifier.size(14.dp)
+                                                        )
+                                                    },
+                                                    colors = AssistChipDefaults.assistChipColors(
+                                                        containerColor = MaterialTheme.colorScheme.tertiaryContainer,
+                                                        labelColor = MaterialTheme.colorScheme.onTertiaryContainer,
+                                                        leadingIconContentColor = MaterialTheme.colorScheme.onTertiaryContainer
+                                                    )
+                                                )
+                                            }
+
+                                            // Section Chips: [Intro], [Estrofa], [Coro], [Puente], [Final]
+                                            items(listOf("Intro", "Estrofa", "Coro", "Puente", "Final")) { section ->
+                                                AssistChip(
+                                                    onClick = { viewModel.insertSectionHeader(section) },
+                                                    label = {
+                                                        Text(
+                                                            text = "[$section]",
+                                                            style = MaterialTheme.typography.labelSmall,
+                                                            fontWeight = FontWeight.Medium
+                                                        )
+                                                    }
+                                                )
+                                            }
+
+                                            // Key Chord Chips: [G], [Am], [C], [D], [Em]...
+                                            items(uiState.quickChordsForKey) { chord ->
+                                                AssistChip(
+                                                    onClick = { viewModel.insertChordTag(chord) },
+                                                    label = {
+                                                        Text(
+                                                            text = "[$chord]",
+                                                            style = MaterialTheme.typography.labelSmall,
+                                                            fontWeight = FontWeight.Bold
+                                                        )
+                                                    },
+                                                    colors = AssistChipDefaults.assistChipColors(
+                                                        containerColor = MaterialTheme.colorScheme.primaryContainer,
+                                                        labelColor = MaterialTheme.colorScheme.onPrimaryContainer
+                                                    )
+                                                )
+                                            }
+
+                                            // + Acorde Button
+                                            item {
+                                                AssistChip(
+                                                    onClick = { showCustomChordDialog = true },
+                                                    label = {
+                                                        Text(
+                                                            text = stringResource(R.string.add_chord),
+                                                            style = MaterialTheme.typography.labelSmall,
+                                                            fontWeight = FontWeight.Bold
+                                                        )
+                                                    },
+                                                    leadingIcon = {
+                                                        Icon(
+                                                            imageVector = Icons.Rounded.Add,
+                                                            contentDescription = null,
+                                                            modifier = Modifier.size(14.dp)
+                                                        )
+                                                    }
+                                                )
+                                            }
+                                        }
+                                    }
+                                }
 
                                 OutlinedTextField(
                                     value = uiState.contentTextFieldValue,

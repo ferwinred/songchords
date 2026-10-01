@@ -31,6 +31,11 @@ object ChordParser {
             return ChordLyricsLine.EmptyLine
         }
 
+        if (trimmed.startsWith("#")) {
+            val commentText = trimmed.removePrefix("#").trim()
+            return ChordLyricsLine.Comment(commentText)
+        }
+
         val commentMatch = COMMENT_REGEX.find(trimmed)
         if (commentMatch != null) {
             val commentText = commentMatch.groupValues[2].trim().removeSuffix("]").removeSuffix("}").trim()

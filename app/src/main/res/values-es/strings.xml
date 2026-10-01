@@ -127,6 +127,8 @@
     <string name="insert_custom_chord_title">Insertar Etiqueta de Acorde</string>
     <string name="label_chord_symbol">Símbolo de Acorde ej. F#/A#, Cadd2, G7</string>
     <string name="insert">Insertar</string>
+    <string name="autocomplete_bracket_title">Sugerencias de Acordes / Secciones</string>
+    <string name="autocomplete_comment_title">Sugerencias de Comentarios</string>
     <string name="error_enter_title">Por favor ingrese el título de la canción.</string>
     <string name="error_enter_lyrics">Por favor ingrese la letra de la canción con acordes.</string>
     <string name="error_song_not_found">Canción no encontrada.</string>

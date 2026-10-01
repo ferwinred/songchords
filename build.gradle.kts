@@ -5,4 +5,5 @@ plugins {
     alias(libs.plugins.google.devtools.ksp) apply false
     alias(libs.plugins.jetbrains.kotlin.plugin.serialization) apply false
     id("org.jetbrains.kotlin.multiplatform") version "2.2.10" apply false
+    alias(libs.plugins.google.gms.google.services) apply false
 }

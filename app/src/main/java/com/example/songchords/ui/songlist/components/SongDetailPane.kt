@@ -288,7 +288,7 @@ fun SongDetailPane(
                     }
                 }
                 .verticalScroll(scrollState)
-                .padding(start = 16.dp, top = 16.dp, end = 16.dp, bottom = 130.dp)
+                .padding(start = 16.dp, top = 16.dp, end = 16.dp, bottom = 24.dp)
         ) {
             if (showHeader) {
                 // Top Header Row with Title, Artist, Actions & Language Selector
@@ -317,6 +317,14 @@ fun SongDetailPane(
                             text = song.artist,
                             style = MaterialTheme.typography.titleMedium,
                             color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                    }
+
+                    IconButton(onClick = { isControlsExpanded = !isControlsExpanded }) {
+                        Icon(
+                            imageVector = Icons.Rounded.Tune,
+                            contentDescription = stringResource(R.string.performance_options),
+                            tint = if (isControlsExpanded) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant
                         )
                     }
 
@@ -609,140 +617,6 @@ fun SongDetailPane(
                                 }
                             }
                         }
-                    }
-                }
-            }
-        }
-
-        // Child 2 (Sticky Floating Controls Bar)
-        Box(
-            modifier = Modifier
-                .align(Alignment.BottomCenter)
-                .padding(16.dp)
-        ) {
-            Surface(
-                shape = RoundedCornerShape(28.dp),
-                color = MaterialTheme.colorScheme.surfaceContainerHigh.copy(alpha = 0.95f),
-                shadowElevation = 6.dp,
-                tonalElevation = 6.dp
-            ) {
-                Row(
-                    modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(6.dp)
-                ) {
-                    // Transposition Quick Buttons: [-1 Tono], Key Badge, [+1 Tono]
-                    FilledTonalButton(
-                        onClick = { transpositionSemitones -= 2 },
-                        shape = RoundedCornerShape(16.dp),
-                        contentPadding = PaddingValues(horizontal = 8.dp, vertical = 4.dp),
-                        modifier = Modifier.height(36.dp)
-                    ) {
-                        Text(
-                            text = stringResource(R.string.transpose_minus_one_tone),
-                            style = MaterialTheme.typography.labelMedium,
-                            fontWeight = FontWeight.Bold
-                        )
-                    }
-
-                    Surface(
-                        shape = RoundedCornerShape(8.dp),
-                        color = MaterialTheme.colorScheme.primaryContainer,
-                        contentColor = MaterialTheme.colorScheme.onPrimaryContainer
-                    ) {
-                        Text(
-                            text = currentParsedSong.currentKey?.name(notationSystem) ?: song.originalKey,
-                            style = MaterialTheme.typography.titleSmall,
-                            fontWeight = FontWeight.Bold,
-                            modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp)
-                        )
-                    }
-
-                    FilledTonalButton(
-                        onClick = { transpositionSemitones += 2 },
-                        shape = RoundedCornerShape(16.dp),
-                        contentPadding = PaddingValues(horizontal = 8.dp, vertical = 4.dp),
-                        modifier = Modifier.height(36.dp)
-                    ) {
-                        Text(
-                            text = stringResource(R.string.transpose_plus_one_tone),
-                            style = MaterialTheme.typography.labelMedium,
-                            fontWeight = FontWeight.Bold
-                        )
-                    }
-
-                    VerticalDivider(
-                        modifier = Modifier
-                            .height(20.dp)
-                            .padding(horizontal = 2.dp),
-                        color = MaterialTheme.colorScheme.outlineVariant
-                    )
-
-                    // Text Scaling Quick Buttons: [- A], Percentage Badge, [A +]
-                    FilledTonalButton(
-                        onClick = {
-                            val newScale = (round((fontScale - 0.1f) * 100) / 100f).coerceIn(0.65f, 1.35f)
-                            fontScale = newScale
-                        },
-                        enabled = fontScale > 0.65f,
-                        shape = RoundedCornerShape(16.dp),
-                        contentPadding = PaddingValues(horizontal = 8.dp, vertical = 4.dp),
-                        modifier = Modifier.height(36.dp)
-                    ) {
-                        Text(
-                            text = "- A",
-                            style = MaterialTheme.typography.labelMedium,
-                            fontWeight = FontWeight.Bold
-                        )
-                    }
-
-                    Surface(
-                        shape = RoundedCornerShape(8.dp),
-                        color = MaterialTheme.colorScheme.primaryContainer,
-                        contentColor = MaterialTheme.colorScheme.onPrimaryContainer
-                    ) {
-                        Text(
-                            text = "${(fontScale * 100).roundToInt()}%",
-                            style = MaterialTheme.typography.labelSmall,
-                            fontWeight = FontWeight.Bold,
-                            modifier = Modifier.padding(horizontal = 6.dp, vertical = 4.dp)
-                        )
-                    }
-
-                    FilledTonalButton(
-                        onClick = {
-                            val newScale = (round((fontScale + 0.1f) * 100) / 100f).coerceIn(0.65f, 1.35f)
-                            fontScale = newScale
-                        },
-                        enabled = fontScale < 1.35f,
-                        shape = RoundedCornerShape(16.dp),
-                        contentPadding = PaddingValues(horizontal = 8.dp, vertical = 4.dp),
-                        modifier = Modifier.height(36.dp)
-                    ) {
-                        Text(
-                            text = "A +",
-                            style = MaterialTheme.typography.labelMedium,
-                            fontWeight = FontWeight.Bold
-                        )
-                    }
-
-                    VerticalDivider(
-                        modifier = Modifier
-                            .height(20.dp)
-                            .padding(horizontal = 2.dp),
-                        color = MaterialTheme.colorScheme.outlineVariant
-                    )
-
-                    // Expand Options Button: 🎛️ icon button
-                    IconButton(
-                        onClick = { isControlsExpanded = !isControlsExpanded },
-                        modifier = Modifier.size(36.dp)
-                    ) {
-                        Icon(
-                            imageVector = Icons.Rounded.Tune,
-                            contentDescription = stringResource(R.string.performance_options),
-                            tint = if (isControlsExpanded) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant
-                        )
                     }
                 }
             }

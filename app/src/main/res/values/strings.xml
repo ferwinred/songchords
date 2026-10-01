@@ -127,6 +127,8 @@
     <string name="insert_custom_chord_title">Insert Custom Chord Tag</string>
     <string name="label_chord_symbol">Chord Symbol e.g., F#/A#, Cadd2, G7</string>
     <string name="insert">Insert</string>
+    <string name="autocomplete_bracket_title">Chord &amp; Section Suggestions</string>
+    <string name="autocomplete_comment_title">Comment Suggestions</string>
     <string name="error_enter_title">Please enter a song title.</string>
     <string name="error_enter_lyrics">Please enter song lyrics with chords.</string>
     <string name="error_song_not_found">Song not found.</string>

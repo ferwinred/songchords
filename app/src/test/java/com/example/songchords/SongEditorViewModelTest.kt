@@ -74,6 +74,50 @@ class SongEditorViewModelTest {
         viewModel.insertChordTag("Gadd2")
         state = viewModel.uiState.value
         assertTrue(state.contentTextFieldValue.text.contains("[Gadd2]"))
+
+        viewModel.insertCommentPrefix()
+        state = viewModel.uiState.value
+        assertTrue(state.contentTextFieldValue.text.contains("# "))
+    }
+
+    @Test
+    fun testSmartAutocompleteAndAutoClosingBracket() {
+        val viewModel = SongEditorViewModel(songId = null, repository = repository)
+        viewModel.onKeyChange("G")
+
+        // Type '['
+        viewModel.onContentValueChange(androidx.compose.ui.text.input.TextFieldValue(
+            text = "Tu poeta, tu [",
+            selection = androidx.compose.ui.text.TextRange(14)
+        ))
+
+        var state = viewModel.uiState.value
+        assertNotNull(state.autocompleteState)
+        assertTrue(state.autocompleteState!!.isBracket)
+
+        // Select 'G]' suggestion
+        val suggestion = state.autocompleteState!!.suggestions.first { it.label == "G]" }
+        viewModel.applyAutocompleteSuggestion(suggestion)
+
+        state = viewModel.uiState.value
+        assertEquals("Tu poeta, tu [G]", state.contentTextFieldValue.text)
+        assertEquals(16, state.contentTextFieldValue.selection.start) // cursor past ']'
+
+        // Type '#' for comment autocomplete
+        viewModel.onContentValueChange(androidx.compose.ui.text.input.TextFieldValue(
+            text = "Tu poeta, tu [G]\n# ",
+            selection = androidx.compose.ui.text.TextRange(19)
+        ))
+
+        state = viewModel.uiState.value
+        assertNotNull(state.autocompleteState)
+        assertFalse(state.autocompleteState!!.isBracket)
+
+        val commentSuggestion = state.autocompleteState!!.suggestions.first { it.label.contains("Tocar suave") }
+        viewModel.applyAutocompleteSuggestion(commentSuggestion)
+
+        state = viewModel.uiState.value
+        assertTrue(state.contentTextFieldValue.text.contains("# Tocar suave con piano"))
     }
 
     @Test

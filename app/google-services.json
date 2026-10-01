@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "350365509264",
+    "project_id": "songchords-948e3",
+    "storage_bucket": "songchords-948e3.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:350365509264:android:83b5158ca80ebd99691a15",
+        "android_client_info": {
+          "package_name": "com.example.songchords"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCHZBiY9vYvPRAOtgPisPy6FemEIYlRWkc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
