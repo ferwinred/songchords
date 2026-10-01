@@ -1,43 +1,39 @@
 # Project Plan
 
-SongChords app - Implement single '#' comment syntax (# Comentario), docked floating quick helper toolbar in editor, smart chord/section/comment autocomplete, and remove duplicate viewer footer bar.
+SongChords app - Eliminate all build and compiler warnings for a 100% clean Gradle build and optimal code quality.
 
 ## Project Brief
 
-# Project Brief: SongChords App
+# SongChords - Project Brief
 
 ## Features
-1. **Single '#' Comment Syntax**: Strictly supports `#` for comment lines (e.g., `# Tocar suave con piano`). Renders comments with distinct italicized info highlighting in the editor and as styled callout badges with info icons in the song viewer.
-2. **Docked Floating Quick Helper Toolbar**: A toolbar docked directly above the editor text field for 1-tap insertion of common sections (`[Intro]`, `[Coro]`), key chords (`[G]`, `[C]`), and comment prefixes (`#`).
-3. **Smart Autocomplete**: Context-aware autocomplete suggestion chips triggered when typing `[` or `#` for instant chord, section, and comment insertion with auto-closing bracket handling.
-4. **Streamlined Song Viewer Layout**: Clean and clutter-free song viewing experience achieved by removing duplicate floating footer bars and maintaining a clean fixed Bottom Navigation Bar.
+- **Interactive Chord Sheet Viewer & PDF Exporter**: View song chords and lyrics with seamless capability to export chord sheets into PDF documents via native platform exporters.
+- **Instrument Tuner & Audio Tone Generator**: Integrated tuning interface featuring audio tone synthesis and auto-mirrored Material volume controls (`TunerScreen`).
+- **Kotlin Multiplatform Core**: Reconciled KMP architecture unifying audio playback (`AudioTonePlayer`), document generation (`PdfExporter`), and platform utilities across `commonMain` and `androidMain`.
+- **Clean & Warning-Free Build Pipeline**: Optimized Gradle build setup with reconciled KMP expect/actual declarations, updated icons, and corrected JNI library packaging for zero compiler and build warnings.
 
-## High-Level Tech Stack
+## High-Level Technical Stack
 - **Language**: Kotlin
 - **UI Framework**: Jetpack Compose (Material 3)
-- **Navigation Strategy**: Jetpack Navigation 3 (State-driven)
-- **Adaptive Strategy**: Compose Material Adaptive Library
-- **Architecture & Concurrency**: MVVM (ViewModel, StateFlow) & Kotlin Coroutines
+- **Navigation & Adaptive Strategy**: Jetpack Navigation 3 (state-driven) and Compose Material Adaptive
+- **Architecture & Concurrency**: Kotlin Multiplatform (KMP) architecture, Kotlin Coroutines & Flow
+- **Platform Engines**: `AudioTonePlayer` and `PdfExporter` platform modules
 
 ## Implementation Steps
-**Total Duration:** 2m 33s
 
-### Task_71_ImplementSingleHashCommentSyntaxAndDockedEditorToolbar: Implement Single '#' Comment Syntax, Docked Floating Editor Toolbar, Smart Autocomplete, and Streamlined Viewer: 1) In ChordParser.kt, parse lines starting with '#' (e.g. '# Tocar suave con piano') into ChordLyricsLine.Comment. 2) In SongDetailPane.kt, render '#' comment lines as distinct italicized callout badges with Info icon and tertiaryContainer background. Remove duplicate floating footer bar in SongDetailPane.kt. 3) In SongEditorScreen.kt, dock the Quick Helper Toolbar (# Comentario, [Intro], [Coro], [G], [C], [D], [Em]) directly above the editor text field so tools stay floating/docked at 1-tap while typing. 4) Add smart autocomplete chips when typing '[' or '#' in editor with auto-closing bracket ']'.
+### Task_73_EliminateAllBuildWarnings: Eliminate all 8 Gradle, Kotlin compiler, AAPT, and deprecation warnings: 1) Reconcile KMP expect/actual declarations in Platform.kt, AudioTonePlayer.kt, and PdfExporter.kt. 2) Replace deprecated Icons.Rounded.VolumeOff/Up with AutoMirrored equivalents in TunerScreen.kt. 3) Configure JNI packaging options in app/build.gradle.kts.
 - **Status:** COMPLETED
-- **Updates:** Task_71_ImplementSingleHashCommentSyntaxAndDockedEditorToolbar completed successfully. Implemented 4 key features: 1) Single '#' comment syntax: ChordParser parses lines starting with '#' (e.g. '# Tocar suave con piano') into ChordLyricsLine.Comment and renders them in SongDetailPane as distinct italicized callout badges with Info icon and tertiaryContainer background. 2) Removed duplicate floating footer bar in SongDetailPane.kt, leaving the fixed Bottom Navigation Bar clean and un-obscured. 3) Docked Floating Quick Helper Toolbar in SongEditorScreen.kt directly above the editor text field with '# Comentario' button, section chips ([Intro], [Coro]), and key chord chips ([G], [C]). 4) Smart autocomplete & auto-closing brackets in SongEditorScreen when typing '[' or '#' with 1-tap insertion. Verified with assembleDebug build and 67 passing unit tests.
+- **Updates:** Task_73_EliminateAllBuildWarnings completed successfully. Resolved all 8 Gradle, Kotlin compiler, AAPT, and deprecation warnings: 1) Reconciled KMP platform abstraction files in Platform.kt, AudioTonePlayer.kt, and PdfExporter.kt. 2) Replaced deprecated volume icons in TunerScreen.kt with AutoMirrored equivalents. 3) Updated JNI packaging options in app/build.gradle.kts. 4) Enforced allWarningsAsErrors in app/build.gradle.kts. Verified with assembleDebug --warning-mode all with 0 warnings and 67 passing unit tests.
 - **Acceptance Criteria:**
-  - Comment lines starting with '#' parsed and rendered as distinct italicized callout badges
-  - Duplicate floating footer bar removed in SongDetailPane.kt
-  - SongEditorScreen has docked Floating Quick Helper Toolbar above text field
-  - Smart autocomplete suggestions triggered when typing '[' or '#' in editor
+  - All 8 build, compiler, AAPT, and deprecation warnings resolved
+  - ./gradlew assembleDebug runs with 0 warnings
   - build pass
 
-### Task_72_RunAndVerifySingleHashCommentsAndDockedEditorToolbar: Verify '#' comment syntax, docked editor toolbar, smart autocomplete, and streamlined viewer layout on emulator with critic_agent. Ensure zero crashes.
-- **Status:** COMPLETED
-- **Updates:** Task_72_RunAndVerifySingleHashCommentsAndDockedEditorToolbar completed successfully. Verified on emulator with 0 crashes. Confirmed all requested features: 1) Removed duplicate floating footer bar in Song Viewer, leaving fixed Bottom Navigation Bar clean and un-obscured. 2) Docked Quick Tools Toolbar in Song Editor directly above the text field for 1-tap insertion while typing. 3) Single '#' comment syntax (# Tocar suave con piano) parsed and rendered in Vista Previa as a distinct italicized callout badge with Info icon and tertiaryContainer background. 4) Smart autocomplete suggestion chips triggered when typing '[' or '#' with auto-closing bracket ']' handling. All 67 unit tests pass cleanly.
+### Task_74_RunAndVerifyZeroWarningsBuild: Verify warning-free build, unit tests, and git status. Ensure zero errors.
+- **Status:** IN_PROGRESS
 - **Acceptance Criteria:**
-  - build pass
-  - app does not crash
-  - Single '#' comments, docked editor toolbar, smart autocomplete, and streamlined viewer verified clean on emulator
-- **Duration:** 2m 33s
+  - build pass with 0 warnings
+  - All unit tests pass
+  - Working tree clean
+- **StartTime:** 2026-10-01 14:03:02 GMT-05:00
 

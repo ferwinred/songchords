@@ -9,14 +9,12 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import kotlin.math.sin
 
-@Suppress("ACTUAL_WITHOUT_EXPECT")
-actual class AudioTonePlayer actual constructor() {
+class AudioTonePlayer {
     private var audioTrack: AudioTrack? = null
     private var playJob: Job? = null
     private val scope = CoroutineScope(Dispatchers.IO)
 
-    @Suppress("ACTUAL_WITHOUT_EXPECT")
-    actual fun playTone(frequencyHz: Double, durationMs: Long) {
+    fun playTone(frequencyHz: Double, durationMs: Long) {
         stopTone()
         playJob = scope.launch {
             val sampleRate = 44100
@@ -63,8 +61,7 @@ actual class AudioTonePlayer actual constructor() {
         }
     }
 
-    @Suppress("ACTUAL_WITHOUT_EXPECT")
-    actual fun stopTone() {
+    fun stopTone() {
         playJob?.cancel()
         playJob = null
         stopInternal()

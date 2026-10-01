@@ -4,10 +4,9 @@ import com.example.songchords.model.NotationSystem
 import com.example.songchords.model.ParsedSong
 import com.example.songchords.model.Song
 
-@Suppress("ACTUAL_WITHOUT_EXPECT")
-actual class PdfExporter actual constructor() {
-    @Suppress("ACTUAL_WITHOUT_EXPECT")
-    actual fun exportPdf(
+class PdfExporter {
+    @Suppress("UNUSED_PARAMETER")
+    fun exportPdf(
         song: Song,
         parsedSong: ParsedSong,
         notationSystem: NotationSystem

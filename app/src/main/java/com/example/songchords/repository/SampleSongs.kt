@@ -129,7 +129,7 @@ object SampleSongs {
 
             [Chorus]
             
-            [Outro]
+            [Bridge]
             T[G/B]u fidelidad s[C]igue
             [D]Persiguiendom[G]e
             T[G/B]u fidelidad s[C]igue

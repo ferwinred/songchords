@@ -46,10 +46,17 @@ android {
     buildFeatures {
         compose = true
     }
+
+    packaging {
+        jniLibs {
+            keepDebugSymbols.add("**/*.so")
+        }
+    }
 }
 
 tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
     compilerOptions {
+        allWarningsAsErrors.set(true)
         freeCompilerArgs.add("-Xexpect-actual-classes")
         freeCompilerArgs.add("-Xmulti-platform")
     }

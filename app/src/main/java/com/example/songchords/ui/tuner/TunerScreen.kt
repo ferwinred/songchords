@@ -23,10 +23,9 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.CheckCircle
+import androidx.compose.material.icons.automirrored.rounded.VolumeOff
+import androidx.compose.material.icons.automirrored.rounded.VolumeUp
 import androidx.compose.material.icons.rounded.MusicNote
-import androidx.compose.material.icons.rounded.VolumeOff
-import androidx.compose.material.icons.rounded.VolumeUp
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
@@ -252,7 +251,7 @@ fun TunerScreen(
             modifier = Modifier.fillMaxWidth(0.85f)
         ) {
             Icon(
-                imageVector = if (isPlayingTone) Icons.Rounded.VolumeOff else Icons.Rounded.VolumeUp,
+                imageVector = if (isPlayingTone) Icons.AutoMirrored.Rounded.VolumeOff else Icons.AutoMirrored.Rounded.VolumeUp,
                 contentDescription = null
             )
             Spacer(modifier = Modifier.width(8.dp))
