@@ -1,39 +1,42 @@
 # Project Plan
 
-SongChords app - Eliminate all build and compiler warnings for a 100% clean Gradle build and optimal code quality.
+SongChords app - Fix launch crash in res/values/themes.xml by setting windowNoTitle to true for AppCompatActivity compatibility.
 
 ## Project Brief
 
-# SongChords - Project Brief
+# Project Brief: SongChords
 
 ## Features
-- **Interactive Chord Sheet Viewer & PDF Exporter**: View song chords and lyrics with seamless capability to export chord sheets into PDF documents via native platform exporters.
-- **Instrument Tuner & Audio Tone Generator**: Integrated tuning interface featuring audio tone synthesis and auto-mirrored Material volume controls (`TunerScreen`).
-- **Kotlin Multiplatform Core**: Reconciled KMP architecture unifying audio playback (`AudioTonePlayer`), document generation (`PdfExporter`), and platform utilities across `commonMain` and `androidMain`.
-- **Clean & Warning-Free Build Pipeline**: Optimized Gradle build setup with reconciled KMP expect/actual declarations, updated icons, and corrected JNI library packaging for zero compiler and build warnings.
+1. **Stable Theme Initialization**: Clean AppCompat theme setup configured with `windowNoTitle=true` in light and dark resources (`res/values/themes.xml` & `res/values-night/themes.xml`) ensuring zero-crash app launches.
+2. **Interactive Chord Sheet Viewer**: Clean display of song lyrics and chords with formatting tailored for easy reading during practice or performance.
+3. **Song Catalog & Search**: Instant searching and browsing through the song chord collection.
+4. **Adaptive Multi-Pane Support**: Flexible responsive layouts across phones, foldables, and tablets.
 
 ## High-Level Technical Stack
 - **Language**: Kotlin
 - **UI Framework**: Jetpack Compose (Material 3)
-- **Navigation & Adaptive Strategy**: Jetpack Navigation 3 (state-driven) and Compose Material Adaptive
-- **Architecture & Concurrency**: Kotlin Multiplatform (KMP) architecture, Kotlin Coroutines & Flow
-- **Platform Engines**: `AudioTonePlayer` and `PdfExporter` platform modules
+- **Navigation & Adaptive Strategy**: Jetpack Navigation 3 (state-driven) and Compose Material Adaptive library
+- **Architecture & Concurrency**: ViewModel, Kotlin Coroutines, and Flow
+- **App Compatibility**: AndroidX AppCompat with validated window title theme configurations
 
 ## Implementation Steps
+**Total Duration:** 6m 59s
 
-### Task_73_EliminateAllBuildWarnings: Eliminate all 8 Gradle, Kotlin compiler, AAPT, and deprecation warnings: 1) Reconcile KMP expect/actual declarations in Platform.kt, AudioTonePlayer.kt, and PdfExporter.kt. 2) Replace deprecated Icons.Rounded.VolumeOff/Up with AutoMirrored equivalents in TunerScreen.kt. 3) Configure JNI packaging options in app/build.gradle.kts.
+### Task_75_FixLaunchCrashInThemesXml: Fix launch crash caused by themes.xml: 1) In res/values/themes.xml (and res/values-night/themes.xml if present), change <item name='windowNoTitle'>true</item>. 2) Verify MainActivity onCreate initializes cleanly on connected device and emulator with 0 crashes.
 - **Status:** COMPLETED
-- **Updates:** Task_73_EliminateAllBuildWarnings completed successfully. Resolved all 8 Gradle, Kotlin compiler, AAPT, and deprecation warnings: 1) Reconciled KMP platform abstraction files in Platform.kt, AudioTonePlayer.kt, and PdfExporter.kt. 2) Replaced deprecated volume icons in TunerScreen.kt with AutoMirrored equivalents. 3) Updated JNI packaging options in app/build.gradle.kts. 4) Enforced allWarningsAsErrors in app/build.gradle.kts. Verified with assembleDebug --warning-mode all with 0 warnings and 67 passing unit tests.
+- **Updates:** Task_75_FixLaunchCrashInThemesXml completed successfully. Fixed launch crash in res/values/themes.xml by setting <item name='windowNoTitle'>true</item>. Resolved IllegalArgumentException in AppCompatDelegateImpl. Verified with assembleDebug build and 67 passing unit tests.
 - **Acceptance Criteria:**
-  - All 8 build, compiler, AAPT, and deprecation warnings resolved
-  - ./gradlew assembleDebug runs with 0 warnings
+  - windowNoTitle set to true in themes.xml
+  - AppCompatActivity launch crash resolved
+  - App launches cleanly without closing on connected device and emulator
   - build pass
 
-### Task_74_RunAndVerifyZeroWarningsBuild: Verify warning-free build, unit tests, and git status. Ensure zero errors.
-- **Status:** IN_PROGRESS
+### Task_76_RunAndVerifyLaunchFix: Verify crash-free app launch on connected device and emulator with critic_agent. Ensure zero crashes.
+- **Status:** COMPLETED
+- **Updates:** Task_76_RunAndVerifyLaunchFix completed successfully. Verified on connected device with 0 crashes. Confirmed <item name='windowNoTitle'>true</item> in themes.xml resolved the IllegalArgumentException in AppCompatDelegateImpl. App launches cleanly and opens all views (Song List, Viewer, Tuner, Editor) smoothly. All 67 unit tests pass.
 - **Acceptance Criteria:**
-  - build pass with 0 warnings
-  - All unit tests pass
-  - Working tree clean
-- **StartTime:** 2026-10-01 14:03:02 GMT-05:00
+  - build pass
+  - app does not crash
+  - Crash-free launch verified clean on connected device and emulator
+- **Duration:** 6m 59s
 
