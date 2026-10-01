@@ -56,6 +56,7 @@ object SongJsonUtils {
             artist = parsed.artist.ifBlank { "Unknown Artist" },
             originalKey = parsed.originalKey.ifBlank { "C" },
             content = parsed.content,
+            comments = parsed.comments,
             timeSignature = parsed.timeSignature ?: "4/4",
             createdByUserId = parsed.createdByUserId,
             createdByName = parsed.createdByName
@@ -99,6 +100,7 @@ object SongJsonUtils {
         val artist = extractString("artist") ?: "Unknown Artist"
         val originalKey = extractString("originalKey") ?: "C"
         val content = extractString("content") ?: ""
+        val comments = extractString("comments")
         val tempo = extractInt("tempo")
         val timeSignature = extractString("timeSignature") ?: "4/4"
         val tags = extractTags()
@@ -113,6 +115,7 @@ object SongJsonUtils {
             artist = artist,
             originalKey = originalKey,
             content = content,
+            comments = comments,
             tempo = tempo,
             timeSignature = timeSignature,
             tags = tags,

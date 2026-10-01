@@ -53,7 +53,7 @@ fun SongListItem(
 ) {
     val cardContainerColor by animateColorAsState(
         targetValue = if (isSelected) {
-            MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.4f)
+            MaterialTheme.colorScheme.primaryContainer
         } else {
             MaterialTheme.colorScheme.surfaceContainer
         },
@@ -63,7 +63,7 @@ fun SongListItem(
     val cardBorder = if (isSelected) {
         BorderStroke(2.dp, MaterialTheme.colorScheme.primary)
     } else {
-        BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f))
+        BorderStroke(1.dp, MaterialTheme.colorScheme.outline)
     }
 
     Card(
@@ -86,8 +86,9 @@ fun SongListItem(
                 // Key Badge
                 Surface(
                     shape = RoundedCornerShape(8.dp),
-                    color = MaterialTheme.colorScheme.tertiaryContainer,
-                    contentColor = MaterialTheme.colorScheme.onTertiaryContainer
+                    color = MaterialTheme.colorScheme.primaryContainer,
+                    contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                    border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline)
                 ) {
                     Row(
                         modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
@@ -159,7 +160,9 @@ fun SongListItem(
                             )
                         },
                         colors = AssistChipDefaults.assistChipColors(
-                            containerColor = MaterialTheme.colorScheme.surfaceContainerHigh
+                            containerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
+                            labelColor = MaterialTheme.colorScheme.onSurface,
+                            leadingIconContentColor = MaterialTheme.colorScheme.onSurface
                         )
                     )
                 }
@@ -169,7 +172,8 @@ fun SongListItem(
                         onClick = {},
                         label = { Text(timeSig, style = MaterialTheme.typography.labelSmall) },
                         colors = AssistChipDefaults.assistChipColors(
-                            containerColor = MaterialTheme.colorScheme.surfaceContainerHigh
+                            containerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
+                            labelColor = MaterialTheme.colorScheme.onSurface
                         )
                     )
                 }
@@ -179,8 +183,8 @@ fun SongListItem(
                         onClick = {},
                         label = { Text(tag, style = MaterialTheme.typography.labelSmall) },
                         colors = AssistChipDefaults.assistChipColors(
-                            containerColor = MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.5f),
-                            labelColor = MaterialTheme.colorScheme.onSecondaryContainer
+                            containerColor = MaterialTheme.colorScheme.primaryContainer,
+                            labelColor = MaterialTheme.colorScheme.onPrimaryContainer
                         )
                     )
                 }

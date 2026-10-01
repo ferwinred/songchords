@@ -35,8 +35,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.compose.ui.graphics.Color
 import com.example.songchords.R
 import com.example.songchords.repository.SampleSongs
 import com.example.songchords.repository.SyncStatus
@@ -81,8 +83,12 @@ fun SongListDetailScreen(
                 title = {
                     Text(
                         text = stringResource(R.string.top_bar_title),
-                        style = MaterialTheme.typography.titleLarge,
-                        fontWeight = FontWeight.Bold
+                        style = MaterialTheme.typography.titleMedium,
+                        fontWeight = FontWeight.Bold,
+                        color = Color.White,
+                        maxLines = 1,
+                        softWrap = false,
+                        overflow = TextOverflow.Ellipsis
                     )
                 },
                 actions = {
@@ -113,9 +119,9 @@ fun SongListDetailScreen(
                             imageVector = syncIcon,
                             contentDescription = syncDesc,
                             tint = if (uiState.syncStatus == SyncStatus.OFFLINE_ERROR) {
-                                MaterialTheme.colorScheme.error
+                                MaterialTheme.colorScheme.errorContainer
                             } else {
-                                MaterialTheme.colorScheme.primary
+                                Color.White
                             }
                         )
                     }
@@ -124,7 +130,7 @@ fun SongListDetailScreen(
                         Icon(
                             imageVector = Icons.Rounded.Construction,
                             contentDescription = stringResource(R.string.nav_tools),
-                            tint = MaterialTheme.colorScheme.primary
+                            tint = Color.White
                         )
                     }
                     IconButton(
@@ -133,14 +139,17 @@ fun SongListDetailScreen(
                         Icon(
                             imageVector = Icons.Rounded.FileOpen,
                             contentDescription = stringResource(R.string.import_json_desc),
-                            tint = MaterialTheme.colorScheme.primary
+                            tint = Color.White
                         )
                     }
-                    ThemeToggleIconButton()
-                    LanguageSelector()
+                    ThemeToggleIconButton(tint = Color.White)
+                    LanguageSelector(tint = Color.White)
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.surfaceContainer
+                    containerColor = MaterialTheme.colorScheme.primary,
+                    titleContentColor = Color.White,
+                    actionIconContentColor = Color.White,
+                    navigationIconContentColor = Color.White
                 )
             )
         },

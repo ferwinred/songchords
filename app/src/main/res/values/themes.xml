@@ -1,4 +1,7 @@
 <resources>
 
-    <style name="Theme.SongChords" parent="Theme.MaterialComponents.Light" />
+    <style name="Theme.SongChords" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
 </resources>

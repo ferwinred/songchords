@@ -93,13 +93,16 @@ fun FilterChipGroup(
             leadingIcon = {
                 Icon(
                     imageVector = if (showOnlyFavorites) Icons.Rounded.Favorite else Icons.Rounded.FavoriteBorder,
-                    contentDescription = stringResource(R.string.filter_favorites_desc),
-                    tint = if (showOnlyFavorites) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant
+                    contentDescription = stringResource(R.string.filter_favorites_desc)
                 )
             },
             colors = FilterChipDefaults.filterChipColors(
+                containerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
+                labelColor = MaterialTheme.colorScheme.onSurface,
+                iconColor = MaterialTheme.colorScheme.onSurfaceVariant,
                 selectedContainerColor = MaterialTheme.colorScheme.primaryContainer,
-                selectedLabelColor = MaterialTheme.colorScheme.onPrimaryContainer
+                selectedLabelColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                selectedLeadingIconColor = MaterialTheme.colorScheme.onPrimaryContainer
             )
         )
 
@@ -168,8 +171,13 @@ private fun FilterDropdownChip(
                 )
             },
             colors = FilterChipDefaults.filterChipColors(
-                selectedContainerColor = MaterialTheme.colorScheme.secondaryContainer,
-                selectedLabelColor = MaterialTheme.colorScheme.onSecondaryContainer
+                containerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
+                labelColor = MaterialTheme.colorScheme.onSurface,
+                iconColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                selectedContainerColor = MaterialTheme.colorScheme.primaryContainer,
+                selectedLabelColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                selectedLeadingIconColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                selectedTrailingIconColor = MaterialTheme.colorScheme.onPrimaryContainer
             )
         )
 

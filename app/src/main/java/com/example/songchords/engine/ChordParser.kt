@@ -11,6 +11,7 @@ object ChordParser {
 
     private val BRACKET_REGEX = Regex("\\[([^]]+)\\]")
     private val SECTION_HEADER_REGEX = Regex("(?i)^\\[?(intro|introducción|introduccion|verse|verso|estrofa|chorus|coro|refrain|bridge|puente|outro|final|ending|salida|pre-chorus|prechorus|pre-coro|precoro|solo|interlude|interludio|tab|coda)(\\s*[-:_]?\\s*([0-9]+|[a-z]+|[ivxlcdm]+))?\\]?:?\\s*$")
+    private val COMMENT_REGEX = Regex("(?i)^[\\[{]?(comentario|nota|comment|note|c):\\s*(.*?)[\\]}]?$")
 
     fun parseSong(
         song: Song,
@@ -28,6 +29,12 @@ object ChordParser {
         val trimmed = lineText.trim()
         if (trimmed.isEmpty()) {
             return ChordLyricsLine.EmptyLine
+        }
+
+        val commentMatch = COMMENT_REGEX.find(trimmed)
+        if (commentMatch != null) {
+            val commentText = commentMatch.groupValues[2].trim().removeSuffix("]").removeSuffix("}").trim()
+            return ChordLyricsLine.Comment(commentText)
         }
 
         if (SECTION_HEADER_REGEX.matches(trimmed)) {

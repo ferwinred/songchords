@@ -109,6 +109,43 @@ class CoreEngineTest {
     }
 
     @Test
+    fun testCommentParsing() {
+        val spanishComment = ChordParser.parseLine("[Comentario: Tocar suave en el intro]")
+        assertTrue(spanishComment is ChordLyricsLine.Comment)
+        assertEquals("Tocar suave en el intro", (spanishComment as ChordLyricsLine.Comment).comment)
+
+        val notaComment = ChordParser.parseLine("[Nota: Usar Capo en traste 2]")
+        assertTrue(notaComment is ChordLyricsLine.Comment)
+        assertEquals("Usar Capo en traste 2", (notaComment as ChordLyricsLine.Comment).comment)
+
+        val englishComment = ChordParser.parseLine("[Comment: Soft piano intro]")
+        assertTrue(englishComment is ChordLyricsLine.Comment)
+        assertEquals("Soft piano intro", (englishComment as ChordLyricsLine.Comment).comment)
+
+        val noteComment = ChordParser.parseLine("[Note: Repeat chorus 2x]")
+        assertTrue(noteComment is ChordLyricsLine.Comment)
+        assertEquals("Repeat chorus 2x", (noteComment as ChordLyricsLine.Comment).comment)
+
+        val curlyComment = ChordParser.parseLine("{comment: Play quietly}")
+        assertTrue(curlyComment is ChordLyricsLine.Comment)
+        assertEquals("Play quietly", (curlyComment as ChordLyricsLine.Comment).comment)
+
+        val curlyCComment = ChordParser.parseLine("{c: Solo de guitarra}")
+        assertTrue(curlyCComment is ChordLyricsLine.Comment)
+        assertEquals("Solo de guitarra", (curlyCComment as ChordLyricsLine.Comment).comment)
+    }
+
+    @Test
+    fun testCommentToChordTaggedText() {
+        val commentLine = ChordLyricsLine.Comment("Tocar suave")
+        val parsedSong = com.example.songchords.model.ParsedSong(
+            song = SampleSongs.TU_POETA,
+            lines = listOf(commentLine)
+        )
+        assertEquals("[Comentario: Tocar suave]", parsedSong.toChordTaggedText())
+    }
+
+    @Test
     fun testTransposition() {
         val chordG = Chord.parse("G")!!
 

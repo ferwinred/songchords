@@ -182,6 +182,28 @@ object SongPdfUtils {
                     canvas.drawText(headerTitle, MARGIN, yPos + 12f, sectionHeaderPaint)
                     yPos += 22f
                 }
+                is ChordLyricsLine.Comment -> {
+                    if (yPos + 24f > PAGE_HEIGHT - MARGIN - 30f) {
+                        newPage()
+                    }
+                    val commentText = "Nota: ${line.comment}"
+                    val textWidth = lyricTextPaint.measureText(commentText) + 16f
+                    val commentRect = RectF(MARGIN, yPos, (MARGIN + textWidth).coerceAtMost(PAGE_WIDTH - MARGIN), yPos + 18f)
+                    val commentBgPaint = Paint().apply {
+                        color = 0xFFF3EDF7.toInt()
+                        style = Paint.Style.FILL
+                        isAntiAlias = true
+                    }
+                    val commentTextPaint = Paint().apply {
+                        color = 0xFF49454F.toInt()
+                        textSize = 10f
+                        typeface = Typeface.create(Typeface.DEFAULT, Typeface.ITALIC)
+                        isAntiAlias = true
+                    }
+                    canvas.drawRoundRect(commentRect, 4f, 4f, commentBgPaint)
+                    canvas.drawText(commentText, MARGIN + 8f, yPos + 12f, commentTextPaint)
+                    yPos += 24f
+                }
                 is ChordLyricsLine.EmptyLine -> {
                     yPos += 12f
                 }

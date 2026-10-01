@@ -96,6 +96,7 @@ class SongJsonUtilsTest {
             artist = "Sinach",
             originalKey = "E",
             content = "[E]You are here, moving in our midst\n[B]I worship You, [C#m]I worship You\n[A]You are Way Maker",
+            comments = "Usar Capo en traste 2",
             tempo = 68,
             timeSignature = "4/4",
             tags = listOf("Worship", "Praise"),
@@ -110,6 +111,7 @@ class SongJsonUtilsTest {
         assertEquals(originalSong.artist, reImportedSong.artist)
         assertEquals(originalSong.originalKey, reImportedSong.originalKey)
         assertEquals(originalSong.content, reImportedSong.content)
+        assertEquals(originalSong.comments, reImportedSong.comments)
         assertEquals(originalSong.tempo, reImportedSong.tempo)
         assertEquals(originalSong.timeSignature, reImportedSong.timeSignature)
         assertEquals(originalSong.tags, reImportedSong.tags)

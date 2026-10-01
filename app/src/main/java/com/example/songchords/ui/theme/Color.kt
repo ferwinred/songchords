@@ -2,61 +2,68 @@ package com.example.songchords.ui.theme
 
 import androidx.compose.ui.graphics.Color
 
+// Brand Color Palette
+val DarkNavyBlue = Color(0xFF020873)
+val RoyalIndigo = Color(0xFF38358C)
+val CrimsonRed = Color(0xFFD91E2E)
+val VividRed = Color(0xFFD90404)
+val OffWhite = Color(0xFFF2F2F2)
+
 // Light Colors
-val LightPrimary = Color(0xFF1565C0)
-val LightOnPrimary = Color(0xFFFFFFFF)
-val LightPrimaryContainer = Color(0xFFD1E4FF)
-val LightOnPrimaryContainer = Color(0xFF001D36)
+val LightPrimary = DarkNavyBlue
+val LightOnPrimary = OffWhite
+val LightPrimaryContainer = RoyalIndigo
+val LightOnPrimaryContainer = OffWhite
 
-val LightSecondary = Color(0xFF00696E)
-val LightOnSecondary = Color(0xFFFFFFFF)
-val LightSecondaryContainer = Color(0xFF9CF0F5)
-val LightOnSecondaryContainer = Color(0xFF002022)
+val LightSecondary = CrimsonRed
+val LightOnSecondary = OffWhite
+val LightSecondaryContainer = VividRed
+val LightOnSecondaryContainer = OffWhite
 
-val LightTertiary = Color(0xFF825500)
-val LightOnTertiary = Color(0xFFFFFFFF)
-val LightTertiaryContainer = Color(0xFFFFDDB3)
-val LightOnTertiaryContainer = Color(0xFF291800)
+val LightTertiary = VividRed
+val LightOnTertiary = OffWhite
+val LightTertiaryContainer = CrimsonRed
+val LightOnTertiaryContainer = OffWhite
 
-val LightBackground = Color(0xFFF8F9FF)
-val LightOnBackground = Color(0xFF191C20)
-val LightSurface = Color(0xFFF8F9FF)
-val LightOnSurface = Color(0xFF191C20)
-val LightSurfaceContainerLow = Color(0xFFF2F3F9)
-val LightSurfaceContainer = Color(0xFFECEEF4)
-val LightSurfaceContainerHigh = Color(0xFFE6E8EE)
-val LightSurfaceContainerHighest = Color(0xFFE0E2E8)
-val LightOnSurfaceVariant = Color(0xFF43474E)
-val LightOutline = Color(0xFF73777F)
-val LightOutlineVariant = Color(0xFFC3C7D0)
+val LightBackground = OffWhite
+val LightOnBackground = DarkNavyBlue
+val LightSurface = OffWhite
+val LightOnSurface = DarkNavyBlue
+val LightSurfaceContainerLow = OffWhite
+val LightSurfaceContainer = OffWhite
+val LightSurfaceContainerHigh = OffWhite
+val LightSurfaceContainerHighest = OffWhite
+val LightOnSurfaceVariant = DarkNavyBlue
+val LightOutline = RoyalIndigo
+val LightOutlineVariant = RoyalIndigo
 
 // Dark Colors
-val DarkPrimary = Color(0xFF90CAF9)
-val DarkOnPrimary = Color(0xFF003258)
-val DarkPrimaryContainer = Color(0xFF00497D)
-val DarkOnPrimaryContainer = Color(0xFFD1E4FF)
+val DarkPrimary = Color(0xFF1E2558)
+val DarkOnPrimary = Color.White
+val DarkPrimaryContainer = Color(0xFF38358C)
+val DarkOnPrimaryContainer = Color.White
 
-val DarkSecondary = Color(0xFF80DEEA)
-val DarkOnSecondary = Color(0xFF00363A)
-val DarkSecondaryContainer = Color(0xFF004F53)
-val DarkOnSecondaryContainer = Color(0xFFBFECEF)
+val DarkSecondary = CrimsonRed
+val DarkOnSecondary = Color.White
+val DarkSecondaryContainer = VividRed
+val DarkOnSecondaryContainer = Color.White
 
-val DarkTertiary = Color(0xFFFFB74D)
-val DarkOnTertiary = Color(0xFF452B00)
-val DarkTertiaryContainer = Color(0xFF633F00)
-val DarkOnTertiaryContainer = Color(0xFFFFDDB3)
+val DarkTertiary = VividRed
+val DarkOnTertiary = Color.White
+val DarkTertiaryContainer = Color(0xFF7A202A)
+val DarkOnTertiaryContainer = Color(0xFFFFDADA)
 
-val DarkBackground = Color(0xFF111318)
-val DarkOnBackground = Color(0xFFE2E2E9)
-val DarkSurface = Color(0xFF111318)
-val DarkOnSurface = Color(0xFFE2E2E9)
-val DarkSurfaceContainerLow = Color(0xFF191C20)
-val DarkSurfaceContainer = Color(0xFF1D2024)
-val DarkSurfaceContainerHigh = Color(0xFF282A2F)
-val DarkSurfaceContainerHighest = Color(0xFF33353A)
-val DarkOnSurfaceVariant = Color(0xFFC3C7D0)
-val DarkOutline = Color(0xFF8D9199)
-val DarkOutlineVariant = Color(0xFF43474E)
+val DarkBackground = Color(0xFF070B28)
+val DarkOnBackground = Color.White
+val DarkSurface = Color(0xFF141940)
+val DarkOnSurface = Color.White
+val DarkSurfaceContainerLow = Color(0xFF181E4B)
+val DarkSurfaceContainer = Color(0xFF1E2558)
+val DarkSurfaceContainerHigh = Color(0xFF2B336F)
+val DarkSurfaceContainerHighest = Color(0xFF363E7F)
+val DarkOnSurfaceVariant = Color(0xFFE2E6FF)
+val DarkOutline = Color(0xFF535DA6)
+val DarkOutlineVariant = Color(0xFF535DA6)
 
 // Legacy values
 val Purple80 = Color(0xFFD0BCFF)

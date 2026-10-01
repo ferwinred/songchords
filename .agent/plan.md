@@ -1,44 +1,43 @@
 # Project Plan
 
-SongChords app - Fix Release APK signing configuration in build.gradle.kts for direct APK installation on Samsung devices, and design custom Material 3 adaptive app launcher icons.
+SongChords app - Unify TopAppBar (eliminate duplicate stacked headers), make Bottom Navigation Bar icon-only and keyboard-aware, and reorganize Song Editor metadata fields (full-width Tags field, 2-column Key/Time Sig & Tempo/Notes).
 
 ## Project Brief
 
-# SongChords - Praise & Worship Project Brief
+# SongChords - Project Brief
 
 ## Features
+- **Unified Top Navigation Header**: A single, non-stacked `TopAppBar` across all screens featuring a Dark Navy background (`#020873` Light / `#1E2558` Dark), single-line title with ellipsis truncation ("Acordes Cristianos y Alabanzas"), and icon-only action buttons (Cloud, Tools, Import, Theme, Language).
+- **Keyboard-Aware Icon-Only Bottom Navigation**: Clean, icon-only bottom navigation bar (Songs 🎵, Tuner 🎸, Chord Library 🎹, New Song ➕) without text labels that automatically hides when the soft keyboard is active to prevent vertical screen squashing.
+- **Structured Song Editor Form**: Reorganized metadata card UI featuring spacious full-width rows (Title, Artist, Tags) and 2-column grid rows (Key & Time Signature, Tempo BPM & Notes/Comments) ensuring zero element clipping or squashing.
+- **Song & Chord Library View**: Centralized screen layout for managing, editing, and displaying Christian songs and chord sheets.
 
-1. **Chord & Lyric Viewing Interface**: Display song lyrics alongside interactive chord progressions with key transposition capabilities for praise and worship music.
-2. **Material 3 Adaptive App Launcher Icon**: Custom vector-based adaptive launcher icon set (`ic_launcher`) featuring stylized acoustic guitar and piano elements across all mipmap densities.
-3. **Optimized Release APK Build Configuration**: Configured release build signing in `build.gradle.kts` to enable seamless direct APK installation on Samsung devices and other Android platforms without parsing errors.
-4. **Adaptive Display & Responsive Layout**: Multi-pane and responsive user interface tailored for seamless viewing across diverse screen sizes and foldables.
-
-## High-Level Tech Stack
-
+## High-Level Technical Stack
 - **Language**: Kotlin
-- **UI Framework**: Jetpack Compose with Material Design 3
+- **UI Framework**: Jetpack Compose (Material 3)
 - **Navigation Strategy**: Jetpack Navigation 3 (state-driven navigation)
-- **Adaptive Strategy**: Compose Material Adaptive Library (`androidx.compose.material3.adaptive`)
-- **Concurrency & State Management**: Kotlin Coroutines & StateFlow
-- **Build System**: Gradle Kotlin DSL (`build.gradle.kts`)
+- **Adaptive Layouts**: Compose Material Adaptive library (`androidx.compose.material3.adaptive`)
+- **Async & State Management**: Kotlin Coroutines & StateFlow
+- **System Insets Handling**: Compose Window Insets (`WindowInsets.ime` for soft keyboard reactivity)
 
 ## Implementation Steps
+**Total Duration:** 16m 50s
 
-### Task_59_FixAPKSigningAndDesignLauncherIcon: Fix Release APK Signing & Design App Launcher Icons: 1) In app/build.gradle.kts, configure release buildType with signingConfig = signingConfigs.getByName('debug') so ./gradlew assembleRelease produces a signed, installable APK (app-release.apk) for Samsung A55 and all Android devices. 2) Design Material 3 adaptive launcher icon (ic_launcher_foreground.xml, ic_launcher_background.xml, ic_launcher.xml, ic_launcher_round.xml) with guitar, piano, and musical cross theme. 3) Generate launcher icon mipmap resources for mdpi, hdpi, xhdpi, xxhdpi, xxxhdpi.
+### Task_69_FixTopBarBottomBarAndSongEditorLayout: Fix 3 Critical UI/UX Bugs from Screenshots: 1) Unify TopAppBar into a SINGLE non-stacked header bar across all screens (eliminate duplicate purple top bar), with brand Dark Navy background (#020873 Light / #1E2558 Dark), single-line title ('Acordes Cristianos y Alabanzas'), and icon-only action buttons. 2) Make Bottom Navigation Bar icon-only without text labels (label = null, alwaysShowLabel = false) and hide when soft keyboard is open (WindowInsets.ime). 3) Reorganize Song Editor metadata card into full-width Title, Artist, Tags, and 2-column Key/Time Sig & Tempo/Notes fields.
 - **Status:** COMPLETED
-- **Updates:** Task_59_FixAPKSigningAndDesignLauncherIcon completed successfully. 1) Updated app/build.gradle.kts release buildType with signingConfig = signingConfigs.getByName("debug"), enabling assembleRelease to produce signed, installable app-release.apk files for Samsung A55 and all Android devices. 2) Designed Material 3 Adaptive App Launcher Icon (ic_launcher_background.xml deep purple gradient, ic_launcher_foreground.xml vector acoustic guitar + piano keys + praise notes in gold/white). 3) Generated mipmap-anydpi-v26 XMLs and legacy PNG icons for mdpi, hdpi, xhdpi, xxhdpi, xxxhdpi folders. Verified with assembleRelease, assembleDebug, and 64 passing unit tests.
+- **Updates:** Task_69_FixTopBarBottomBarAndSongEditorLayout completed successfully. Resolved 3 critical UI/UX issues from user screenshots: 1) Unified TopAppBar into a single clean non-stacked header bar across all screens with single-line title ('Acordes Cristianos y Alabanzas' with TextOverflow.Ellipsis) and Brand Dark Navy background (#020873 Light / #1E2558 Dark). 2) Made Bottom Navigation Bar icon-only (label = null, alwaysShowLabel = false) and keyboard-aware (hides automatically when WindowInsets.ime soft keyboard is active). 3) Reorganized Song Editor metadata card into 5 spacious rows (full-width Title, Artist, Tags, and 2-column Key/Time Sig & Tempo/Notes fields). Verified with assembleDebug build and 66 passing unit tests.
 - **Acceptance Criteria:**
-  - Release buildType configured with debug signingConfig in build.gradle.kts
-  - ./gradlew assembleRelease generates signed, installable app-release.apk
-  - Adaptive launcher icon files generated for all mipmap densities
+  - TopAppBar is unified into a single clean header without double stacking
+  - Bottom Navigation Bar is icon-only and hides when soft keyboard is active
+  - Song Editor Tags field has full-width layout and never squashes or wraps placeholder text awkwardly
   - build pass
 
-### Task_60_RunAndVerifyAPKAndLauncherIcon: Verify signed release APK build, adaptive launcher icon rendering, unit tests, and git push. Ensure zero errors.
-- **Status:** IN_PROGRESS
+### Task_70_RunAndVerifyUIFixesScreenshots: Verify unified top bar, icon-only/keyboard-aware bottom bar, and reorganized song editor on emulator with critic_agent. Ensure zero crashes.
+- **Status:** COMPLETED
+- **Updates:** Task_70_RunAndVerifyUIFixesScreenshots completed successfully. Verified on device/emulator with 0 crashes. Confirmed all screenshot UI fixes: 1) Native purple ActionBar disabled in themes.xml (parent=NoActionBar), leaving strictly ONE Compose TopAppBar with crisp white title 'Acordes Cristianos y Alabanzas' on Brand Dark Navy background (#020873 / #1E2558). 2) Bottom Navigation Bar is icon-only without text labels (label = null, alwaysShowLabel = false) and keyboard-aware (hides automatically when soft keyboard is active). 3) Reorganized Song Editor metadata card with 2-column rows for Key/Time Sig & Tempo/Notes, full-width Tags/Etiquetas field at the bottom, and 24.dp bottom padding. All 66 unit tests pass.
 - **Acceptance Criteria:**
   - build pass
-  - Release APK signed and verified
-  - Launcher icons verified
-  - Changes pushed to GitHub main branch
-- **StartTime:** 2026-09-26 11:22:07 GMT-05:00
+  - app does not crash
+  - Unified top bar, icon-only bottom bar, and song editor layout verified clean on emulator
+- **Duration:** 16m 50s
 

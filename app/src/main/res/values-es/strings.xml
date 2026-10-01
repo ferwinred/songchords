@@ -1,6 +1,10 @@
 <resources>
     <string name="app_name">SongChords - Acordes Cristianos</string>
-    <string name="top_bar_title">""</string>
+    <string name="top_bar_title">Acordes Cristianos y Alabanzas</string>
+    <string name="nav_songs">Canciones</string>
+    <string name="nav_tuner">Afinador</string>
+    <string name="nav_chord_library">Biblioteca</string>
+    <string name="nav_new_song">Nueva Canción</string>
     <string name="new_song">Nueva Canción</string>
     <string name="back">Atrás</string>
     <string name="back_to_list">Volver a la lista</string>
@@ -112,8 +116,13 @@
     <string name="label_tempo">Tempo (BPM)</string>
     <string name="label_time_signature">Compás</string>
     <string name="label_tags">Etiquetas (separadas por comas ej. Rock, Balada, Alabanza)</string>
+    <string name="placeholder_tags">Alabanza, Adoración, Rock&#8230;</string>
     <string name="quick_insert_helper">Asistente de Inserción Rápida (Inserta en el cursor)</string>
     <string name="add_chord">+ Acorde</string>
+    <string name="song_comments">Notas y Comentarios de Interpretación</string>
+    <string name="insert_comment">+ Comentario</string>
+    <string name="comment_hint">Ej. Usar Capo en traste 2, intro suave, solo piano</string>
+    <string name="comment_label">Notas / Comentarios</string>
     <string name="label_lyrics_chord_tags">Letra y Etiquetas de Acordes (ej. [G]Tu poeta, [Cadd2]tu canción)</string>
     <string name="insert_custom_chord_title">Insertar Etiqueta de Acorde</string>
     <string name="label_chord_symbol">Símbolo de Acorde ej. F#/A#, Cadd2, G7</string>

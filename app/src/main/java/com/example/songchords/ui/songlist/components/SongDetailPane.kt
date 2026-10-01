@@ -7,6 +7,7 @@ import androidx.compose.animation.expandVertically
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.shrinkVertically
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.gestures.scrollBy
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -37,6 +38,7 @@ import androidx.compose.material.icons.rounded.Edit
 import androidx.compose.material.icons.rounded.Favorite
 import androidx.compose.material.icons.rounded.FavoriteBorder
 import androidx.compose.material.icons.rounded.FormatQuote
+import androidx.compose.material.icons.rounded.Info
 import androidx.compose.material.icons.rounded.LinearScale
 import androidx.compose.material.icons.rounded.MusicNote
 import androidx.compose.material.icons.rounded.PictureAsPdf
@@ -62,6 +64,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -76,6 +79,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.text.rememberTextMeasurer
@@ -497,6 +501,14 @@ fun SongDetailPane(
                     }
                 }
 
+                if (!song.comments.isNullOrBlank()) {
+                    Spacer(modifier = Modifier.height(8.dp))
+                    RenderCommentLine(
+                        comment = song.comments,
+                        effectiveFontScale = effectiveFontScale
+                    )
+                }
+
                 Spacer(modifier = Modifier.height(12.dp))
             }
 
@@ -540,12 +552,12 @@ fun SongDetailPane(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(bottom = cardBottomMargin),
-                    shape = RoundedCornerShape(0.dp),
+                    shape = RoundedCornerShape(16.dp),
                     colors = CardDefaults.cardColors(
-                        containerColor = Color.Transparent
+                        containerColor = MaterialTheme.colorScheme.surface
                     ),
-                    border = null,
-                    elevation = CardDefaults.cardElevation(defaultElevation = 0.dp)
+                    border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline.copy(alpha = 0.4f)),
+                    elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
                 ) {
                     Column(
                         modifier = Modifier
@@ -562,6 +574,12 @@ fun SongDetailPane(
 
                         section.lines.forEach { line ->
                             when (line) {
+                                is ChordLyricsLine.Comment -> {
+                                    RenderCommentLine(
+                                        comment = line.comment,
+                                        effectiveFontScale = effectiveFontScale
+                                    )
+                                }
                                 is ChordLyricsLine.ChordLyrics -> {
                                     if (isChordOnlyLine(line)) {
                                         RenderChordOnlyLine(
@@ -847,6 +865,7 @@ private fun RenderChordOnlyLine(
             Surface(
                 shape = RoundedCornerShape((8 * effectiveFontScale).dp.coerceAtLeast(4.dp)),
                 color = MaterialTheme.colorScheme.primaryContainer,
+                border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline),
                 tonalElevation = 3.dp,
                 shadowElevation = 2.dp,
                 onClick = { onChordClick(chord) }
@@ -899,19 +918,34 @@ private fun RenderChordLyricsLine(
     ) {
         // Row 1 (Chord Line)
         if (line.chordPositions.isNotEmpty()) {
+            val badgeWidths = remember(line.chordPositions) { mutableStateMapOf<Int, Float>() }
+            val defaultWidth = 0f
+            val minGapPx = with(LocalDensity.current) { 6.dp.toPx() }
+
+            val resolvedStartX = FloatArray(line.chordPositions.size)
+            for (i in line.chordPositions.indices) {
+                val cp = line.chordPositions[i]
+                val xPx = textLayoutResult.getHorizontalPosition(
+                    cp.charIndex.coerceIn(0, maxOf(0, line.plainText.length)),
+                    usePrimaryDirection = true
+                )
+                val badgeWidth = badgeWidths[i] ?: defaultWidth
+                var startX = maxOf(0f, xPx - badgeWidth / 2f)
+                if (i > 0) {
+                    val prevEndX = resolvedStartX[i - 1] + (badgeWidths[i - 1] ?: defaultWidth)
+                    if (startX < prevEndX + minGapPx) {
+                        startX = prevEndX + minGapPx
+                    }
+                }
+                resolvedStartX[i] = startX
+            }
+
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(chordBoxHeight)
             ) {
-                line.chordPositions.forEach { cp ->
-                    val xPx = textLayoutResult.getHorizontalPosition(
-                        cp.charIndex.coerceIn(0, maxOf(0, line.plainText.length)),
-                        usePrimaryDirection = true
-                    )
-                    var badgeWidthPx by remember { mutableFloatStateOf(0f) }
-                    val centeredXPx = maxOf(0f, xPx - (badgeWidthPx / 2f))
-
+                line.chordPositions.forEachIndexed { i, cp ->
                     ChordBadge(
                         chord = cp.chord,
                         notationSystem = notationSystem,
@@ -919,8 +953,8 @@ private fun RenderChordLyricsLine(
                         effectiveFontScale = effectiveFontScale,
                         onClick = { onChordClick(cp.chord) },
                         modifier = Modifier
-                            .onSizeChanged { size -> badgeWidthPx = size.width.toFloat() }
-                            .offset { IntOffset(centeredXPx.roundToInt(), 0) }
+                            .onSizeChanged { size -> badgeWidths[i] = size.width.toFloat() }
+                            .offset { IntOffset(resolvedStartX[i].roundToInt(), 0) }
                     )
                 }
             }
@@ -953,6 +987,7 @@ private fun ChordBadge(
     Surface(
         shape = RoundedCornerShape((8 * effectiveFontScale).dp.coerceAtLeast(4.dp)),
         color = MaterialTheme.colorScheme.primaryContainer,
+        border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline),
         tonalElevation = 2.dp,
         shadowElevation = 1.dp,
         onClick = onClick,
@@ -968,6 +1003,45 @@ private fun ChordBadge(
             color = MaterialTheme.colorScheme.onPrimaryContainer,
             modifier = Modifier.padding(horizontal = horizontalPadding, vertical = verticalPadding)
         )
+    }
+}
+
+@Composable
+private fun RenderCommentLine(
+    comment: String,
+    effectiveFontScale: Float
+) {
+    val verticalPadding = (4 * effectiveFontScale).dp.coerceAtLeast(2.dp)
+    val fontSize = (14 * effectiveFontScale).sp
+    val iconSize = (18 * effectiveFontScale).dp.coerceAtLeast(14.dp)
+
+    Surface(
+        shape = RoundedCornerShape(12.dp),
+        color = MaterialTheme.colorScheme.tertiaryContainer,
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = verticalPadding)
+    ) {
+        Row(
+            modifier = Modifier.padding(horizontal = 12.dp, vertical = 8.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            Icon(
+                imageVector = Icons.Rounded.Info,
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.onTertiaryContainer,
+                modifier = Modifier.size(iconSize)
+            )
+            Text(
+                text = comment,
+                style = MaterialTheme.typography.bodyMedium.copy(
+                    fontSize = fontSize,
+                    fontStyle = FontStyle.Italic
+                ),
+                color = MaterialTheme.colorScheme.onTertiaryContainer
+            )
+        }
     }
 }
 

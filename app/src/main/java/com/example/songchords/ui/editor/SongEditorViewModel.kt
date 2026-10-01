@@ -22,6 +22,7 @@ data class SongEditorUiState(
     val title: String = "",
     val artist: String = "",
     val originalKey: String = "C",
+    val comments: String = "",
     val tempoText: String = "",
     val timeSignature: String = "4/4",
     val tagsText: String = "",
@@ -41,6 +42,7 @@ data class SongEditorUiState(
                 artist = artist.ifEmpty { "Unknown Artist" },
                 originalKey = originalKey,
                 content = contentTextFieldValue.text,
+                comments = comments.ifBlank { null },
                 tempo = tempoInt,
                 timeSignature = timeSignature,
                 tags = tagList
@@ -91,6 +93,7 @@ class SongEditorViewModel(
                         title = song.title,
                         artist = song.artist,
                         originalKey = song.originalKey,
+                        comments = song.comments ?: "",
                         tempoText = song.tempo?.toString() ?: "",
                         timeSignature = song.timeSignature ?: "4/4",
                         tagsText = song.tags.joinToString(", "),
@@ -110,6 +113,10 @@ class SongEditorViewModel(
 
     fun onArtistChange(newArtist: String) {
         _uiState.update { it.copy(artist = newArtist, errorMessage = null) }
+    }
+
+    fun onCommentsChange(newComments: String) {
+        _uiState.update { it.copy(comments = newComments) }
     }
 
     fun onKeyChange(newKey: String) {
@@ -180,6 +187,28 @@ class SongEditorViewModel(
         }
     }
 
+    fun insertCommentTag(commentText: String = "...") {
+        val currentTFV = _uiState.value.contentTextFieldValue
+        val tagToInsert = "[Comentario: $commentText]"
+        val currentText = currentTFV.text
+        val selection = currentTFV.selection
+
+        val newText = StringBuilder(currentText)
+            .insert(selection.start, tagToInsert)
+            .toString()
+
+        val newCursorPos = selection.start + tagToInsert.length
+
+        _uiState.update {
+            it.copy(
+                contentTextFieldValue = TextFieldValue(
+                    text = newText,
+                    selection = TextRange(newCursorPos)
+                )
+            )
+        }
+    }
+
     fun saveSong() {
         val state = _uiState.value
         if (state.title.isBlank()) {
@@ -208,6 +237,7 @@ class SongEditorViewModel(
                 artist = state.artist.ifBlank { "Unknown Artist" }.trim(),
                 originalKey = state.originalKey,
                 content = state.contentTextFieldValue.text,
+                comments = state.comments.ifBlank { null },
                 tempo = tempoInt,
                 timeSignature = state.timeSignature.ifBlank { "4/4" },
                 tags = tagList,
@@ -241,6 +271,7 @@ class SongEditorViewModel(
                         title = importedSong.title,
                         artist = importedSong.artist,
                         originalKey = importedSong.originalKey,
+                        comments = importedSong.comments ?: "",
                         tempoText = importedSong.tempo?.toString() ?: "",
                         timeSignature = importedSong.timeSignature ?: "4/4",
                         tagsText = importedSong.tags.joinToString(", "),

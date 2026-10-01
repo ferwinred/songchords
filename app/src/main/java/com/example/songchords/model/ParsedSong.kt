@@ -13,6 +13,7 @@ data class ChordPosition(
  */
 sealed class ChordLyricsLine {
     data class SectionHeader(val title: String) : ChordLyricsLine()
+    data class Comment(val comment: String) : ChordLyricsLine()
     data class ChordLyrics(
         val plainText: String,
         val chordPositions: List<ChordPosition>
@@ -69,6 +70,7 @@ data class ParsedSong(
         return lines.joinToString("\n") { line ->
             when (line) {
                 is ChordLyricsLine.SectionHeader -> "[${line.title}]"
+                is ChordLyricsLine.Comment -> "[Comentario: ${line.comment}]"
                 is ChordLyricsLine.EmptyLine -> ""
                 is ChordLyricsLine.ChordLyrics -> {
                     if (line.chordPositions.isEmpty()) {

@@ -1,6 +1,10 @@
 <resources>
     <string name="app_name">SongChords - Praise &amp; Worship</string>
-    <string name="top_bar_title">""</string>
+    <string name="top_bar_title">Acordes Cristianos y Alabanzas</string>
+    <string name="nav_songs">Songs</string>
+    <string name="nav_tuner">Tuner</string>
+    <string name="nav_chord_library">Chord Library</string>
+    <string name="nav_new_song">New Song</string>
     <string name="new_song">New Song</string>
     <string name="back">Back</string>
     <string name="back_to_list">Back to list</string>
@@ -112,8 +116,13 @@
     <string name="label_tempo">Tempo (BPM)</string>
     <string name="label_time_signature">Time Sig</string>
     <string name="label_tags">Tags (comma separated e.g. Rock, Ballad, Worship)</string>
+    <string name="placeholder_tags">Worship, Praise, Rock&#8230;</string>
     <string name="quick_insert_helper">Quick Insert Helper (Inserts at cursor)</string>
     <string name="add_chord">+ Chord</string>
+    <string name="song_comments">Performance Notes &amp; Comments</string>
+    <string name="insert_comment">+ Comment</string>
+    <string name="comment_hint">e.g. Capo 2nd fret, soft intro, piano only</string>
+    <string name="comment_label">Notes / Comments</string>
     <string name="label_lyrics_chord_tags">Lyrics &amp; Chord Tags (e.g. [G]Tu poeta, [Cadd2]tu canción)</string>
     <string name="insert_custom_chord_title">Insert Custom Chord Tag</string>
     <string name="label_chord_symbol">Chord Symbol e.g., F#/A#, Cadd2, G7</string>

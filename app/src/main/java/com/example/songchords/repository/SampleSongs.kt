@@ -17,25 +17,50 @@ object SampleSongs {
             [G]  [Cadd2]  [D]  [Em]
 
             [Verse 1]
-            [G] Tu poeta, tu canción
-            [Cadd2] El que escribe en su corazón
-            [D] La melodía de tu voz
-            [Em] El que busca de tu amor
+            [G] Cuando desperté allí estabas tú[D]
+            Aquella mujer con la que soñé[Em]
+            Le vestí la piel sus labios bes[Cadd2]é
+            Y en su corazón allí me refugié[G]
 
             [Verse 2]
-            [G] Como río que busca el mar
-            [Cadd2] Mi vida te quiere adorar
-            [D] En tus brazos encontrar
-            [Em] La paz que solo tú puedes dar
+            Late el corazón, late hoy por vos[D]
+            Y si canto yo, canto para ti[Em]
+            Mi vida entera toda te la doy[Cadd2]
+            Ya no tengas miedo yo aquí esto[G]y [D]
 
             [Chorus]
-            Por eso [G]quiero ser tu poema, [D]tu dulce verdad
-            [Em]Cantar para ti en la [Cadd2]eternidad
-            Y en cada [G]verso entregarte [D]mi corazón
-            [Em]Tu poeta, [Cadd2]mi Señor
-
+            Tu poet[G]a, tu verano[D]
+            El silenc[Am]io de mi v[Em]oz diciendo te am[D]o
+            Mi prince[G]sa, mi primaver[D]a
+            Mi ternu[C]ra y mi am[G]or por vez primer[D]a  
+            
+            [Verse 3]
+            Me c[G]onoces bien siempre te amar[D]é
+            Aunque estemos lejos yo aquí estaré[Em]
+            Seré tu poema tu razón de ser[Cadd2]
+            Tú serás mi reina, mi única mujer[G]
+           
+            [Verse 4]
+            Tú serás mi aliento serás mi edén[D]
+            Mi eterno romance confidente fiel[Em]
+            Niña consentida amor de mi ser[Cadd2]
+            Agua de este río que yo beber[G]é [D]
+            
+            [Chorus]
+            
             [Outro]
-            [G]  [Cadd2]  [D]  [Em]  [G]
+            [F]  [C]  [G]  [Em]  [F]  [C]  [G]  [E]
+            
+            [Chorus]
+            Tu poet[A]a, tu verano[E]
+            El silenc[Bm]io de mi v[F#m]oz diciendo te am[E]o
+            Mi prince[A]sa, mi primaver[E]a
+            Mi ternu[D]ra y mi am[A]or por vez primer[E]a  
+            Soy un niño[A] enamorado[E]
+            El dise[D]ño de tu sue[A]ño en mi plant[E]ado
+            Consentid[A]a mariposita[E]
+            Prision[D]era de este amo[A]r que no se rind[E]e
+            
         """.trimIndent()
     )
 
@@ -81,30 +106,42 @@ object SampleSongs {
             [G]  [C]  [G]  [C]
 
             [Verse 1]
-            Te [G]amo Dios, tu mi[C]sericordia no [G]falla
-            Todos mis [Em]días, en tus [C]manos he es[D]tado
-            Desde el [Em]momento en que me des[C]pierto
-            Hasta el [G]por[D/F#]nir del [Em]sol
-            Can[C]taré de la bon[D]dad de [G]Dios
+            Te [G]amo Dios, tu am[C]or nunca me fa[G]lla
+            M[D]i existi[E]r en tus m[C]anos es[D]ta
+            Desde el momento en que me des[Em]pierto [C]
+            Hasta el an[G]oche[D/F#]r [Em]
+            Yo can[C]taré de la bon[D]dad de [G]Dios
 
             [Chorus]
-            Toda mi [C]vida has sido [G]fiel
-            Toda mi [C]vida has sido [G]tan, tan [D]bueno
-            Con cada [C]aliento que me [G]da[D/F#]is hoy[Em]
-            Can[C]taré de la bon[D]dad de [G]Dios
+            E[C]n mi vida has sido b[G]ueno
+            E[C]n mi vida has sido t[G]an, tan fi[D]el
+            C[C]on mi ser, con cada al[G]iento [D/F#] [Em]
+            Yo canta[C]ré de la b[D]ondad de D[G]ios
 
             [Verse 2]
-            Me [G]mantiene tu voz, a tra[C]vés del fuego y la [G]sombra
-            Tu pre[Em]sencia cerca es[C]tá en la oscu[D]ridad
-            Te co[Em]nozco como un [C]padre
-            Como [G]un a[D/F#]migo [Em]fiel
-            He vi[C]vido en la bon[D]dad de [G]Dios
+            Y[G]o amo tu vo[C]z mantiene tu voz 
+            Me has gu[C]iado por el fu[G]ego 
+            Tu cerca es[D/F#]tás [Em]
+            En l[C]a oscurid[D]ad
+            Te conozco como un p[Em]adre [C]
+            Y como am[G]igo [D/F#]fiel [Em]
+            Mi vida est[C]á en la bon[D]dad de [G]Dios
 
             [Chorus]
-            Toda mi [C]vida has sido [G]fiel
-            Toda mi [C]vida has sido [G]tan, tan [D]bueno
-            Con cada [C]aliento que me [G]da[D/F#]is hoy[Em]
-            Can[C]taré de la bon[D]dad de [G]Dios
+            
+            [Outro]
+            T[G/B]u fidelidad s[C]igue
+            [D]Persiguiendom[G]e
+            T[G/B]u fidelidad s[C]igue
+            [D]Persiguiendom[G]e
+            Todo lo que [G/B]soy 
+            Te lo entrego h[G]oy
+            A [D]ti me rendir[Em]é
+            T[G/B]u fidelidad s[C]igue
+            [D]Persiguiendom[G]e (Bis)
+            
+            [Chorus]
+            
         """.trimIndent()
     )
 
@@ -139,7 +176,7 @@ object SampleSongs {
             Y el mu[A]rmurar del cla[E]ro manant[A]ial
 
             [Verse 3]
-            
+            Cu[A]ndo recuerdo
             
             [Verse 4]
         """.trimIndent()

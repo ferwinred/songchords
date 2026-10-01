@@ -11,6 +11,7 @@ data class Song(
     val artist: String,
     val originalKey: String,
     val content: String,
+    val comments: String? = null,
     val tempo: Int? = null,
     val timeSignature: String? = "4/4",
     val tags: List<String> = emptyList(),

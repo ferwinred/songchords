@@ -23,9 +23,12 @@ import androidx.core.os.LocaleListCompat
 import com.example.songchords.R
 import java.util.Locale
 
+import androidx.compose.ui.graphics.Color
+
 @Composable
 fun LanguageSelector(
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    tint: Color = MaterialTheme.colorScheme.primary
 ) {
     var expanded by remember { mutableStateOf(false) }
     val configuration = LocalConfiguration.current
@@ -47,7 +50,7 @@ fun LanguageSelector(
             Icon(
                 imageVector = Icons.Rounded.Language,
                 contentDescription = stringResource(R.string.language_selector),
-                tint = MaterialTheme.colorScheme.primary
+                tint = tint
             )
         }
 

@@ -5,88 +5,93 @@
     android:viewportWidth="108"
     android:viewportHeight="108">
 
-    <!-- Praise Radiance Rays in Background of Foreground -->
+    <!-- Praise Radiance Rays in Background -->
     <path
-        android:fillColor="#33FFD700"
-        android:pathData="M54,22 L40,78 L54,78 Z" />
+        android:fillColor="#33D91E2E"
+        android:pathData="M54,20 L40,76 L54,76 Z" />
     <path
-        android:fillColor="#22FFD700"
-        android:pathData="M54,22 L26,60 L54,78 Z" />
+        android:fillColor="#22D90404"
+        android:pathData="M54,20 L26,58 L54,76 Z" />
     <path
-        android:fillColor="#33FFD700"
-        android:pathData="M54,22 L68,78 L54,78 Z" />
+        android:fillColor="#33D91E2E"
+        android:pathData="M54,20 L68,76 L54,76 Z" />
     <path
-        android:fillColor="#22FFD700"
-        android:pathData="M54,22 L82,60 L54,78 Z" />
+        android:fillColor="#22D90404"
+        android:pathData="M54,20 L82,58 L54,76 Z" />
 
-    <!-- Praise Cross / Starburst / Light at Top (x=54, y=22) -->
+    <!-- Praise Star / Cross at Top (x=54, y=20) -->
     <path
-        android:fillColor="#FFFFFF"
-        android:pathData="M54,16 L55.5,20.5 L60,22 L55.5,23.5 L54,28 L52.5,23.5 L48,22 L52.5,20.5 Z" />
+        android:fillColor="#F2F2F2"
+        android:pathData="M54,14 L55.5,18.5 L60,20 L55.5,21.5 L54,26 L52.5,21.5 L48,20 L52.5,18.5 Z" />
     <path
-        android:fillColor="#FFD700"
-        android:pathData="M54,18 L55,21 L58,22 L55,23 L54,26 L53,23 L50,22 L53,21 Z" />
+        android:fillColor="#D90404"
+        android:pathData="M54,16 L55,19 L58,20 L55,21 L54,24 L53,21 L50,20 L53,19 Z" />
 
-    <!-- Stylized Acoustic Guitar Body & Neck -->
-    <!-- Guitar Neck & Headstock -->
+    <!-- Stylized Acoustic Guitar Neck & Headstock -->
+    <!-- Guitar Neck -->
     <path
-        android:fillColor="#FFE082"
+        android:fillColor="#F2F2F2"
         android:pathData="M48,46 L60,28 L64,30 L52,48 Z" />
-    <!-- Neck Fretboard Lines / Strings -->
+    <!-- Neck Fretboard Lines -->
     <path
-        android:strokeColor="#FFFFFF"
+        android:strokeColor="#D91E2E"
         android:strokeWidth="0.8"
         android:pathData="M49.5,45.5 L61.5,27.5 M50.5,46.5 L62.5,28.5" />
     <!-- Guitar Headstock -->
     <path
-        android:fillColor="#FFC107"
+        android:fillColor="#D91E2E"
         android:pathData="M60,28 L65,20.5 C66,19 68,20 67,22 L64,30 Z" />
     <!-- Tuning Pegs -->
     <path
-        android:fillColor="#FFFFFF"
+        android:fillColor="#F2F2F2"
         android:pathData="M61.5,22.5 A1,1 0 1,0 61.5,24.5 A1,1 0 1,0 61.5,22.5 Z M63.5,19.5 A1,1 0 1,0 63.5,21.5 A1,1 0 1,0 63.5,19.5 Z M65.5,25 A1,1 0 1,0 65.5,27 A1,1 0 1,0 65.5,25 Z M67.5,22 A1,1 0 1,0 67.5,24 A1,1 0 1,0 67.5,22 Z" />
 
     <!-- Acoustic Guitar Body -->
+    <!-- Outer Body - Crimson Red -->
     <path
-        android:fillColor="#FFD700"
+        android:fillColor="#D91E2E"
         android:pathData="M38,50 C33,52 32,58 35,63 C38,68 44,71 50,71 C57,71 62,67 63,61 C64,56 61,51 56,49 C54,44 49,42 44,43 C39,44 38,48 38,50 Z" />
+    <!-- Inner Body Highlight - Vivid Red -->
     <path
-        android:fillColor="#FFFFFF"
+        android:fillColor="#D90404"
         android:pathData="M40,51 C36,53 35,58 37,62 C40,66 45,69 50,69 C55,69 60,66 61,60 C62,56 59,52 55,50 C53,46 49,44 45,45 C41,46 40,49 40,51 Z" />
-    <!-- Guitar Pickguard -->
+    <!-- Pickguard - Off-White -->
     <path
-        android:fillColor="#FFB300"
+        android:fillColor="#F2F2F2"
         android:pathData="M51,52 C54,53 56,56 55,59 C53,58 51,56 51,52 Z" />
-    <!-- Guitar Sound Hole -->
+    <!-- Guitar Sound Hole - Dark Navy Blue background, Off-White ring -->
     <path
-        android:fillColor="#1F0836"
+        android:fillColor="#020873"
         android:pathData="M48,51 A4.5,4.5 0 1,0 48,60 A4.5,4.5 0 1,0 48,51 Z" />
     <path
-        android:fillColor="#FFD700"
-        android:strokeColor="#FFD700"
+        android:fillColor="#F2F2F2"
+        android:strokeColor="#F2F2F2"
         android:strokeWidth="0.8"
         android:pathData="M48,52 A3.5,3.5 0 1,0 48,59 A3.5,3.5 0 1,0 48,52 Z" />
-    <!-- Guitar Bridge -->
+    <!-- Guitar Bridge - Dark Navy Blue / Off-White pins -->
     <path
-        android:fillColor="#581A8C"
+        android:fillColor="#020873"
         android:pathData="M43,65 L53,65 C53.5,65 54,65.5 54,66 L54,67 C54,67.5 53.5,68 53,68 L43,68 C42.5,68 42,67.5 42,67 L42,66 C42,65.5 42.5,65 43,65 Z" />
     <path
-        android:fillColor="#FFFFFF"
+        android:fillColor="#F2F2F2"
         android:pathData="M44.5,66.5 A0.6,0.6 0 1,0 44.5,67.7 A0.6,0.6 0 1,0 44.5,66.5 Z M47,66.5 A0.6,0.6 0 1,0 47,67.7 A0.6,0.6 0 1,0 47,66.5 Z M49.5,66.5 A0.6,0.6 0 1,0 49.5,67.7 A0.6,0.6 0 1,0 49.5,66.5 Z M51.5,66.5 A0.6,0.6 0 1,0 51.5,67.7 A0.6,0.6 0 1,0 51.5,66.5 Z" />
 
     <!-- Piano Keys Base Ribbon -->
     <path
-        android:fillColor="#FFD700"
+        android:fillColor="#D91E2E"
         android:pathData="M23,73 L85,73 C86,73 86.5,73.5 86.5,74.5 L86.5,85.5 C86.5,86.5 86,87 85,87 L23,87 C22,87 21.5,86.5 21.5,85.5 L21.5,74.5 C21.5,73.5 22,73 23,73 Z" />
+    <!-- White Keys -->
     <path
-        android:fillColor="#FFFFFF"
+        android:fillColor="#F2F2F2"
         android:pathData="M23,74 L85,74 L85,86 L23,86 Z" />
+    <!-- Key Divider Lines -->
     <path
-        android:strokeColor="#1F0836"
+        android:strokeColor="#020873"
         android:strokeWidth="0.8"
         android:pathData="M29.2,74 L29.2,86 M35.4,74 L35.4,86 M41.6,74 L41.6,86 M47.8,74 L47.8,86 M54.0,74 L54.0,86 M60.2,74 L60.2,86 M66.4,74 L66.4,86 M72.6,74 L72.6,86 M78.8,74 L78.8,86" />
+    <!-- Black Keys -->
     <path
-        android:fillColor="#1F0836"
+        android:fillColor="#020873"
         android:pathData="
             M27.5,74 L30.5,74 L30.5,81.5 L27.5,81.5 Z
             M33.7,74 L36.7,74 L36.7,81.5 L33.7,81.5 Z
@@ -97,29 +102,31 @@
             M77.1,74 L80.1,74 L80.1,81.5 L77.1,81.5 Z" />
 
     <!-- Musical Notes -->
+    <!-- Left Note - Crimson Red -->
     <path
-        android:fillColor="#FFD700"
+        android:fillColor="#D91E2E"
         android:pathData="M26,38 A2.5,2.5 0 1,0 26,43 A2.5,2.5 0 1,0 26,38 Z" />
     <path
-        android:fillColor="#FFD700"
+        android:fillColor="#D91E2E"
         android:pathData="M27.5,40.5 L27.5,30 L33,28 L33,31 L29,32.2 L29,40.5 Z" />
 
+    <!-- Right Double Note - Off-White with Vivid Red beam -->
     <path
-        android:fillColor="#FFFFFF"
+        android:fillColor="#F2F2F2"
         android:pathData="M70,42 A2,2 0 1,0 70,46 A2,2 0 1,0 70,42 Z M78,39 A2,2 0 1,0 78,43 A2,2 0 1,0 78,39 Z" />
     <path
-        android:fillColor="#FFFFFF"
+        android:fillColor="#F2F2F2"
         android:pathData="M71.2,43.5 L71.2,33 L80,30 L80,40.5 L78.8,40.5 L78.8,32.2 L72.4,34.4 L72.4,43.5 Z" />
     <path
-        android:fillColor="#FFD700"
+        android:fillColor="#D90404"
         android:pathData="M71.2,31 L80,28 L80,30.5 L71.2,33.5 Z" />
 
     <!-- Extra Praise Sparkles -->
     <path
-        android:fillColor="#FFFFFF"
+        android:fillColor="#F2F2F2"
         android:pathData="M36,23 L36.8,24.2 L38,25 L36.8,25.8 L36,27 L35.2,25.8 L34,25 L35.2,24.2 Z" />
     <path
-        android:fillColor="#FFD700"
+        android:fillColor="#D90404"
         android:pathData="M76,50 L76.8,51.2 L78,52 L76.8,52.8 L76,54 L75.2,52.8 L74,52 L75.2,51.2 Z" />
 
 </vector>

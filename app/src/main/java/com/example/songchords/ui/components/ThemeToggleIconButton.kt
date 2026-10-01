@@ -17,10 +17,14 @@ import com.example.songchords.ui.theme.LocalThemeMode
 import com.example.songchords.ui.theme.SongChordsTheme
 import com.example.songchords.ui.theme.ThemeMode
 
+import androidx.compose.material3.LocalContentColor
+import androidx.compose.ui.graphics.Color
+
 @Composable
 fun ThemeToggleIconButton(
     modifier: Modifier = Modifier,
     themeMode: ThemeMode = LocalThemeMode.current,
+    tint: Color = MaterialTheme.colorScheme.primary,
     onToggleTheme: () -> Unit = LocalOnToggleThemeMode.current
 ) {
     val isDark = when (themeMode) {
@@ -36,7 +40,7 @@ fun ThemeToggleIconButton(
         Icon(
             imageVector = if (isDark) Icons.Rounded.WbSunny else Icons.Rounded.DarkMode,
             contentDescription = stringResource(R.string.theme_toggle),
-            tint = MaterialTheme.colorScheme.primary
+            tint = tint
         )
     }
 }

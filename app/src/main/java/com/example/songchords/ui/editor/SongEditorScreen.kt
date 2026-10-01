@@ -21,6 +21,8 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.ArrowBack
+import androidx.compose.material.icons.automirrored.rounded.Comment
+import androidx.compose.ui.graphics.Color
 import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material.icons.rounded.Check
 import androidx.compose.material.icons.rounded.EditNote
@@ -72,6 +74,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.songchords.R
@@ -132,15 +135,20 @@ fun SongEditorScreen(
                 title = {
                     Text(
                         text = if (uiState.isNewSong) stringResource(R.string.create_custom_song) else stringResource(R.string.edit_custom_song),
-                        style = MaterialTheme.typography.titleLarge,
-                        fontWeight = FontWeight.Bold
+                        style = MaterialTheme.typography.titleMedium,
+                        fontWeight = FontWeight.Bold,
+                        color = Color.White,
+                        maxLines = 1,
+                        softWrap = false,
+                        overflow = TextOverflow.Ellipsis
                     )
                 },
                 navigationIcon = {
                     IconButton(onClick = onNavigateBack) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Rounded.ArrowBack,
-                            contentDescription = stringResource(R.string.back)
+                            contentDescription = stringResource(R.string.back),
+                            tint = Color.White
                         )
                     }
                 },
@@ -151,16 +159,17 @@ fun SongEditorScreen(
                         Icon(
                             imageVector = Icons.Rounded.FileOpen,
                             contentDescription = stringResource(R.string.import_json_desc),
-                            tint = MaterialTheme.colorScheme.primary
+                            tint = Color.White
                         )
                     }
-                    LanguageSelector()
+                    LanguageSelector(tint = Color.White)
                     Spacer(modifier = Modifier.width(4.dp))
                     if (uiState.isLoading) {
                         CircularProgressIndicator(
                             modifier = Modifier
                                 .size(24.dp)
-                                .padding(end = 12.dp)
+                                .padding(end = 12.dp),
+                            color = Color.White
                         )
                     } else {
                         IconButton(
@@ -169,13 +178,16 @@ fun SongEditorScreen(
                             Icon(
                                 imageVector = Icons.Rounded.Check,
                                 contentDescription = stringResource(R.string.save),
-                                tint = MaterialTheme.colorScheme.primary
+                                tint = Color.White
                             )
                         }
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.surfaceContainer
+                    containerColor = MaterialTheme.colorScheme.primary,
+                    titleContentColor = Color.White,
+                    navigationIconContentColor = Color.White,
+                    actionIconContentColor = Color.White
                 )
             )
         }
@@ -233,7 +245,7 @@ fun SongEditorScreen(
                             )
                         ) {
                             Column(
-                                modifier = Modifier.padding(16.dp),
+                                modifier = Modifier.padding(start = 16.dp, top = 16.dp, end = 16.dp, bottom = 24.dp),
                                 verticalArrangement = Arrangement.spacedBy(12.dp)
                             ) {
                                 // Section Header
@@ -351,7 +363,7 @@ fun SongEditorScreen(
                                     )
                                 }
 
-                                // Row 4: Tempo (BPM) & Tags (2-column Row)
+                                // Row 4: Tempo (BPM) & Notas / Comentarios (2-column Row)
                                 Row(
                                     modifier = Modifier.fillMaxWidth(),
                                     horizontalArrangement = Arrangement.spacedBy(12.dp),
@@ -374,12 +386,13 @@ fun SongEditorScreen(
                                     )
 
                                     OutlinedTextField(
-                                        value = uiState.tagsText,
-                                        onValueChange = viewModel::onTagsChange,
-                                        label = { Text(stringResource(R.string.label_tags)) },
+                                        value = uiState.comments,
+                                        onValueChange = viewModel::onCommentsChange,
+                                        label = { Text(stringResource(R.string.comment_label)) },
+                                        placeholder = { Text(stringResource(R.string.comment_hint)) },
                                         leadingIcon = {
                                             Icon(
-                                                imageVector = Icons.Rounded.Tag,
+                                                imageVector = Icons.AutoMirrored.Rounded.Comment,
                                                 contentDescription = null,
                                                 modifier = Modifier.size(20.dp)
                                             )
@@ -388,6 +401,23 @@ fun SongEditorScreen(
                                         modifier = Modifier.weight(1f)
                                     )
                                 }
+
+                                // Row 5: Etiquetas / Tags (full width)
+                                OutlinedTextField(
+                                    value = uiState.tagsText,
+                                    onValueChange = viewModel::onTagsChange,
+                                    label = { Text(stringResource(R.string.label_tags)) },
+                                    placeholder = { Text(stringResource(R.string.placeholder_tags)) },
+                                    leadingIcon = {
+                                        Icon(
+                                            imageVector = Icons.Rounded.Tag,
+                                            contentDescription = null,
+                                            modifier = Modifier.size(20.dp)
+                                        )
+                                    },
+                                    singleLine = true,
+                                    modifier = Modifier.fillMaxWidth()
+                                )
                             }
                         }
 
@@ -480,6 +510,18 @@ fun SongEditorScreen(
                                     AssistChip(
                                         onClick = { showCustomChordDialog = true },
                                         label = { Text(stringResource(R.string.add_chord), style = MaterialTheme.typography.labelSmall) },
+                                        leadingIcon = {
+                                            Icon(
+                                                imageVector = Icons.Rounded.Add,
+                                                contentDescription = null,
+                                                modifier = Modifier.size(14.dp)
+                                            )
+                                        }
+                                    )
+
+                                    AssistChip(
+                                        onClick = { viewModel.insertCommentTag("...") },
+                                        label = { Text(stringResource(R.string.insert_comment), style = MaterialTheme.typography.labelSmall) },
                                         leadingIcon = {
                                             Icon(
                                                 imageVector = Icons.Rounded.Add,
