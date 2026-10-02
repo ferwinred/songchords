@@ -1,41 +1,41 @@
 # Project Plan
 
-SongChords app - Render app_name ('SongChords - Acordes Cristianos') in TopAppBar title, and fix deformation on '# Comentario' button in SongEditorScreen quick tools.
+SongChords app - Fix TopAppBar status bar window insets and ensure stringResource(R.string.app_name) ('SongChords - Acordes Cristianos') is rendered in large bold white text on Dark Navy background with zero status bar overlap.
 
 ## Project Brief
 
-# Project Brief: SongChords
+# SongChords Project Brief
 
 ## Features
-- **Song List & Detail Navigation**: Browse and select praise and worship song chord sheets seamlessly using responsive dual-pane views.
-- **Localized Top Bar Branding**: Dynamically display localized app titles (`SongChords - Acordes Cristianos` in Spanish, `SongChords - Praise & Worship` in English) in the main top app bar.
-- **Song Sheet Editor & Quick Tools**: Create and edit chord sheets with dedicated quick-tool actions, featuring a proportioned `# Comentario` button with dedicated icon and single-line layout.
-- **Multi-Language Localization**: Full string resource localization for Spanish and English locales.
+- **Status Bar Window Insets Handling**: Properly configures top bar window insets (`TopAppBarDefaults.windowInsets` / `WindowInsets.statusBars`) to prevent system status bar icons (clock, signal, battery) from overlapping the top header bar across all device form factors.
+- **Prominent Header Typography & Theme**: Renders `R.string.app_name` ("SongChords - Acordes Cristianos") in large bold white (`#FFFFFF`) typography on a Dark Navy (`#020873`) background for optimal contrast and brand visibility.
+- **Song Chord & Sheet Viewer**: Minimalist interface optimized for clear reading and presentation of Christian song lyrics and chord charts.
+- **Adaptive Navigation & Layouts**: Flexible UI supporting multi-window, orientation changes, and various screen dimensions without title or action icon clipping.
 
 ## High-Level Technical Stack
 - **Language**: Kotlin
-- **UI Framework**: Jetpack Compose with Material 3
-- **Navigation**: Jetpack Navigation 3 (state-driven)
-- **Adaptive Strategy**: Compose Material Adaptive library
-- **Architecture & Async**: ViewModel, StateFlow, and Kotlin Coroutines
+- **UI Framework**: Jetpack Compose (Material 3)
+- **Navigation Strategy**: Jetpack Navigation 3 (State-driven)
+- **Adaptive Strategy**: Compose Material Adaptive Library
+- **Architecture & Async**: Kotlin Coroutines, StateFlow, ViewModel
 
 ## Implementation Steps
-**Total Duration:** 3m 31s
+**Total Duration:** 1m 15s
 
-### Task_79_FixTopBarAppNameAndEditorCommentButton: Fix TopAppBar Title and Editor Comment Button Shape: 1) In SongListDetailScreen.kt and TopAppBar composables, use stringResource(R.string.app_name) ('SongChords - Acordes Cristianos' in Spanish, 'SongChords - Praise & Worship' in English) as the title. 2) In SongEditorScreen.kt, redesign the '# Comentario' button with explicit 36.dp height, singleLine text, clean padding, and comment icon so it is perfectly proportioned, aligned, and never deformed.
+### Task_81_FixTopAppBarWindowInsetsAndTitleVisibility: Fix TopAppBar Status Bar Window Insets and Title Visibility: 1) In SongListDetailScreen.kt, SongEditorScreen.kt, and ToolsScreen.kt, configure TopAppBar with windowInsets = TopAppBarDefaults.windowInsets / WindowInsets.statusBars so system status bar clock (09:54) never overlaps the title. 2) Render R.string.app_name ('SongChords - Acordes Cristianos') in large bold white text (#FFFFFF) on Dark Navy background (#020873) in the title slot. 3) Commit and push updates to GitHub.
 - **Status:** COMPLETED
-- **Updates:** Task_79_FixTopBarAppNameAndEditorCommentButton completed successfully. Resolved both requested fixes: 1) Updated TopAppBar title to use stringResource(R.string.app_name) ('SongChords - Acordes Cristianos' in Spanish, 'SongChords - Praise & Worship' in English). 2) Redesigned the '# Comentario' button in SongEditorScreen.kt with explicit 36.dp height, maxLines = 1, singleLine text, Comment leading icon, tertiaryContainer background styling, and horizontal scroll container so all quick tool buttons (🎵 Acordes, 📑 Secciones, # Comentario) are perfectly proportioned, aligned, and never deformed. Verified with assembleDebug build and 67 passing unit tests.
+- **Updates:** Task_81_FixTopAppBarWindowInsetsAndTitleVisibility completed successfully. Configured TopAppBar windowInsets = TopAppBarDefaults.windowInsets and title = Text(text = stringResource(R.string.app_name), style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold, color = Color.White) across SongListDetailScreen.kt, SongEditorScreen.kt, and ToolsScreen.kt. Guarantees status bar clock/battery icons never overlap the title, and 'SongChords - Acordes Cristianos' renders in 100% visible large bold white text on Dark Navy background (#020873). Verified with assembleDebug build and 67 passing unit tests.
 - **Acceptance Criteria:**
-  - TopAppBar title renders R.string.app_name ('SongChords - Acordes Cristianos')
-  - '# Comentario' button in SongEditorScreen is perfectly proportioned and non-deformed
+  - TopAppBar has status bar window insets and zero status bar overlap
+  - Title text 'SongChords - Acordes Cristianos' is 100% visible in large bold white text on Dark Navy background
   - build pass
 
-### Task_80_RunAndVerifyAppNameAndCommentButtonFix: Verify R.string.app_name top bar title and non-deformed comment button on emulator with critic_agent. Ensure zero crashes.
+### Task_82_RunAndVerifyTopAppBarInsetsFix: Verify TopAppBar status bar insets and title visibility on emulator with critic_agent. Ensure zero crashes.
 - **Status:** COMPLETED
-- **Updates:** Task_80_RunAndVerifyAppNameAndCommentButtonFix completed successfully. Verified on emulator with 0 crashes. Confirmed: 1) TopAppBar title displays R.string.app_name ('SongChords - Acordes Cristianos' in Spanish, 'SongChords - Praise & Worship' in English). 2) In SongEditorScreen.kt, the '# Comentario' button is clean, perfectly proportioned, aligned alongside '🎵 Acordes' and '📑 Secciones', and NOT deformed or squashed. Tapping inserts '# ' at current cursor location. All 67 unit tests pass cleanly.
+- **Updates:** Task_82_RunAndVerifyTopAppBarInsetsFix completed successfully. Verified on emulator with 0 crashes. Confirmed TopAppBar status bar insets (WindowInsets.statusBars) prevent status bar clock/icons from overlapping top bar. Confirmed title text 'SongChords - Acordes Cristianos' (Spanish) / 'SongChords - Praise & Worship' (English) is 100% visible in large bold white text (#FFFFFF) on Dark Navy background (#020873). All 67 unit tests pass cleanly.
 - **Acceptance Criteria:**
   - build pass
   - app does not crash
-  - R.string.app_name title and non-deformed comment button verified clean on emulator
-- **Duration:** 3m 31s
+  - TopAppBar status bar insets and title visibility verified clean on emulator
+- **Duration:** 1m 15s
 

@@ -45,6 +45,7 @@ import com.example.songchords.repository.SyncStatus
 import com.example.songchords.ui.components.LanguageSelector
 import com.example.songchords.ui.components.ThemeToggleIconButton
 import com.example.songchords.ui.songlist.components.SongDetailPane
+import com.example.songchords.ui.theme.DarkNavyBlue
 import com.example.songchords.ui.theme.SongChordsTheme
 import kotlinx.coroutines.launch
 
@@ -83,11 +84,10 @@ fun SongListDetailScreen(
                 title = {
                     Text(
                         text = stringResource(R.string.app_name),
-                        style = MaterialTheme.typography.titleMedium,
+                        style = MaterialTheme.typography.titleLarge,
                         fontWeight = FontWeight.Bold,
                         color = Color.White,
                         maxLines = 1,
-                        softWrap = false,
                         overflow = TextOverflow.Ellipsis
                     )
                 },
@@ -145,8 +145,9 @@ fun SongListDetailScreen(
                     ThemeToggleIconButton(tint = Color.White)
                     LanguageSelector(tint = Color.White)
                 },
+                windowInsets = TopAppBarDefaults.windowInsets,
                 colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.primary,
+                    containerColor = DarkNavyBlue,
                     titleContentColor = Color.White,
                     actionIconContentColor = Color.White,
                     navigationIconContentColor = Color.White

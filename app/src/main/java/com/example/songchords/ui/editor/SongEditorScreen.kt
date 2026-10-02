@@ -97,6 +97,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.songchords.R
 import com.example.songchords.ui.components.LanguageSelector
 import com.example.songchords.ui.songlist.components.SongDetailPane
+import com.example.songchords.ui.theme.DarkNavyBlue
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
 @Composable
@@ -153,12 +154,11 @@ fun SongEditorScreen(
             TopAppBar(
                 title = {
                     Text(
-                        text = if (uiState.isNewSong) stringResource(R.string.create_custom_song) else stringResource(R.string.edit_custom_song),
-                        style = MaterialTheme.typography.titleMedium,
+                        text = stringResource(R.string.app_name),
+                        style = MaterialTheme.typography.titleLarge,
                         fontWeight = FontWeight.Bold,
                         color = Color.White,
                         maxLines = 1,
-                        softWrap = false,
                         overflow = TextOverflow.Ellipsis
                     )
                 },
@@ -202,8 +202,9 @@ fun SongEditorScreen(
                         }
                     }
                 },
+                windowInsets = TopAppBarDefaults.windowInsets,
                 colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.primary,
+                    containerColor = DarkNavyBlue,
                     titleContentColor = Color.White,
                     navigationIconContentColor = Color.White,
                     actionIconContentColor = Color.White

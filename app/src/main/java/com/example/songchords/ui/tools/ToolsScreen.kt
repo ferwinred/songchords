@@ -28,6 +28,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.graphics.Color
 import com.example.songchords.R
 import com.example.songchords.ui.chordlibrary.ChordLibraryScreen
+import com.example.songchords.ui.theme.DarkNavyBlue
 import com.example.songchords.ui.theme.SongChordsTheme
 import com.example.songchords.ui.tuner.TunerScreen
 
@@ -51,12 +52,11 @@ fun ToolsScreen(
             TopAppBar(
                 title = {
                     Text(
-                        text = stringResource(R.string.tools_title),
-                        style = MaterialTheme.typography.titleMedium,
+                        text = stringResource(R.string.app_name),
+                        style = MaterialTheme.typography.titleLarge,
                         fontWeight = FontWeight.Bold,
                         color = Color.White,
                         maxLines = 1,
-                        softWrap = false,
                         overflow = TextOverflow.Ellipsis
                     )
                 },
@@ -69,11 +69,12 @@ fun ToolsScreen(
                         )
                     }
                 },
+                windowInsets = TopAppBarDefaults.windowInsets,
                 colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.primary,
+                    containerColor = DarkNavyBlue,
                     titleContentColor = Color.White,
-                    navigationIconContentColor = Color.White,
-                    actionIconContentColor = Color.White
+                    actionIconContentColor = Color.White,
+                    navigationIconContentColor = Color.White
                 )
             )
         }
