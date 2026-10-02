@@ -82,7 +82,7 @@ fun SongListDetailScreen(
             TopAppBar(
                 title = {
                     Text(
-                        text = stringResource(R.string.top_bar_title),
+                        text = stringResource(R.string.app_name),
                         style = MaterialTheme.typography.titleMedium,
                         fontWeight = FontWeight.Bold,
                         color = Color.White,

@@ -10,13 +10,18 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -30,6 +35,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.ArrowBack
 import androidx.compose.material.icons.automirrored.rounded.Comment
 import androidx.compose.material.icons.rounded.Add
+import androidx.compose.material.icons.rounded.ArrowDropDown
 import androidx.compose.material.icons.rounded.Check
 import androidx.compose.material.icons.rounded.EditNote
 import androidx.compose.material.icons.rounded.FileOpen
@@ -47,6 +53,7 @@ import androidx.compose.material3.AssistChipDefaults
 import androidx.compose.material3.Button
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
@@ -103,6 +110,8 @@ fun SongEditorScreen(
 
     var customChordDialogText by remember { mutableStateOf("") }
     var showCustomChordDialog by remember { mutableStateOf(false) }
+    var showChordsMenu by remember { mutableStateOf(false) }
+    var showSectionsMenu by remember { mutableStateOf(false) }
 
     val allKeys = listOf(
         "C", "C#", "Db", "D", "Eb", "E", "F", "F#", "Gb", "G", "Ab", "A", "Bb", "B",
@@ -553,88 +562,214 @@ fun SongEditorScreen(
                                             )
                                         }
 
-                                        LazyRow(
-                                            horizontalArrangement = Arrangement.spacedBy(6.dp),
+                                        // 3 Compact Action Buttons Row (🎵 Acordes, 📑 Secciones, # Comentario)
+                                        Row(
+                                            modifier = Modifier
+                                                .fillMaxWidth()
+                                                .horizontalScroll(rememberScrollState()),
+                                            horizontalArrangement = Arrangement.spacedBy(8.dp),
                                             verticalAlignment = Alignment.CenterVertically
                                         ) {
-                                            // # Comentario Button
-                                            item {
+                                            // 1. 🎵 Acordes Button
+                                            Box {
                                                 AssistChip(
-                                                    onClick = { viewModel.insertCommentPrefix() },
+                                                    onClick = { showChordsMenu = true },
+                                                    modifier = Modifier.height(36.dp),
                                                     label = {
                                                         Text(
-                                                            text = "# Comentario",
-                                                            style = MaterialTheme.typography.labelSmall,
-                                                            fontWeight = FontWeight.Bold
+                                                            text = "🎵 Acordes",
+                                                            style = MaterialTheme.typography.labelMedium,
+                                                            fontWeight = FontWeight.Bold,
+                                                            maxLines = 1,
+                                                            softWrap = false
                                                         )
                                                     },
-                                                    leadingIcon = {
+                                                    trailingIcon = {
                                                         Icon(
-                                                            imageVector = Icons.AutoMirrored.Rounded.Comment,
+                                                            imageVector = Icons.Rounded.ArrowDropDown,
                                                             contentDescription = null,
-                                                            modifier = Modifier.size(14.dp)
-                                                        )
-                                                    },
-                                                    colors = AssistChipDefaults.assistChipColors(
-                                                        containerColor = MaterialTheme.colorScheme.tertiaryContainer,
-                                                        labelColor = MaterialTheme.colorScheme.onTertiaryContainer,
-                                                        leadingIconContentColor = MaterialTheme.colorScheme.onTertiaryContainer
-                                                    )
-                                                )
-                                            }
-
-                                            // Section Chips: [Intro], [Estrofa], [Coro], [Puente], [Final]
-                                            items(listOf("Intro", "Estrofa", "Coro", "Puente", "Final")) { section ->
-                                                AssistChip(
-                                                    onClick = { viewModel.insertSectionHeader(section) },
-                                                    label = {
-                                                        Text(
-                                                            text = "[$section]",
-                                                            style = MaterialTheme.typography.labelSmall,
-                                                            fontWeight = FontWeight.Medium
-                                                        )
-                                                    }
-                                                )
-                                            }
-
-                                            // Key Chord Chips: [G], [Am], [C], [D], [Em]...
-                                            items(uiState.quickChordsForKey) { chord ->
-                                                AssistChip(
-                                                    onClick = { viewModel.insertChordTag(chord) },
-                                                    label = {
-                                                        Text(
-                                                            text = "[$chord]",
-                                                            style = MaterialTheme.typography.labelSmall,
-                                                            fontWeight = FontWeight.Bold
+                                                            modifier = Modifier.size(16.dp)
                                                         )
                                                     },
                                                     colors = AssistChipDefaults.assistChipColors(
                                                         containerColor = MaterialTheme.colorScheme.primaryContainer,
-                                                        labelColor = MaterialTheme.colorScheme.onPrimaryContainer
+                                                        labelColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                                                        trailingIconContentColor = MaterialTheme.colorScheme.onPrimaryContainer
                                                     )
                                                 )
+
+                                                DropdownMenu(
+                                                    expanded = showChordsMenu,
+                                                    onDismissRequest = { showChordsMenu = false },
+                                                    modifier = Modifier
+                                                        .width(310.dp)
+                                                        .heightIn(max = 420.dp)
+                                                ) {
+                                                    Column(
+                                                        modifier = Modifier
+                                                            .padding(12.dp)
+                                                            .verticalScroll(rememberScrollState()),
+                                                        verticalArrangement = Arrangement.spacedBy(10.dp)
+                                                    ) {
+                                                        Text(
+                                                            text = "🎵 Seleccionar Acorde",
+                                                            style = MaterialTheme.typography.titleSmall,
+                                                            fontWeight = FontWeight.Bold,
+                                                            color = MaterialTheme.colorScheme.primary
+                                                        )
+
+                                                        // Mayores
+                                                        ChordCategorySection(
+                                                            title = "Mayores",
+                                                            chords = listOf("C", "D", "E", "F", "G", "A", "B"),
+                                                            onChordSelect = { chord ->
+                                                                viewModel.insertChordTag(chord)
+                                                                showChordsMenu = false
+                                                            }
+                                                        )
+
+                                                        // Menores
+                                                        ChordCategorySection(
+                                                            title = "Menores",
+                                                            chords = listOf("Cm", "Dm", "Em", "Fm", "Gm", "Am", "Bm"),
+                                                            onChordSelect = { chord ->
+                                                                viewModel.insertChordTag(chord)
+                                                                showChordsMenu = false
+                                                            }
+                                                        )
+
+                                                        // Sostenidos (#)
+                                                        ChordCategorySection(
+                                                            title = "Sostenidos (#)",
+                                                            chords = listOf("C#", "C#m", "D#", "D#m", "F#", "F#m", "G#", "G#m", "A#", "A#m"),
+                                                            onChordSelect = { chord ->
+                                                                viewModel.insertChordTag(chord)
+                                                                showChordsMenu = false
+                                                            }
+                                                        )
+
+                                                        // Bemoles (b)
+                                                        ChordCategorySection(
+                                                            title = "Bemoles (b)",
+                                                            chords = listOf("Db", "Eb", "Ebm", "Gb", "Ab", "Bb", "Bbm"),
+                                                            onChordSelect = { chord ->
+                                                                viewModel.insertChordTag(chord)
+                                                                showChordsMenu = false
+                                                            }
+                                                        )
+
+                                                        // 7mas & Especiales
+                                                        ChordCategorySection(
+                                                            title = "7mas & Especiales",
+                                                            chords = listOf("C7", "G7", "D7", "Cadd2", "Csus4", "F/A"),
+                                                            onChordSelect = { chord ->
+                                                                viewModel.insertChordTag(chord)
+                                                                showChordsMenu = false
+                                                            }
+                                                        )
+
+                                                        // + Otro Acorde Button
+                                                        Button(
+                                                            onClick = {
+                                                                showChordsMenu = false
+                                                                showCustomChordDialog = true
+                                                            },
+                                                            modifier = Modifier.fillMaxWidth(),
+                                                            shape = RoundedCornerShape(8.dp)
+                                                        ) {
+                                                            Icon(
+                                                                imageVector = Icons.Rounded.Add,
+                                                                contentDescription = null,
+                                                                modifier = Modifier.size(16.dp)
+                                                            )
+                                                            Spacer(modifier = Modifier.width(4.dp))
+                                                            Text(
+                                                                text = "+ Otro Acorde",
+                                                                style = MaterialTheme.typography.labelMedium,
+                                                                fontWeight = FontWeight.Bold
+                                                            )
+                                                        }
+                                                    }
+                                                }
                                             }
 
-                                            // + Acorde Button
-                                            item {
+                                            // 2. 📑 Secciones Button
+                                            Box {
                                                 AssistChip(
-                                                    onClick = { showCustomChordDialog = true },
+                                                    onClick = { showSectionsMenu = true },
+                                                    modifier = Modifier.height(36.dp),
                                                     label = {
                                                         Text(
-                                                            text = stringResource(R.string.add_chord),
-                                                            style = MaterialTheme.typography.labelSmall,
-                                                            fontWeight = FontWeight.Bold
+                                                            text = "📑 Secciones",
+                                                            style = MaterialTheme.typography.labelMedium,
+                                                            fontWeight = FontWeight.Bold,
+                                                            maxLines = 1,
+                                                            softWrap = false
                                                         )
                                                     },
-                                                    leadingIcon = {
+                                                    trailingIcon = {
                                                         Icon(
-                                                            imageVector = Icons.Rounded.Add,
+                                                            imageVector = Icons.Rounded.ArrowDropDown,
                                                             contentDescription = null,
-                                                            modifier = Modifier.size(14.dp)
+                                                            modifier = Modifier.size(16.dp)
+                                                        )
+                                                    },
+                                                    colors = AssistChipDefaults.assistChipColors(
+                                                        containerColor = MaterialTheme.colorScheme.secondaryContainer,
+                                                        labelColor = MaterialTheme.colorScheme.onSecondaryContainer,
+                                                        trailingIconContentColor = MaterialTheme.colorScheme.onSecondaryContainer
+                                                    )
+                                                )
+
+                                                DropdownMenu(
+                                                    expanded = showSectionsMenu,
+                                                    onDismissRequest = { showSectionsMenu = false }
+                                                ) {
+                                                    val sectionList = listOf("Intro", "Estrofa 1", "Estrofa 2", "Coro", "Pre-Coro", "Puente", "Solo", "Final")
+                                                    sectionList.forEach { sectionName ->
+                                                        DropdownMenuItem(
+                                                            text = {
+                                                                Text(
+                                                                    text = "[$sectionName]",
+                                                                    style = MaterialTheme.typography.bodyMedium,
+                                                                    fontWeight = FontWeight.Bold
+                                                                )
+                                                            },
+                                                            onClick = {
+                                                                viewModel.insertSectionHeader(sectionName)
+                                                                showSectionsMenu = false
+                                                            }
                                                         )
                                                     }
-                                                )
+                                                }
                                             }
+
+                                            // 3. # Comentario Button
+                                            AssistChip(
+                                                onClick = { viewModel.insertCommentPrefix() },
+                                                modifier = Modifier.height(36.dp),
+                                                label = {
+                                                    Text(
+                                                        text = "# Comentario",
+                                                        style = MaterialTheme.typography.labelMedium,
+                                                        fontWeight = FontWeight.Bold,
+                                                        maxLines = 1,
+                                                        softWrap = false
+                                                    )
+                                                },
+                                                leadingIcon = {
+                                                    Icon(
+                                                        imageVector = Icons.AutoMirrored.Rounded.Comment,
+                                                        contentDescription = null,
+                                                        modifier = Modifier.size(16.dp)
+                                                    )
+                                                },
+                                                colors = AssistChipDefaults.assistChipColors(
+                                                    containerColor = MaterialTheme.colorScheme.tertiaryContainer,
+                                                    labelColor = MaterialTheme.colorScheme.onTertiaryContainer,
+                                                    leadingIconContentColor = MaterialTheme.colorScheme.onTertiaryContainer
+                                                )
+                                            )
                                         }
                                     }
                                 }
@@ -698,5 +833,43 @@ fun SongEditorScreen(
                 }
             }
         )
+    }
+}
+
+@OptIn(ExperimentalLayoutApi::class)
+@Composable
+private fun ChordCategorySection(
+    title: String,
+    chords: List<String>,
+    onChordSelect: (String) -> Unit
+) {
+    Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+        Text(
+            text = title,
+            style = MaterialTheme.typography.labelSmall,
+            fontWeight = FontWeight.SemiBold,
+            color = MaterialTheme.colorScheme.onSurfaceVariant
+        )
+        FlowRow(
+            horizontalArrangement = Arrangement.spacedBy(6.dp),
+            verticalArrangement = Arrangement.spacedBy(4.dp)
+        ) {
+            chords.forEach { chord ->
+                AssistChip(
+                    onClick = { onChordSelect(chord) },
+                    label = {
+                        Text(
+                            text = chord,
+                            style = MaterialTheme.typography.labelSmall,
+                            fontWeight = FontWeight.Bold
+                        )
+                    },
+                    colors = AssistChipDefaults.assistChipColors(
+                        containerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
+                        labelColor = MaterialTheme.colorScheme.onSurface
+                    )
+                )
+            }
+        }
     }
 }

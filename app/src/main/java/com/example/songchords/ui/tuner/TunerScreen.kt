@@ -277,7 +277,8 @@ fun TunerScreen(
                 Text(
                     text = stringResource(R.string.pitch_adjust_label),
                     style = MaterialTheme.typography.bodyMedium,
-                    fontWeight = FontWeight.Medium
+                    fontWeight = FontWeight.Medium,
+                    color = MaterialTheme.colorScheme.onSurface
                 )
 
                 Slider(
@@ -326,9 +327,9 @@ fun TunerPitchGaugeMeter(
 
     val statusColor by animateColorAsState(
         targetValue = when (status) {
-            TuningStatus.IN_TUNE -> Color(0xFF2E7D32) // Green
-            TuningStatus.FLAT -> Color(0xFFED6C02) // Orange
-            TuningStatus.SHARP -> Color(0xFFD32F2F) // Red
+            TuningStatus.IN_TUNE -> Color(0xFF4CAF50) // Bright Green
+            TuningStatus.FLAT -> Color(0xFFFF9800) // Bright Orange
+            TuningStatus.SHARP -> Color(0xFFF44336) // Bright Red
         },
         animationSpec = tween(300),
         label = "statusColor"

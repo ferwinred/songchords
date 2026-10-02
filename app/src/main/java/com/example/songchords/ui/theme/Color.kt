@@ -38,18 +38,18 @@ val LightOutline = RoyalIndigo
 val LightOutlineVariant = RoyalIndigo
 
 // Dark Colors
-val DarkPrimary = Color(0xFF1E2558)
-val DarkOnPrimary = Color.White
+val DarkPrimary = Color(0xFF9EA7FC)
+val DarkOnPrimary = Color(0xFF070B28)
 val DarkPrimaryContainer = Color(0xFF38358C)
 val DarkOnPrimaryContainer = Color.White
 
-val DarkSecondary = CrimsonRed
-val DarkOnSecondary = Color.White
-val DarkSecondaryContainer = VividRed
+val DarkSecondary = Color(0xFFFF838F)
+val DarkOnSecondary = Color(0xFF070B28)
+val DarkSecondaryContainer = Color(0xFF8C1D27)
 val DarkOnSecondaryContainer = Color.White
 
-val DarkTertiary = VividRed
-val DarkOnTertiary = Color.White
+val DarkTertiary = Color(0xFFFF8A8A)
+val DarkOnTertiary = Color(0xFF070B28)
 val DarkTertiaryContainer = Color(0xFF7A202A)
 val DarkOnTertiaryContainer = Color(0xFFFFDADA)
 
