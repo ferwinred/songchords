@@ -25,6 +25,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.songchords.R
+import com.example.songchords.model.Song
 import com.example.songchords.repository.SampleSongs
 import com.example.songchords.ui.songlist.components.EmptySongsView
 import com.example.songchords.ui.songlist.components.FilterChipGroup
@@ -44,7 +45,8 @@ fun SongListScreenContent(
     onClearFilters: () -> Unit,
     onSelectSong: (String) -> Unit,
     onToggleFavorite: (String) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    onAddToSetlist: ((Song) -> Unit)? = null
 ) {
     Column(
         modifier = modifier
@@ -132,7 +134,10 @@ fun SongListScreenContent(
                         song = song,
                         isSelected = song.id == uiState.selectedSongId,
                         onClick = { onSelectSong(song.id) },
-                        onToggleFavorite = { onToggleFavorite(song.id) }
+                        onToggleFavorite = { onToggleFavorite(song.id) },
+                        onAddToSetlist = if (onAddToSetlist != null) {
+                            { onAddToSetlist(song) }
+                        } else null
                     )
                 }
             }

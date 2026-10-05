@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.rounded.PlaylistAdd
 import androidx.compose.material.icons.rounded.Favorite
 import androidx.compose.material.icons.rounded.FavoriteBorder
 import androidx.compose.material.icons.rounded.MusicNote
@@ -49,7 +50,8 @@ fun SongListItem(
     isSelected: Boolean,
     onClick: () -> Unit,
     onToggleFavorite: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    onAddToSetlist: (() -> Unit)? = null
 ) {
     val cardContainerColor by animateColorAsState(
         targetValue = if (isSelected) {
@@ -138,6 +140,16 @@ fun SongListItem(
                         contentDescription = if (song.isFavorite) stringResource(R.string.remove_from_favorites) else stringResource(R.string.add_to_favorites),
                         tint = if (song.isFavorite) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant
                     )
+                }
+
+                if (onAddToSetlist != null) {
+                    IconButton(onClick = onAddToSetlist) {
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Rounded.PlaylistAdd,
+                            contentDescription = stringResource(R.string.add_to_setlist),
+                            tint = MaterialTheme.colorScheme.primary
+                        )
+                    }
                 }
             }
 

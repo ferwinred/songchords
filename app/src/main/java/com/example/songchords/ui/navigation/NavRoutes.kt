@@ -7,7 +7,13 @@ import kotlinx.serialization.Serializable
 data object SongListRoute : NavKey
 
 @Serializable
-data class SongDetailRoute(val songId: String) : NavKey
+data class SongDetailRoute(
+    val songId: String,
+    val initialTransposedKey: String? = null
+) : NavKey
+
+@Serializable
+data object SetlistRoute : NavKey
 
 @Serializable
 data class SongEditorRoute(val songId: String? = null) : NavKey
@@ -20,3 +26,10 @@ data object TunerRoute : NavKey
 
 @Serializable
 data object ChordLibraryRoute : NavKey
+
+@Serializable
+data object SubscriptionRoute : NavKey
+
+@Serializable
+data object AiAssistantRoute : NavKey
+

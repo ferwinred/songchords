@@ -191,4 +191,87 @@
     <string name="duplicate_song">Duplicate &amp; Customize</string>
     <string name="read_only_mode">Read-only mode</string>
     <string name="version_created_toast">Personal version created</string>
+
+    <!-- Setlists -->
+    <string name="setlists">Setlists</string>
+    <string name="nav_setlists">Setlists</string>
+    <string name="create_setlist">Create Setlist</string>
+    <string name="add_to_setlist">Add to Setlist</string>
+    <string name="save_transposed_key">Save Transposed Key</string>
+    <string name="original_key">Original Key</string>
+    <string name="setlist_key">Setlist Key</string>
+    <string name="setlist_title_label">Setlist Title *</string>
+    <string name="setlist_description_label">Description (optional)</string>
+    <string name="no_setlists_found">No setlists found</string>
+    <string name="empty_setlists_prompt">Create a setlist to organize songs for worship services and rehearsals.</string>
+    <string name="delete_setlist">Delete Setlist</string>
+    <string name="delete_setlist_confirm">Are you sure you want to delete this setlist?</string>
+    <string name="remove_song_from_setlist">Remove from setlist</string>
+    <string name="select_setlist">Select Setlist</string>
+    <string name="transposed_key_override">Transposed Key Override</string>
+    <string name="original_key_format_arrow">Original: %1$s ➔ Setlist: %2$s</string>
+    <string name="key_transposed">Transposed Key</string>
+    <string name="song_added_to_setlist_toast">Song added to %1$s</string>
+    <string name="songs_count_one">%1$d song</string>
+    <string name="songs_count_other">%1$d songs</string>
+    <string name="edit_setlist_key">Edit Key</string>
+
+    <!-- Subscriptions &amp; Tiers -->
+    <string name="subscription_title">Plans &amp; Subscriptions</string>
+    <string name="subscription_subtitle">Choose the tier that best fits your ministry needs</string>
+    <string name="tier_anonymous">Anonymous</string>
+    <string name="tier_registered_free">Registered Free</string>
+    <string name="tier_basic_sub">Basic Plan</string>
+    <string name="tier_pro_sub">Pro Plan</string>
+    <string name="tier_premium_ai_sub">Premium AI Plan</string>
+    <string name="price_free">Free ($0/mo)</string>
+    <string name="price_basic">$2.99 / month</string>
+    <string name="price_pro">$6.99 / month</string>
+    <string name="price_premium_ai">$12.99 / month</string>
+    <string name="current_plan_badge">Active Plan</string>
+    <string name="select_plan_button">Select Plan</string>
+    <string name="upgrade_plan_button">Upgrade Plan</string>
+    <string name="plan_activated_toast">Switched to %1$s plan</string>
+
+    <!-- Feature Checklists -->
+    <string name="feature_setlists_limit">%1$d setlists</string>
+    <string name="feature_setlists_unlimited">Unlimited setlists</string>
+    <string name="feature_songs_per_setlist_limit">%1$d songs per setlist</string>
+    <string name="feature_songs_per_setlist_unlimited">Unlimited songs per setlist</string>
+    <string name="feature_custom_songs_limit">%1$d custom songs</string>
+    <string name="feature_custom_songs_unlimited">Unlimited custom songs</string>
+    <string name="feature_ad_free">Ad-Free Experience</string>
+    <string name="feature_with_ads">Includes Ad Banner</string>
+    <string name="feature_ai_assistant">AI Worship Assistant</string>
+    <string name="feature_no_ai_assistant">No AI Assistant</string>
+
+    <!-- Ad Banner -->
+    <string name="ad_banner_title">Advertisement</string>
+    <string name="ad_banner_message">Upgrade your plan to enjoy an ad-free experience and unlimited setlists!</string>
+    <string name="ad_banner_action">Remove Ads</string>
+
+    <!-- Limit Enforcement Dialogs -->
+    <string name="limit_reached_title">Plan Limit Reached</string>
+    <string name="limit_setlists_reached_message">You have reached the limit of %1$d setlists for your current plan (%2$s). Upgrade your plan to create more setlists.</string>
+    <string name="limit_songs_per_setlist_reached_message">You have reached the limit of %1$d songs per setlist for your current plan (%2$s). Upgrade your plan to add more songs.</string>
+    <string name="limit_custom_songs_reached_message">You have reached the limit of %1$d custom songs for your current plan (%2$s). Upgrade your plan to create more custom songs.</string>
+    <string name="view_plans">View Plans</string>
+    <string name="understood">Got it</string>
+
+    <!-- Gemini AI Music Assistant -->
+    <string name="nav_ai_assistant">AI Assistant</string>
+    <string name="ai_assistant_title">Gemini AI Music Assistant</string>
+    <string name="ai_assistant_subtitle">Guitar, Piano &amp; Praise Music Theory Guide</string>
+    <string name="ai_quick_prompts_title">Quick Suggestion Prompts</string>
+    <string name="ai_prompt_guitar_scale">🎸 How to play the G Major scale on Guitar?</string>
+    <string name="ai_prompt_piano_chords">🎹 Explanation of song chords on Piano</string>
+    <string name="ai_prompt_worship_progression">🎼 Chord progression suggestions for Worship</string>
+    <string name="ai_prompt_transposition_solfege">📖 How to use transposition and Solfege notation?</string>
+    <string name="ai_input_placeholder">Ask Gemini AI about chords, scales, praise&#8230;</string>
+    <string name="ai_send_button">Send</string>
+    <string name="ai_subscription_required_title">Premium AI Subscription Required</string>
+    <string name="ai_subscription_required_desc">The Gemini AI Music Assistant is available exclusively for users on the Premium AI plan. Upgrade now to unlock personalized music theory tutoring, chord analysis, and praise ministry suggestions.</string>
+    <string name="ai_unlock_premium_button">View Subscription Plans</string>
+    <string name="ai_generating_response">Gemini AI is thinking&#8230;</string>
+    <string name="ai_welcome_message">Hello! I am your Gemini AI Music Assistant. How can I help you today with your guitar, piano, chord progressions, or praise ministry?</string>
 </resources>

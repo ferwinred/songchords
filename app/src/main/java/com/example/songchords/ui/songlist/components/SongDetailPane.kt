@@ -30,6 +30,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.ArrowBack
+import androidx.compose.material.icons.automirrored.rounded.PlaylistAdd
 import androidx.compose.material.icons.automirrored.rounded.QueueMusic
 import androidx.compose.material.icons.rounded.ContentCopy
 import androidx.compose.material.icons.rounded.DataObject
@@ -145,6 +146,8 @@ fun SongDetailPane(
     song: Song?,
     onToggleFavorite: (String) -> Unit,
     modifier: Modifier = Modifier,
+    initialTransposedKey: String? = null,
+    onAddToSetlistClick: ((Song) -> Unit)? = null,
     onBackClick: (() -> Unit)? = null,
     onEditSongClick: ((String) -> Unit)? = null,
     onDuplicateSongClick: ((Song) -> Unit)? = null,
@@ -188,7 +191,17 @@ fun SongDetailPane(
 
     val context = LocalContext.current
 
-    var transpositionSemitones by remember(song) { mutableIntStateOf(0) }
+    val initialSemitones = remember(song, initialTransposedKey) {
+        if (!initialTransposedKey.isNullOrBlank()) {
+            com.example.songchords.engine.TranspositionEngine.calculateSemitonesDelta(
+                song.originalKey,
+                initialTransposedKey
+            )
+        } else {
+            0
+        }
+    }
+    var transpositionSemitones by remember(song, initialTransposedKey) { mutableIntStateOf(initialSemitones) }
     var notationSystem by remember { mutableStateOf(NotationSystem.STANDARD) }
 
     var isAutoScrolling by remember { mutableStateOf(false) }
@@ -334,6 +347,16 @@ fun SongDetailPane(
                             contentDescription = stringResource(R.string.favorite),
                             tint = if (song.isFavorite) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant
                         )
+                    }
+
+                    if (onAddToSetlistClick != null) {
+                        IconButton(onClick = { onAddToSetlistClick(song) }) {
+                            Icon(
+                                imageVector = Icons.AutoMirrored.Rounded.PlaylistAdd,
+                                contentDescription = stringResource(R.string.add_to_setlist),
+                                tint = MaterialTheme.colorScheme.primary
+                            )
+                        }
                     }
 
                     // Export & Share Dropdown Menu

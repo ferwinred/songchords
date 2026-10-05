@@ -4,6 +4,7 @@ import android.net.Uri
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
@@ -13,6 +14,7 @@ import androidx.compose.material.icons.rounded.CloudOff
 import androidx.compose.material.icons.rounded.CloudSync
 import androidx.compose.material.icons.rounded.Construction
 import androidx.compose.material.icons.rounded.FileOpen
+import androidx.compose.material.icons.rounded.WorkspacePremium
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.Icon
@@ -32,16 +34,19 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.compose.ui.graphics.Color
 import com.example.songchords.R
+import com.example.songchords.model.Song
 import com.example.songchords.repository.SampleSongs
 import com.example.songchords.repository.SyncStatus
+import com.example.songchords.subscription.SubscriptionManager
+import com.example.songchords.ui.components.AdBannerComposable
 import com.example.songchords.ui.components.LanguageSelector
 import com.example.songchords.ui.components.ThemeToggleIconButton
 import com.example.songchords.ui.songlist.components.SongDetailPane
@@ -55,7 +60,9 @@ fun SongListDetailScreen(
     viewModel: SongListViewModel,
     onOpenEditor: (String?) -> Unit,
     modifier: Modifier = Modifier,
-    onOpenTools: () -> Unit = {}
+    onOpenTools: () -> Unit = {},
+    onOpenSubscription: () -> Unit = {},
+    onAddToSetlist: ((Song) -> Unit)? = null
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val navigator = rememberListDetailPaneScaffoldNavigator<String>()
@@ -133,6 +140,13 @@ fun SongListDetailScreen(
                             tint = Color.White
                         )
                     }
+                    IconButton(onClick = onOpenSubscription) {
+                        Icon(
+                            imageVector = Icons.Rounded.WorkspacePremium,
+                            contentDescription = stringResource(R.string.subscription_title),
+                            tint = Color.White
+                        )
+                    }
                     IconButton(
                         onClick = { importJsonLauncher.launch(arrayOf("application/json", "*/*")) }
                     ) {
@@ -169,63 +183,78 @@ fun SongListDetailScreen(
             }
         }
     ) { innerPadding ->
-        ListDetailPaneScaffold(
-            directive = navigator.scaffoldDirective,
-            value = navigator.scaffoldValue,
+        val currentTier by SubscriptionManager.currentTier.collectAsStateWithLifecycle()
+        Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(innerPadding),
-            listPane = {
-                AnimatedPane {
-                    SongListScreenContent(
-                        uiState = uiState,
-                        onSearchQueryChange = viewModel::onSearchQueryChange,
-                        onClearSearchQuery = { viewModel.onSearchQueryChange("") },
-                        onToggleFavoritesFilter = viewModel::onToggleFavoritesFilter,
-                        onKeyFilterSelect = viewModel::onKeyFilterSelect,
-                        onArtistFilterSelect = viewModel::onArtistFilterSelect,
-                        onTagFilterSelect = viewModel::onTagFilterSelect,
-                        onClearFilters = viewModel::onClearFilters,
-                        onSelectSong = { songId ->
-                            viewModel.onSelectSong(songId)
-                            coroutineScope.launch {
-                                navigator.navigateTo(ListDetailPaneScaffoldRole.Detail, songId)
-                            }
-                        },
-                        onToggleFavorite = viewModel::onToggleFavorite
-                    )
-                }
-            },
-            detailPane = {
-                AnimatedPane {
-                    val currentSongId = navigator.currentDestination?.contentKey ?: uiState.selectedSongId
-                    val currentSong = uiState.songs.firstOrNull { it.id == currentSongId } ?: uiState.selectedSong
-
-                    SongDetailPane(
-                        song = currentSong,
-                        onToggleFavorite = viewModel::onToggleFavorite,
-                        onEditSongClick = { songId -> onOpenEditor(songId) },
-                        onDuplicateSongClick = { songToDuplicate ->
-                            viewModel.duplicateSong(songToDuplicate) { duplicatedSong ->
-                                Toast.makeText(
-                                    context,
-                                    context.getString(R.string.version_created_toast),
-                                    Toast.LENGTH_SHORT
-                                ).show()
-                                onOpenEditor(duplicatedSong.id)
-                            }
-                        },
-                        onBackClick = if (navigator.canNavigateBack()) {
-                            {
+                .padding(innerPadding)
+        ) {
+            ListDetailPaneScaffold(
+                directive = navigator.scaffoldDirective,
+                value = navigator.scaffoldValue,
+                modifier = Modifier
+                    .fillMaxSize()
+                    .weight(1f),
+                listPane = {
+                    AnimatedPane {
+                        SongListScreenContent(
+                            uiState = uiState,
+                            onSearchQueryChange = viewModel::onSearchQueryChange,
+                            onClearSearchQuery = { viewModel.onSearchQueryChange("") },
+                            onToggleFavoritesFilter = viewModel::onToggleFavoritesFilter,
+                            onKeyFilterSelect = viewModel::onKeyFilterSelect,
+                            onArtistFilterSelect = viewModel::onArtistFilterSelect,
+                            onTagFilterSelect = viewModel::onTagFilterSelect,
+                            onClearFilters = viewModel::onClearFilters,
+                            onSelectSong = { songId ->
+                                viewModel.onSelectSong(songId)
                                 coroutineScope.launch {
-                                    navigator.navigateBack()
+                                    navigator.navigateTo(ListDetailPaneScaffoldRole.Detail, songId)
                                 }
-                            }
-                        } else null
-                    )
+                            },
+                            onToggleFavorite = viewModel::onToggleFavorite,
+                            onAddToSetlist = onAddToSetlist
+                        )
+                    }
+                },
+                detailPane = {
+                    AnimatedPane {
+                        val currentSongId = navigator.currentDestination?.contentKey ?: uiState.selectedSongId
+                        val currentSong = uiState.songs.firstOrNull { it.id == currentSongId } ?: uiState.selectedSong
+
+                        SongDetailPane(
+                            song = currentSong,
+                            onToggleFavorite = viewModel::onToggleFavorite,
+                            onAddToSetlistClick = onAddToSetlist,
+                            onEditSongClick = { songId -> onOpenEditor(songId) },
+                            onDuplicateSongClick = { songToDuplicate ->
+                                viewModel.duplicateSong(songToDuplicate) { duplicatedSong ->
+                                    Toast.makeText(
+                                        context,
+                                        context.getString(R.string.version_created_toast),
+                                        Toast.LENGTH_SHORT
+                                    ).show()
+                                    onOpenEditor(duplicatedSong.id)
+                                }
+                            },
+                            onBackClick = if (navigator.canNavigateBack()) {
+                                {
+                                    coroutineScope.launch {
+                                        navigator.navigateBack()
+                                    }
+                                }
+                            } else null
+                        )
+                    }
                 }
+            )
+
+            if (!currentTier.isAdFree) {
+                AdBannerComposable(
+                    onUpgradeClick = onOpenSubscription
+                )
             }
-        )
+        }
     }
 }
 

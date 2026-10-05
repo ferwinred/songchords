@@ -191,4 +191,87 @@
     <string name="duplicate_song">Crear mi versión</string>
     <string name="read_only_mode">Modo de solo lectura</string>
     <string name="version_created_toast">Versión personal creada</string>
+
+    <!-- Listas / Setlists -->
+    <string name="setlists">Listas / Setlists</string>
+    <string name="nav_setlists">Listas</string>
+    <string name="create_setlist">Crear Lista</string>
+    <string name="add_to_setlist">Agregar a Lista</string>
+    <string name="save_transposed_key">Guardar Tono Transpuesto</string>
+    <string name="original_key">Tono Original</string>
+    <string name="setlist_key">Tono de la Lista</string>
+    <string name="setlist_title_label">Título de la Lista *</string>
+    <string name="setlist_description_label">Descripción (opcional)</string>
+    <string name="no_setlists_found">No hay listas creadas</string>
+    <string name="empty_setlists_prompt">Crea una lista para organizar tus canciones de adoración y ensayos.</string>
+    <string name="delete_setlist">Eliminar Lista</string>
+    <string name="delete_setlist_confirm">¿Estás seguro de que deseas eliminar esta lista?</string>
+    <string name="remove_song_from_setlist">Quitar de la lista</string>
+    <string name="select_setlist">Seleccionar Lista</string>
+    <string name="transposed_key_override">Tono Transpuesto Personalizado</string>
+    <string name="original_key_format_arrow">Original: %1$s ➔ Setlist: %2$s</string>
+    <string name="key_transposed">Tono Transpuesto</string>
+    <string name="song_added_to_setlist_toast">Canción agregada a %1$s</string>
+    <string name="songs_count_one">%1$d canción</string>
+    <string name="songs_count_other">%1$d canciones</string>
+    <string name="edit_setlist_key">Editar Tono</string>
+
+    <!-- Suscripciones y Planes -->
+    <string name="subscription_title">Planes y Suscripciones</string>
+    <string name="subscription_subtitle">Elige el plan que mejor se adapte a tus necesidades de ministerio</string>
+    <string name="tier_anonymous">Anónimo</string>
+    <string name="tier_registered_free">Registrado Gratis</string>
+    <string name="tier_basic_sub">Suscripción Básica</string>
+    <string name="tier_pro_sub">Suscripción Pro</string>
+    <string name="tier_premium_ai_sub">Suscripción Premium IA</string>
+    <string name="price_free">Gratis ($0/mes)</string>
+    <string name="price_basic">$2.99 / mes</string>
+    <string name="price_pro">$6.99 / mes</string>
+    <string name="price_premium_ai">$12.99 / mes</string>
+    <string name="current_plan_badge">Plan Actual</string>
+    <string name="select_plan_button">Seleccionar Plan</string>
+    <string name="upgrade_plan_button">Mejorar Plan</string>
+    <string name="plan_activated_toast">Cambiado al plan %1$s</string>
+
+    <!-- Lista de Beneficios -->
+    <string name="feature_setlists_limit">%1$d setlists</string>
+    <string name="feature_setlists_unlimited">Setlists ilimitados</string>
+    <string name="feature_songs_per_setlist_limit">%1$d canciones por setlist</string>
+    <string name="feature_songs_per_setlist_unlimited">Canciones ilimitadas por setlist</string>
+    <string name="feature_custom_songs_limit">%1$d canciones propias</string>
+    <string name="feature_custom_songs_unlimited">Canciones propias ilimitadas</string>
+    <string name="feature_ad_free">Experiencia Sin Anuncios</string>
+    <string name="feature_with_ads">Incluye anuncios</string>
+    <string name="feature_ai_assistant">Asistente de IA de Adoración</string>
+    <string name="feature_no_ai_assistant">Sin asistente de IA</string>
+
+    <!-- Banner Publicitario -->
+    <string name="ad_banner_title">Publicidad</string>
+    <string name="ad_banner_message">¡Actualiza tu plan para disfrutar una experiencia sin anuncios y setlists ilimitados!</string>
+    <string name="ad_banner_action">Quitar Anuncios</string>
+
+    <!-- Diálogos de Límite de Plan -->
+    <string name="limit_reached_title">Límite de Plan Alcanzado</string>
+    <string name="limit_setlists_reached_message">Has alcanzado el límite de %1$d setlists para tu plan actual (%2$s). Actualiza tu plan para crear más setlists.</string>
+    <string name="limit_songs_per_setlist_reached_message">Has alcanzado el límite de %1$d canciones por setlist para tu plan actual (%2$s). Actualiza tu plan para agregar más canciones.</string>
+    <string name="limit_custom_songs_reached_message">Has alcanzado el límite de %1$d canciones propias para tu plan actual (%2$s). Actualiza tu plan para crear más canciones.</string>
+    <string name="view_plans">Ver Planes</string>
+    <string name="understood">Entendido</string>
+
+    <!-- Asistente IA Musical Gemini -->
+    <string name="nav_ai_assistant">🤖 IA Musical</string>
+    <string name="ai_assistant_title">Asistente IA Musical Gemini</string>
+    <string name="ai_assistant_subtitle">Guía de Teoría Musical, Guitarra, Piano y Alabanza</string>
+    <string name="ai_quick_prompts_title">Sugerencias Rápidas</string>
+    <string name="ai_prompt_guitar_scale">🎸 ¿Cómo tocar la escala de Sol Mayor en Guitarra?</string>
+    <string name="ai_prompt_piano_chords">🎹 Explicación de acordes de la canción en Piano</string>
+    <string name="ai_prompt_worship_progression">🎼 Sugerencias de progresión de acordes para Adoración</string>
+    <string name="ai_prompt_transposition_solfege">📖 ¿Cómo usar la transposición y notación Solfeo?</string>
+    <string name="ai_input_placeholder">Pregunta a Gemini IA sobre acordes, escalas, alabanzas&#8230;</string>
+    <string name="ai_send_button">Enviar</string>
+    <string name="ai_subscription_required_title">Suscripción Premium IA Requerida</string>
+    <string name="ai_subscription_required_desc">El Asistente IA Musical Gemini está disponible exclusivamente para usuarios con el plan Premium IA. Actualiza tu plan para desbloquear tutoría musical, análisis de acordes y sugerencias de alabanza.</string>
+    <string name="ai_unlock_premium_button">Ver Planes de Suscripción</string>
+    <string name="ai_generating_response">Gemini IA está pensando&#8230;</string>
+    <string name="ai_welcome_message">¡Hola! Soy tu Asistente IA Musical de Gemini. ¿En qué puedo ayudarte hoy con tu guitarra, piano, armonía o ministerio de alabanza?</string>
 </resources>

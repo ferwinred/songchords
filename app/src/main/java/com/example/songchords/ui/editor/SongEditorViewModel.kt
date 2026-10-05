@@ -9,9 +9,11 @@ import com.example.songchords.engine.ChordParser
 import com.example.songchords.model.ParsedSong
 import com.example.songchords.model.Song
 import com.example.songchords.repository.SongRepository
+import com.example.songchords.ui.setlist.LimitReachedDialogInfo
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.util.UUID
@@ -43,7 +45,8 @@ data class SongEditorUiState(
     val selectedTab: Int = 0, // 0 = Edit, 1 = Preview
     val isLoading: Boolean = false,
     val isSaved: Boolean = false,
-    val errorMessage: String? = null
+    val errorMessage: String? = null,
+    val limitReachedInfo: LimitReachedDialogInfo? = null
 ) {
     val parsedSongPreview: ParsedSong
         get() {
@@ -360,6 +363,10 @@ class SongEditorViewModel(
         }
     }
 
+    fun dismissLimitDialog() {
+        _uiState.update { it.copy(limitReachedInfo = null) }
+    }
+
     fun saveSong() {
         val state = _uiState.value
         if (state.title.isBlank()) {
@@ -376,6 +383,25 @@ class SongEditorViewModel(
 
         viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true) }
+
+            if (state.isNewSong) {
+                val allSongs = repository.getSongs().first()
+                val currentCustomSongsCount = allSongs.count { it.createdByUserId != null }
+                if (!com.example.songchords.subscription.SubscriptionManager.canCreateCustomSong(currentCustomSongsCount)) {
+                    val tier = com.example.songchords.subscription.SubscriptionManager.currentTier.value
+                    _uiState.update {
+                        it.copy(
+                            isLoading = false,
+                            limitReachedInfo = LimitReachedDialogInfo(
+                                messageResId = com.example.songchords.R.string.limit_custom_songs_reached_message,
+                                limitValue = tier.maxCustomSongs,
+                                currentTierTitleResId = tier.titleResId
+                            )
+                        )
+                    }
+                    return@launch
+                }
+            }
 
             val existingId = state.songId ?: UUID.randomUUID().toString()
             val existingSong = if (state.songId != null) repository.getSongById(state.songId) else null

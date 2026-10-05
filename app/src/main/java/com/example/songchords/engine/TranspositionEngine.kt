@@ -37,6 +37,16 @@ object TranspositionEngine {
     }
 
     /**
+     * Calculates the shortest semitones delta to transpose from one key to another.
+     */
+    fun calculateSemitonesDelta(fromKeyStr: String, toKeyStr: String): Int {
+        val fromKey = Key.parse(fromKeyStr) ?: return 0
+        val toKey = Key.parse(toKeyStr) ?: return 0
+        val delta = (toKey.root.pitchClass - fromKey.root.pitchClass).mod(12)
+        return if (delta > 6) delta - 12 else delta
+    }
+
+    /**
      * Transposes raw chord-tagged text directly by semitones.
      */
     fun transposeText(

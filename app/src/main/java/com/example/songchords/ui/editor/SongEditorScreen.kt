@@ -104,7 +104,8 @@ import com.example.songchords.ui.theme.DarkNavyBlue
 fun SongEditorScreen(
     viewModel: SongEditorViewModel,
     onNavigateBack: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    onOpenSubscription: () -> Unit = {}
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val snackbarHostState = remember { SnackbarHostState() }
@@ -833,6 +834,18 @@ fun SongEditorScreen(
                     Text(stringResource(R.string.cancel))
                 }
             }
+        )
+    }
+
+    uiState.limitReachedInfo?.let { info ->
+        com.example.songchords.ui.setlist.PlanLimitReachedDialog(
+            message = stringResource(
+                info.messageResId,
+                info.limitValue,
+                stringResource(info.currentTierTitleResId)
+            ),
+            onDismissRequest = viewModel::dismissLimitDialog,
+            onOpenSubscription = onOpenSubscription
         )
     }
 }
