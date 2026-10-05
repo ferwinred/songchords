@@ -95,7 +95,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.songchords.R
-import com.example.songchords.ui.components.LanguageSelector
+import com.example.songchords.ui.components.TwoTierHeader
 import com.example.songchords.ui.songlist.components.SongDetailPane
 import com.example.songchords.ui.theme.DarkNavyBlue
 
@@ -152,17 +152,8 @@ fun SongEditorScreen(
         modifier = modifier.fillMaxSize(),
         snackbarHost = { SnackbarHost(snackbarHostState) },
         topBar = {
-            TopAppBar(
-                title = {
-                    Text(
-                        text = stringResource(R.string.app_name),
-                        style = MaterialTheme.typography.titleLarge,
-                        fontWeight = FontWeight.Bold,
-                        color = Color.White,
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis
-                    )
-                },
+            TwoTierHeader(
+                titleText = stringResource(R.string.app_name),
                 navigationIcon = {
                     IconButton(onClick = onNavigateBack) {
                         Icon(
@@ -172,18 +163,7 @@ fun SongEditorScreen(
                         )
                     }
                 },
-                actions = {
-                    IconButton(
-                        onClick = { importJsonLauncher.launch(arrayOf("application/json", "*/*")) }
-                    ) {
-                        Icon(
-                            imageVector = Icons.Rounded.FileOpen,
-                            contentDescription = stringResource(R.string.import_json_desc),
-                            tint = Color.White
-                        )
-                    }
-                    LanguageSelector(tint = Color.White)
-                    Spacer(modifier = Modifier.width(4.dp))
+                trailingContent = {
                     if (uiState.isLoading) {
                         CircularProgressIndicator(
                             modifier = Modifier
@@ -203,16 +183,12 @@ fun SongEditorScreen(
                         }
                     }
                 },
-                windowInsets = TopAppBarDefaults.windowInsets,
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = DarkNavyBlue,
-                    titleContentColor = Color.White,
-                    navigationIconContentColor = Color.White,
-                    actionIconContentColor = Color.White
-                )
+                onSubscriptionClick = onOpenSubscription,
+                onImportJsonClick = {
+                    importJsonLauncher.launch(arrayOf("application/json", "*/*"))
+                }
             )
-        }
-    ) { innerPadding ->
+        },    ) { innerPadding ->
         Column(
             modifier = Modifier
                 .fillMaxSize()

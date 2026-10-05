@@ -1,5 +1,7 @@
 package com.example.songchords.ui.tools
 
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -13,22 +15,20 @@ import androidx.compose.material3.PrimaryTabRow
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Tab
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.graphics.Color
 import com.example.songchords.R
+import com.example.songchords.repository.SyncStatus
 import com.example.songchords.ui.chordlibrary.ChordLibraryScreen
-import com.example.songchords.ui.theme.DarkNavyBlue
+import com.example.songchords.ui.components.TwoTierHeader
 import com.example.songchords.ui.theme.SongChordsTheme
 import com.example.songchords.ui.tuner.TunerScreen
 
@@ -42,24 +42,22 @@ enum class ToolsTab {
 fun ToolsScreen(
     onNavigateBack: () -> Unit,
     modifier: Modifier = Modifier,
-    initialTab: ToolsTab = ToolsTab.TUNER
+    initialTab: ToolsTab = ToolsTab.TUNER,
+    onOpenSubscription: () -> Unit = {},
+    syncStatus: SyncStatus = SyncStatus.IDLE,
+    onCloudSyncClick: () -> Unit = {}
 ) {
     var selectedTab by remember { mutableIntStateOf(initialTab.ordinal) }
+
+    val importJsonLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.OpenDocument()
+    ) { _ -> }
 
     Scaffold(
         modifier = modifier.fillMaxSize(),
         topBar = {
-            TopAppBar(
-                title = {
-                    Text(
-                        text = stringResource(R.string.app_name),
-                        style = MaterialTheme.typography.titleLarge,
-                        fontWeight = FontWeight.Bold,
-                        color = Color.White,
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis
-                    )
-                },
+            TwoTierHeader(
+                titleText = stringResource(R.string.app_name),
                 navigationIcon = {
                     IconButton(onClick = onNavigateBack) {
                         Icon(
@@ -69,13 +67,12 @@ fun ToolsScreen(
                         )
                     }
                 },
-                windowInsets = TopAppBarDefaults.windowInsets,
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = DarkNavyBlue,
-                    titleContentColor = Color.White,
-                    actionIconContentColor = Color.White,
-                    navigationIconContentColor = Color.White
-                )
+                syncStatus = syncStatus,
+                onCloudSyncClick = onCloudSyncClick,
+                onSubscriptionClick = onOpenSubscription,
+                onImportJsonClick = {
+                    importJsonLauncher.launch(arrayOf("application/json", "*/*"))
+                }
             )
         }
     ) { innerPadding ->

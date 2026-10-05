@@ -47,8 +47,7 @@ import com.example.songchords.repository.SampleSongs
 import com.example.songchords.repository.SyncStatus
 import com.example.songchords.subscription.SubscriptionManager
 import com.example.songchords.ui.components.AdBannerComposable
-import com.example.songchords.ui.components.LanguageSelector
-import com.example.songchords.ui.components.ThemeToggleIconButton
+import com.example.songchords.ui.components.TwoTierHeader
 import com.example.songchords.ui.songlist.components.SongDetailPane
 import com.example.songchords.ui.theme.DarkNavyBlue
 import com.example.songchords.ui.theme.SongChordsTheme
@@ -87,85 +86,23 @@ fun SongListDetailScreen(
     Scaffold(
         modifier = modifier.fillMaxSize(),
         topBar = {
-            TopAppBar(
-                title = {
-                    Text(
-                        text = stringResource(R.string.app_name),
-                        style = MaterialTheme.typography.titleLarge,
-                        fontWeight = FontWeight.Bold,
-                        color = Color.White,
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis
-                    )
-                },
-                actions = {
-                    val syncIcon = when (uiState.syncStatus) {
-                        SyncStatus.SYNCING -> Icons.Rounded.CloudSync
-                        SyncStatus.OFFLINE_ERROR -> Icons.Rounded.CloudOff
-                        SyncStatus.SYNCED, SyncStatus.IDLE -> Icons.Rounded.CloudDone
-                    }
-                    val syncDesc = when (uiState.syncStatus) {
-                        SyncStatus.SYNCING -> stringResource(R.string.cloud_syncing)
-                        SyncStatus.OFFLINE_ERROR -> stringResource(R.string.cloud_offline)
-                        SyncStatus.SYNCED, SyncStatus.IDLE -> stringResource(R.string.cloud_synced)
-                    }
-
-                    IconButton(
-                        onClick = {
-                            viewModel.triggerSync { status ->
-                                val message = if (status == SyncStatus.OFFLINE_ERROR) {
-                                    context.getString(R.string.sync_error_toast)
-                                } else {
-                                    context.getString(R.string.sync_success_toast)
-                                }
-                                Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
-                            }
+            TwoTierHeader(
+                titleText = stringResource(R.string.app_name),
+                syncStatus = uiState.syncStatus,
+                onCloudSyncClick = {
+                    viewModel.triggerSync { status ->
+                        val message = if (status == SyncStatus.OFFLINE_ERROR) {
+                            context.getString(R.string.sync_error_toast)
+                        } else {
+                            context.getString(R.string.sync_success_toast)
                         }
-                    ) {
-                        Icon(
-                            imageVector = syncIcon,
-                            contentDescription = syncDesc,
-                            tint = if (uiState.syncStatus == SyncStatus.OFFLINE_ERROR) {
-                                MaterialTheme.colorScheme.errorContainer
-                            } else {
-                                Color.White
-                            }
-                        )
+                        Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
                     }
-
-                    IconButton(onClick = onOpenTools) {
-                        Icon(
-                            imageVector = Icons.Rounded.Construction,
-                            contentDescription = stringResource(R.string.nav_tools),
-                            tint = Color.White
-                        )
-                    }
-                    IconButton(onClick = onOpenSubscription) {
-                        Icon(
-                            imageVector = Icons.Rounded.WorkspacePremium,
-                            contentDescription = stringResource(R.string.subscription_title),
-                            tint = Color.White
-                        )
-                    }
-                    IconButton(
-                        onClick = { importJsonLauncher.launch(arrayOf("application/json", "*/*")) }
-                    ) {
-                        Icon(
-                            imageVector = Icons.Rounded.FileOpen,
-                            contentDescription = stringResource(R.string.import_json_desc),
-                            tint = Color.White
-                        )
-                    }
-                    ThemeToggleIconButton(tint = Color.White)
-                    LanguageSelector(tint = Color.White)
                 },
-                windowInsets = TopAppBarDefaults.windowInsets,
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = DarkNavyBlue,
-                    titleContentColor = Color.White,
-                    actionIconContentColor = Color.White,
-                    navigationIconContentColor = Color.White
-                )
+                onSubscriptionClick = onOpenSubscription,
+                onImportJsonClick = {
+                    importJsonLauncher.launch(arrayOf("application/json", "*/*"))
+                }
             )
         },
         floatingActionButton = {
