@@ -226,8 +226,10 @@
     <string name="tier_premium_ai_sub">Suscripción Premium IA</string>
     <string name="price_free">Gratis ($0/mes)</string>
     <string name="price_basic">$2.99 / mes</string>
-    <string name="price_pro">$6.99 / mes</string>
-    <string name="price_premium_ai">$12.99 / mes</string>
+    <string name="price_pro">$5.99 / mes</string>
+    <string name="price_premium_ai">$9.99 / mes</string>
+    <string name="requires_google_sign_in">Requiere iniciar sesión con Google</string>
+    <string name="sign_in_with_google">Iniciar sesión con Google</string>
     <string name="current_plan_badge">Plan Actual</string>
     <string name="select_plan_button">Seleccionar Plan</string>
     <string name="upgrade_plan_button">Mejorar Plan</string>

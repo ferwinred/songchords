@@ -17,6 +17,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.ArrowBack
+import androidx.compose.material.icons.rounded.AccountCircle
 import androidx.compose.material.icons.rounded.CheckCircle
 import androidx.compose.material.icons.rounded.Close
 import androidx.compose.material.icons.rounded.Star
@@ -57,9 +58,10 @@ import com.example.songchords.ui.theme.SongChordsTheme
 fun SubscriptionScreen(
     onNavigateBack: () -> Unit,
     modifier: Modifier = Modifier,
-    viewModel: SubscriptionViewModel = viewModel()
+    viewModel: SubscriptionViewModel = viewModel(),
 ) {
     val currentTier by viewModel.currentTier.collectAsStateWithLifecycle()
+    val displayPlans = viewModel.displayPlans
     val context = LocalContext.current
 
     Scaffold(
@@ -120,7 +122,7 @@ fun SubscriptionScreen(
                 }
             }
 
-            items(UserTier.entries) { tier ->
+            items(displayPlans) { tier ->
                 PlanCard(
                     tier = tier,
                     isCurrent = (tier == currentTier),
@@ -183,6 +185,14 @@ fun PlanCard(
                         fontWeight = FontWeight.Bold,
                         color = MaterialTheme.colorScheme.onSurface
                     )
+                    if (tier == UserTier.REGISTERED_FREE) {
+                        Spacer(modifier = Modifier.height(2.dp))
+                        Text(
+                            text = stringResource(R.string.requires_google_sign_in),
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                    }
                     Spacer(modifier = Modifier.height(2.dp))
                     Text(
                         text = stringResource(tier.priceResId),
@@ -284,10 +294,25 @@ fun PlanCard(
                         contentColor = MaterialTheme.colorScheme.onPrimary
                     )
                 ) {
-                    Text(
-                        text = stringResource(R.string.select_plan_button),
-                        fontWeight = FontWeight.Bold
-                    )
+                    if (tier == UserTier.REGISTERED_FREE) {
+                        Icon(
+                            imageVector = Icons.Rounded.AccountCircle,
+                            contentDescription = null,
+                            modifier = Modifier
+                                .height(20.dp)
+                                .width(20.dp)
+                        )
+                        Spacer(modifier = Modifier.width(8.dp))
+                        Text(
+                            text = stringResource(R.string.sign_in_with_google),
+                            fontWeight = FontWeight.Bold
+                        )
+                    } else {
+                        Text(
+                            text = stringResource(R.string.select_plan_button),
+                            fontWeight = FontWeight.Bold
+                        )
+                    }
                 }
             }
         }

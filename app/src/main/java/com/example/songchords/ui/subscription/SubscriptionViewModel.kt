@@ -12,6 +12,8 @@ class SubscriptionViewModel : ViewModel() {
 
     val currentTier: StateFlow<UserTier> = SubscriptionManager.currentTier
 
+    val displayPlans: List<UserTier> = UserTier.entries.filter { it != UserTier.ANONYMOUS }
+
     fun selectTier(tier: UserTier) {
         SubscriptionManager.setTier(tier)
     }
