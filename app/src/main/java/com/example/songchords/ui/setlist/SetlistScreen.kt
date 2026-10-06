@@ -321,12 +321,17 @@ private fun SetlistCard(
                     )
                 }
 
-                IconButton(onClick = onDeleteSetlist) {
-                    Icon(
-                        imageVector = Icons.Rounded.Delete,
-                        contentDescription = stringResource(R.string.delete_setlist),
-                        tint = MaterialTheme.colorScheme.error
-                    )
+                val currentUserId = com.example.songchords.auth.UserIdentityManager.currentUserId
+                val canDelete = setlist.isDeletableBy(currentUserId)
+
+                if (canDelete) {
+                    IconButton(onClick = onDeleteSetlist) {
+                        Icon(
+                            imageVector = Icons.Rounded.Delete,
+                            contentDescription = stringResource(R.string.delete_setlist),
+                            tint = MaterialTheme.colorScheme.error
+                        )
+                    }
                 }
 
                 IconButton(onClick = onToggleExpand) {

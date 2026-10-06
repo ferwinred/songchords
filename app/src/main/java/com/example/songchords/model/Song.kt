@@ -1,5 +1,6 @@
 package com.example.songchords.model
 
+import com.example.songchords.auth.UserIdentityManager
 import java.util.UUID
 
 /**
@@ -26,6 +27,17 @@ data class Song(
      */
     fun isOwnedBy(userId: String?): Boolean {
         return (createdByUserId != null) && (createdByUserId == userId)
+    }
+
+    /**
+     * Checks whether this song can be edited or deleted by the given user ID or email.
+     * Returns true if the user is the owner or SuperAdmin.
+     */
+    fun isEditableBy(userId: String?, email: String? = null): Boolean {
+        if (userId == UserIdentityManager.SUPER_ADMIN_ID || email == UserIdentityManager.SUPER_ADMIN_EMAIL) {
+            return true
+        }
+        return isOwnedBy(userId)
     }
 
     /**

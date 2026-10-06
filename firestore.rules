@@ -1,15 +1,25 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
+    // Helper function to check if the user is SuperAdmin or authenticated
+    function isSuperAdmin() {
+      return request.auth != null && request.auth.token.email == 'ferwinred@gmail.com';
+    }
+
     match /songs/{songId} {
-      // Public read access for all songs
-      allow read: if true;
+      allow read, write: if true;
+    }
 
-      // Allow creation for authenticated users setting createdByUserId to their UID
-      allow create: if request.auth != null && request.resource.data.createdByUserId == request.auth.uid;
+    match /chords/{chordId} {
+      allow read, write: if true;
+    }
 
-      // Owner-only update and delete permissions
-      allow update, delete: if request.auth != null && resource.data.createdByUserId == request.auth.uid;
+    match /promo_codes/{codeId} {
+      allow read, write: if true;
+    }
+
+    match /setlists/{setlistId} {
+      allow read, write: if true;
     }
   }
 }

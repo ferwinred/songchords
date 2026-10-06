@@ -1,5 +1,8 @@
 package com.example.songchords.firestore
 
+import android.content.Context
+import android.widget.Toast
+import com.example.songchords.auth.UserIdentityManager
 import com.example.songchords.model.Chord
 import com.example.songchords.model.ChordDiagramProvider
 import com.example.songchords.model.Note
@@ -14,7 +17,10 @@ import com.example.songchords.subscription.PromoCode
 import com.example.songchords.subscription.PromoCodeManager
 import com.example.songchords.subscription.UserTier
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.FirebaseFirestoreException
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.tasks.await
+import kotlinx.coroutines.withContext
 
 /**
  * Execution result status for a single Cloud Firestore collection seeding operation.
@@ -66,21 +72,47 @@ object FirestoreSeeder {
         }
     }
 
+    private suspend fun handleFirestoreError(context: Context?, e: Throwable) {
+        val message = when (e) {
+            is FirebaseFirestoreException -> {
+                when (e.code) {
+                    FirebaseFirestoreException.Code.NOT_FOUND ->
+                        "Error Firestore: La base de datos no existe o debe habilitarse en Firebase Console."
+                    FirebaseFirestoreException.Code.PERMISSION_DENIED ->
+                        "Error Firestore: Permiso denegado. Verifica las reglas en Firebase Console."
+                    FirebaseFirestoreException.Code.UNAVAILABLE ->
+                        "Error Firestore: Servicio no disponible o sin conexión a internet."
+                    else ->
+                        "Error Firestore (${e.code.name}): ${e.message}"
+                }
+            }
+            else -> "Error en Firestore: ${e.message ?: e.toString()}"
+        }
+
+        context?.let { ctx ->
+            withContext(Dispatchers.Main) {
+                Toast.makeText(ctx, message, Toast.LENGTH_LONG).show()
+            }
+        }
+    }
+
     /**
      * Populates 'songs' collection in Cloud Firestore with SuperAdmin catalog songs.
      */
     suspend fun seedSongsCollection(
         firestore: FirebaseFirestore? = getFirestore(),
         cloudProvider: CloudSyncProvider? = null,
+        context: Context? = null,
     ): SeedResult {
         var count = 0
+        var lastError: Throwable? = null
         val songs = SampleSongs.getSampleSongs()
 
         for (song in songs) {
             inMemorySongs[song.id] = song
             cloudProvider?.saveRemoteSong(song)
 
-            firestore?.let { db ->
+            if (firestore != null) {
                 try {
                     val data = mapOf(
                         "id" to song.id,
@@ -95,19 +127,28 @@ object FirestoreSeeder {
                         "content" to song.content,
                         "createdAt" to song.createdAt,
                     )
-                    db.collection(COLLECTION_SONGS).document(song.id).set(data).await()
-                } catch (_: Throwable) {
-                    // Gracefully ignore Firestore network / init errors
+                    firestore.collection(COLLECTION_SONGS).document(song.id).set(data).await()
+                    count++
+                } catch (e: FirebaseFirestoreException) {
+                    lastError = e
+                    handleFirestoreError(context, e)
+                    break
+                } catch (e: Throwable) {
+                    lastError = e
+                    handleFirestoreError(context, e)
+                    break
                 }
+            } else {
+                count++
             }
-            count++
         }
 
+        val isSuccess = lastError == null
         return SeedResult(
             collectionName = COLLECTION_SONGS,
-            success = true,
+            success = isSuccess,
             count = count,
-            message = "Successfully seeded $count songs into '$COLLECTION_SONGS' collection.",
+            message = if (isSuccess) "Successfully seeded $count songs into '$COLLECTION_SONGS' collection." else "Error en '$COLLECTION_SONGS': ${lastError?.message.orEmpty()}",
         )
     }
 
@@ -117,12 +158,15 @@ object FirestoreSeeder {
      */
     suspend fun seedChordsCollection(
         firestore: FirebaseFirestore? = getFirestore(),
+        context: Context? = null,
     ): SeedResult {
         var count = 0
+        var lastError: Throwable? = null
         val rootNotes = FirestoreChordLibraryRepository.ROOT_NOTES
         val qualities = FirestoreChordLibraryRepository.QUALITIES
 
         for (root in rootNotes) {
+            if (lastError != null) break
             for (qual in qualities) {
                 val rootNote = Note.fromName(root) ?: Note.C
                 val stdRoot = rootNote.toStandardName(preferFlats = false)
@@ -149,7 +193,7 @@ object FirestoreSeeder {
 
                 inMemoryChords[docId] = doc
 
-                firestore?.let { db ->
+                if (firestore != null) {
                     try {
                         val data = mapOf(
                             "id" to doc.id,
@@ -164,20 +208,29 @@ object FirestoreSeeder {
                             "pianoBassPitchClass" to doc.pianoBassPitchClass,
                             "updatedAt" to doc.updatedAt,
                         )
-                        db.collection(COLLECTION_CHORDS).document(docId).set(data).await()
-                    } catch (_: Throwable) {
-                        // Gracefully ignore Firestore network / init errors
+                        firestore.collection(COLLECTION_CHORDS).document(docId).set(data).await()
+                        count++
+                    } catch (e: FirebaseFirestoreException) {
+                        lastError = e
+                        handleFirestoreError(context, e)
+                        break
+                    } catch (e: Throwable) {
+                        lastError = e
+                        handleFirestoreError(context, e)
+                        break
                     }
+                } else {
+                    count++
                 }
-                count++
             }
         }
 
+        val isSuccess = lastError == null
         return SeedResult(
             collectionName = COLLECTION_CHORDS,
-            success = true,
+            success = isSuccess,
             count = count,
-            message = "Successfully seeded $count chord entries into '$COLLECTION_CHORDS' collection.",
+            message = if (isSuccess) "Successfully seeded $count chord entries into '$COLLECTION_CHORDS' collection." else "Error en '$COLLECTION_CHORDS': ${lastError?.message}",
         )
     }
 
@@ -186,6 +239,7 @@ object FirestoreSeeder {
      */
     suspend fun seedPromoCodesCollection(
         firestore: FirebaseFirestore? = getFirestore(),
+        context: Context? = null,
     ): SeedResult {
         val promoCodes = listOf(
             PromoCode("VIP-PRAYER-99", UserTier.PREMIUM_AI_SUB),
@@ -194,11 +248,13 @@ object FirestoreSeeder {
         )
 
         var count = 0
+        var lastError: Throwable? = null
+
         for (promo in promoCodes) {
             inMemoryPromoCodes[promo.code] = promo
             PromoCodeManager.addPromoCode(promo)
 
-            firestore?.let { db ->
+            if (firestore != null) {
                 try {
                     val data = mapOf(
                         "code" to promo.code,
@@ -207,19 +263,28 @@ object FirestoreSeeder {
                         "redeemedByUserId" to promo.redeemedByUserId,
                         "redeemedAtTimestamp" to promo.redeemedAtTimestamp,
                     )
-                    db.collection(COLLECTION_PROMO_CODES).document(promo.code).set(data).await()
-                } catch (_: Throwable) {
-                    // Gracefully ignore Firestore network / init errors
+                    firestore.collection(COLLECTION_PROMO_CODES).document(promo.code).set(data).await()
+                    count++
+                } catch (e: FirebaseFirestoreException) {
+                    lastError = e
+                    handleFirestoreError(context, e)
+                    break
+                } catch (e: Throwable) {
+                    lastError = e
+                    handleFirestoreError(context, e)
+                    break
                 }
+            } else {
+                count++
             }
-            count++
         }
 
+        val isSuccess = lastError == null
         return SeedResult(
             collectionName = COLLECTION_PROMO_CODES,
-            success = true,
+            success = isSuccess,
             count = count,
-            message = "Successfully seeded $count promo codes into '$COLLECTION_PROMO_CODES' collection.",
+            message = if (isSuccess) "Successfully seeded $count promo codes into '$COLLECTION_PROMO_CODES' collection." else "Error en '$COLLECTION_PROMO_CODES': ${lastError?.message}",
         )
     }
 
@@ -228,14 +293,16 @@ object FirestoreSeeder {
      */
     suspend fun seedSetlistsCollection(
         firestore: FirebaseFirestore? = getFirestore(),
+        context: Context? = null,
     ): SeedResult {
         val sampleSetlists = LocalSetlistRepository.createSampleSetlists()
         var count = 0
+        var lastError: Throwable? = null
 
         for (setlist in sampleSetlists) {
             inMemorySetlists[setlist.id] = setlist
 
-            firestore?.let { db ->
+            if (firestore != null) {
                 try {
                     val songsData = setlist.songs.map { s ->
                         mapOf(
@@ -255,19 +322,28 @@ object FirestoreSeeder {
                         "songs" to songsData,
                         "createdAt" to setlist.createdAt,
                     )
-                    db.collection(COLLECTION_SETLISTS).document(setlist.id).set(data).await()
-                } catch (_: Throwable) {
-                    // Gracefully ignore Firestore network / init errors
+                    firestore.collection(COLLECTION_SETLISTS).document(setlist.id).set(data).await()
+                    count++
+                } catch (e: FirebaseFirestoreException) {
+                    lastError = e
+                    handleFirestoreError(context, e)
+                    break
+                } catch (e: Throwable) {
+                    lastError = e
+                    handleFirestoreError(context, e)
+                    break
                 }
+            } else {
+                count++
             }
-            count++
         }
 
+        val isSuccess = lastError == null
         return SeedResult(
             collectionName = COLLECTION_SETLISTS,
-            success = true,
+            success = isSuccess,
             count = count,
-            message = "Successfully seeded $count setlists into '$COLLECTION_SETLISTS' collection.",
+            message = if (isSuccess) "Successfully seeded $count setlists into '$COLLECTION_SETLISTS' collection." else "Error en '$COLLECTION_SETLISTS': ${lastError?.message}",
         )
     }
 
@@ -277,17 +353,22 @@ object FirestoreSeeder {
     suspend fun seedAllCollections(
         firestore: FirebaseFirestore? = getFirestore(),
         cloudProvider: CloudSyncProvider? = null,
+        context: Context? = null,
     ): SeedingReport {
         val results = listOf(
-            seedSongsCollection(firestore, cloudProvider),
-            seedChordsCollection(firestore),
-            seedPromoCodesCollection(firestore),
-            seedSetlistsCollection(firestore),
+            seedSongsCollection(firestore, cloudProvider, context),
+            seedChordsCollection(firestore, context),
+            seedPromoCodesCollection(firestore, context),
+            seedSetlistsCollection(firestore, context),
         )
 
         val totalCollections = results.size
         val successfulCollections = results.count { it.success }
         val totalDocumentsSeeded = results.sumOf { it.count }
+
+        if (successfulCollections == totalCollections) {
+            UserIdentityManager.markFirestoreSeeded()
+        }
 
         return SeedingReport(
             totalCollections = totalCollections,

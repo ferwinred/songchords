@@ -1,45 +1,42 @@
 # Project Plan
 
-SongChords app - Implement persistent local database on user device synced with Firebase Firestore for online cloud updates and 100% offline access.
+SongChords app - Implement SuperAdmin delete permissions for all songs/setlists, direct Firestore seed trigger with toast logging, and Firebase Console setup guide.
 
 ## Project Brief
 
-# Project Brief: SongChords
+# Project Brief: SongChords App
 
 ## Features
-1. **Persistent Local Device Storage**: Store songs, setlists, and chord sheets locally using Room database to ensure seamless 100% offline access and instant data persistence across app restarts.
-2. **Firebase Cloud Synchronization**: Synchronize real-time remote updates from Firebase Firestore with the local database whenever online, merging changes automatically.
-3. **Song & Chord Sheet Viewer**: Browse, display, and transpose song chord sheets with reactive data flows driven by local-first repositories.
-4. **Setlist Management**: Organize songs into custom setlists for live performances and practice sessions, available both offline and in sync with the cloud.
+1. **SuperAdmin Delete Override**: Grant administrative override permissions to `ferwinred@gmail.com`, enabling full deletion authority for any song or setlist across the app UI and Firestore security rules (`firestore.rules`).
+2. **Direct Firestore Seed Trigger & Toast Logging**: Include an easily accessible *"🔥 Sembrar Firebase Firestore Ahora"* action button in the TopAppBar / ToolsScreen / SubscriptionScreen that forces a direct write of 131 initial documents across `songs`, `chords`, `promo_codes`, and `setlists` collections, providing real-time Toast feedback with document counts and error reporting.
+3. **Song & Setlist Catalog Management**: View, browse, and organize songs, chord sheets, setlists, and promotional codes with role-based access control.
+4. **Firebase Setup & Configuration**: Integrated setup and configuration support for Cloud Firestore in Test Mode and custom security rules for administrative overrides.
 
 ## High-Level Tech Stack
-* **Language**: Kotlin
-* **UI Framework**: Jetpack Compose
-* **Navigation**: Jetpack Navigation 3 (state-driven)
-* **Adaptive Layouts**: Compose Material Adaptive library
-* **Asynchronous Streams**: Kotlin Coroutines & Flow
-* **Local Persistence**: Room Database
-* **Cloud Database & Sync**: Firebase Firestore
-* **Architecture**: Repository Pattern (`SongRepository`, `SetlistRepository`, `FirestoreChordLibraryRepository`)
+- **Language**: Kotlin
+- **UI Framework**: Jetpack Compose
+- **Navigation & Adaptive Strategy**: Jetpack Navigation 3 (state-driven) and Compose Material Adaptive library
+- **Asynchronous Processing**: Kotlin Coroutines & Flow
+- **Backend Services**: Firebase Cloud Firestore SDK, Firebase Authentication
+- **Architecture**: MVVM (Model-View-ViewModel) Architecture
 
 ## Implementation Steps
-**Total Duration:** 4m 50s
+**Total Duration:** 6m 52s
 
-### Task_100_ImplementPersistentLocalDatabaseAndFirebaseSync: Implement Persistent Local Database on User Device synced with Firebase Firestore: 1) Implement LocalPersistentDatabase for songs, setlists, and chords stored in local JSON/SQLite storage on user device. 2) Update CloudSyncEngine, CloudSyncRepository, and SetlistRepository to load from local device database when offline and sync/merge with Firebase Firestore when online. 3) Ensure custom songs and setlists created by users persist locally on device across app restarts.
+### Task_102_ImplementSuperAdminDeleteOverrideAndDirectFirestoreSeedTrigger: Implement SuperAdmin Delete Override & Direct Firestore Seed Trigger: 1) Update Song.isEditableBy(), Setlist.isDeletableBy(), and firestore.rules to allow SuperAdmin (ferwinred@gmail.com / SUPERADMIN_FERWINRED) to delete any song or setlist. 2) Add a '🔥 Sembrar Firestore' action button in TopAppBar / ToolsScreen / SubscriptionScreen that forces direct write of all 131 documents to Firestore 'songs', 'chords', 'promo_codes', and 'setlists' collections, showing Toast diagnostics. 3) Commit and push updates to GitHub.
 - **Status:** COMPLETED
-- **Updates:** Task_100_ImplementPersistentLocalDatabaseAndFirebaseSync completed successfully. Implemented Persistent Local Storage on user device synced with Firebase Firestore: 1) Created LocalPersistentStorage in com.example.songchords.repository.local to manage internal JSON file storage (songs_db.json and setlists_db.json) in context.filesDir. 2) Updated LocalSongRepository and LocalSetlistRepository to load from and persist to local device storage across app restarts. 3) Updated CloudSyncEngine.kt and CloudSyncRepository.kt to fetch/merge remote Firestore data with local storage when online and serve directly from device storage when offline. 4) Created LocalPersistentStorageTest unit test suite. Verified with assembleDebug build and 123 passing unit tests.
+- **Updates:** Task_102_ImplementSuperAdminDeleteOverrideAndDirectFirestoreSeedTrigger completed successfully. Implemented SuperAdmin Delete Override and Direct Firestore Seed Trigger: 1) Updated Song.isEditableBy(), Setlist.isDeletableBy(), SongDetailPane.kt, SongListDetailScreen.kt, SetlistScreen.kt, and firestore.rules so SuperAdmin (ferwinred@gmail.com / SUPERADMIN_FERWINRED) can delete any song or setlist across the app and Cloud Firestore. 2) Added '🔥 Sembrar Base de Datos Firestore' action button in SubscriptionScreen.kt and ToolsScreen.kt with Toast error diagnostics to write all 131 documents directly to Cloud Firestore on demand. Verified with assembleDebug build and 125 passing unit tests.
 - **Acceptance Criteria:**
-  - Songs, setlists, and chords stored in persistent local database on user device
-  - Data persists locally across app restarts and is available 100% offline
-  - Firebase Firestore syncs with local database when online
+  - SuperAdmin can delete any song or setlist in UI and firestore.rules
+  - Direct Firestore seed action button added with Toast error diagnostics
   - build pass
 
-### Task_101_RunAndVerifyPersistentLocalDbAndSync: Verify persistent local database on user device and Firebase Firestore synchronization on emulator with critic_agent. Ensure zero crashes.
+### Task_103_RunAndVerifySuperAdminDeleteAndFirestoreSeed: Verify SuperAdmin delete override, direct Firestore seed button, and Toast diagnostics on emulator with critic_agent. Ensure zero crashes.
 - **Status:** COMPLETED
-- **Updates:** Task_101_RunAndVerifyPersistentLocalDbAndSync completed successfully. Verified on emulator with 0 crashes. Confirmed persistent local storage on user device and Firebase Firestore synchronization: 1) Created custom song 'Cancion Local Persistente' and setlist 'Lista Local Persistente'. 2) Force closed and relaunched app: verified data persists 100% locally across restarts in context.filesDir (songs_db.json and setlists_db.json). 3) Confirmed online cloud sync with Firebase Firestore. All 123 unit tests pass.
+- **Updates:** Task_103_RunAndVerifySuperAdminDeleteAndFirestoreSeed completed successfully. Verified on emulator with 0 crashes. Confirmed SuperAdmin delete override (SuperAdmin ferwinred@gmail.com sees Delete button for all songs/setlists) and direct Firestore seed action button '🔥 Sembrar Base de Datos Firestore' in SubscriptionScreen and ToolsScreen triggering direct write of 131 documents with Toast diagnostics. All 125 unit tests pass.
 - **Acceptance Criteria:**
   - build pass
   - app does not crash
-  - Persistent local database and Firebase sync verified functional on emulator
-- **Duration:** 4m 50s
+  - SuperAdmin delete override and direct Firestore seed action verified on emulator
+- **Duration:** 6m 52s
 

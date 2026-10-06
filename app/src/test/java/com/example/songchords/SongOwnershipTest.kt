@@ -144,4 +144,49 @@ class SongOwnershipTest {
         assertEquals(songWithOwnership.createdByUserId, importedSong.createdByUserId)
         assertEquals(songWithOwnership.createdByName, importedSong.createdByName)
     }
+
+    @Test
+    fun testSongIsEditableBy_superAdminOrOwnerReturnsTrue() {
+        val song = Song(
+            id = "song-owner-1",
+            title = "Sample",
+            artist = "Artist",
+            originalKey = "C",
+            content = "Lyrics",
+            createdByUserId = "regular_user_1"
+        )
+
+        // Regular non-owner user -> false
+        assertFalse(song.isEditableBy("other_user_2"))
+
+        // Owner -> true
+        assertTrue(song.isEditableBy("regular_user_1"))
+
+        // SuperAdmin by ID -> true
+        assertTrue(song.isEditableBy(UserIdentityManager.SUPER_ADMIN_ID))
+
+        // SuperAdmin by email -> true
+        assertTrue(song.isEditableBy("other_user_2", UserIdentityManager.SUPER_ADMIN_EMAIL))
+    }
+
+    @Test
+    fun testSetlistIsDeletableBy_superAdminOrOwnerReturnsTrue() {
+        val setlist = com.example.songchords.model.Setlist(
+            id = "setlist-1",
+            title = "My Setlist",
+            createdByUserId = "user_100"
+        )
+
+        // Non-owner -> false
+        assertFalse(setlist.isDeletableBy("user_200"))
+
+        // Owner -> true
+        assertTrue(setlist.isDeletableBy("user_100"))
+
+        // SuperAdmin by ID -> true
+        assertTrue(setlist.isDeletableBy(UserIdentityManager.SUPER_ADMIN_ID))
+
+        // SuperAdmin by Email -> true
+        assertTrue(setlist.isDeletableBy("user_200", UserIdentityManager.SUPER_ADMIN_EMAIL))
+    }
 }

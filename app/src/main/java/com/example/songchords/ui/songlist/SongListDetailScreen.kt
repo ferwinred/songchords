@@ -164,6 +164,19 @@ fun SongListDetailScreen(
                             onToggleFavorite = viewModel::onToggleFavorite,
                             onAddToSetlistClick = onAddToSetlist,
                             onEditSongClick = { songId -> onOpenEditor(songId) },
+                            onDeleteSongClick = { songId ->
+                                viewModel.onDeleteSong(songId)
+                                Toast.makeText(
+                                    context,
+                                    context.getString(R.string.delete_song),
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                                if (navigator.canNavigateBack()) {
+                                    coroutineScope.launch {
+                                        navigator.navigateBack()
+                                    }
+                                }
+                            },
                             onDuplicateSongClick = { songToDuplicate ->
                                 viewModel.duplicateSong(songToDuplicate) { duplicatedSong ->
                                     Toast.makeText(

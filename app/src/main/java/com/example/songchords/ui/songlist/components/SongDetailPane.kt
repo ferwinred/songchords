@@ -34,6 +34,7 @@ import androidx.compose.material.icons.automirrored.rounded.PlaylistAdd
 import androidx.compose.material.icons.automirrored.rounded.QueueMusic
 import androidx.compose.material.icons.rounded.ContentCopy
 import androidx.compose.material.icons.rounded.DataObject
+import androidx.compose.material.icons.rounded.Delete
 import androidx.compose.material.icons.rounded.Description
 import androidx.compose.material.icons.rounded.Edit
 import androidx.compose.material.icons.rounded.Favorite
@@ -48,6 +49,7 @@ import androidx.compose.material.icons.rounded.Share
 import androidx.compose.material.icons.rounded.Tune
 import androidx.compose.material3.AssistChip
 import androidx.compose.material3.AssistChipDefaults
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.DropdownMenu
@@ -58,6 +60,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.VerticalDivider
 import androidx.compose.ui.graphics.Color
 import androidx.compose.runtime.Composable
@@ -150,8 +153,10 @@ fun SongDetailPane(
     onAddToSetlistClick: ((Song) -> Unit)? = null,
     onBackClick: (() -> Unit)? = null,
     onEditSongClick: ((String) -> Unit)? = null,
+    onDeleteSongClick: ((String) -> Unit)? = null,
     onDuplicateSongClick: ((Song) -> Unit)? = null,
     currentUserId: String = UserIdentityManager.currentUserId,
+    currentUserEmail: String? = null,
     showHeader: Boolean = true
 ) {
     if (song == null) {
@@ -214,6 +219,7 @@ fun SongDetailPane(
 
     var selectedChordForDiagram by remember { mutableStateOf<Chord?>(null) }
     var showExportMenu by remember { mutableStateOf(false) }
+    var showDeleteDialog by remember { mutableStateOf(false) }
 
     val baseParsedSong = remember(song) {
         ChordParser.parseSong(song, notationSystem)
@@ -471,7 +477,7 @@ fun SongDetailPane(
 
                 Spacer(modifier = Modifier.height(8.dp))
 
-                val isOwner = song.isOwnedBy(currentUserId)
+                val canEditOrDelete = song.isEditableBy(currentUserId, currentUserEmail)
 
                 // Compact Song Metadata Bar
                 Row(
@@ -492,18 +498,33 @@ fun SongDetailPane(
 
                     Spacer(modifier = Modifier.width(8.dp))
 
-                    if (isOwner) {
-                        if (onEditSongClick != null) {
-                            IconButton(
-                                onClick = { onEditSongClick(song.id) },
-                                modifier = Modifier.size(32.dp)
-                            ) {
-                                Icon(
-                                    imageVector = Icons.Rounded.Edit,
-                                    contentDescription = stringResource(R.string.edit_song),
-                                    tint = MaterialTheme.colorScheme.primary,
-                                    modifier = Modifier.size(18.dp)
-                                )
+                    if (canEditOrDelete) {
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            if (onEditSongClick != null) {
+                                IconButton(
+                                    onClick = { onEditSongClick(song.id) },
+                                    modifier = Modifier.size(32.dp)
+                                ) {
+                                    Icon(
+                                        imageVector = Icons.Rounded.Edit,
+                                        contentDescription = stringResource(R.string.edit_song),
+                                        tint = MaterialTheme.colorScheme.primary,
+                                        modifier = Modifier.size(18.dp)
+                                    )
+                                }
+                            }
+                            if (onDeleteSongClick != null) {
+                                IconButton(
+                                    onClick = { showDeleteDialog = true },
+                                    modifier = Modifier.size(32.dp)
+                                ) {
+                                    Icon(
+                                        imageVector = Icons.Rounded.Delete,
+                                        contentDescription = stringResource(R.string.delete_song),
+                                        tint = MaterialTheme.colorScheme.error,
+                                        modifier = Modifier.size(18.dp)
+                                    )
+                                }
                             }
                         }
                     } else {
@@ -652,6 +673,32 @@ fun SongDetailPane(
             chord = chord,
             notationSystem = notationSystem,
             onDismissRequest = { selectedChordForDiagram = null }
+        )
+    }
+
+    if (showDeleteDialog) {
+        AlertDialog(
+            onDismissRequest = { showDeleteDialog = false },
+            title = { Text(stringResource(R.string.delete_song)) },
+            text = { Text(stringResource(R.string.delete_song_confirm)) },
+            confirmButton = {
+                TextButton(
+                    onClick = {
+                        showDeleteDialog = false
+                        onDeleteSongClick?.invoke(song.id)
+                    }
+                ) {
+                    Text(
+                        text = stringResource(R.string.delete_song),
+                        color = MaterialTheme.colorScheme.error
+                    )
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { showDeleteDialog = false }) {
+                    Text(stringResource(R.string.cancel))
+                }
+            }
         )
     }
 }

@@ -206,6 +206,8 @@
     <string name="empty_setlists_prompt">Create a setlist to organize songs for worship services and rehearsals.</string>
     <string name="delete_setlist">Delete Setlist</string>
     <string name="delete_setlist_confirm">Are you sure you want to delete this setlist?</string>
+    <string name="delete_song">Delete Song</string>
+    <string name="delete_song_confirm">Are you sure you want to delete this song?</string>
     <string name="remove_song_from_setlist">Remove from setlist</string>
     <string name="select_setlist">Select Setlist</string>
     <string name="transposed_key_override">Transposed Key Override</string>

@@ -206,6 +206,8 @@
     <string name="empty_setlists_prompt">Crea una lista para organizar tus canciones de adoración y ensayos.</string>
     <string name="delete_setlist">Eliminar Lista</string>
     <string name="delete_setlist_confirm">¿Estás seguro de que deseas eliminar esta lista?</string>
+    <string name="delete_song">Eliminar Canción</string>
+    <string name="delete_song_confirm">¿Estás seguro de que deseas eliminar esta canción?</string>
     <string name="remove_song_from_setlist">Quitar de la lista</string>
     <string name="select_setlist">Seleccionar Lista</string>
     <string name="transposed_key_override">Tono Transpuesto Personalizado</string>
