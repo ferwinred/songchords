@@ -386,7 +386,9 @@ class SongEditorViewModel(
 
             if (state.isNewSong) {
                 val allSongs = repository.getSongs().first()
-                val currentCustomSongsCount = allSongs.count { it.createdByUserId != null }
+                val currentCustomSongsCount = allSongs.count { 
+                    it.createdByUserId != null && it.createdByUserId != com.example.songchords.auth.UserIdentityManager.SUPER_ADMIN_ID 
+                }
                 if (!com.example.songchords.subscription.SubscriptionManager.canCreateCustomSong(currentCustomSongsCount)) {
                     val tier = com.example.songchords.subscription.SubscriptionManager.currentTier.value
                     _uiState.update {

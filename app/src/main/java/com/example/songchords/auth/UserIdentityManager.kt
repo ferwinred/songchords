@@ -7,6 +7,10 @@ import java.util.UUID
  */
 object UserIdentityManager {
 
+    const val SUPER_ADMIN_EMAIL = "ferwinred@gmail.com"
+    const val SUPER_ADMIN_ID = "SUPERADMIN_FERWINRED"
+    const val SUPER_ADMIN_NAME = "SuperAdmin (ferwinred@gmail.com)"
+
     private var _currentUserId: String = UUID.randomUUID().toString()
     private var _currentUserName: String = "User " + _currentUserId.take(4)
 

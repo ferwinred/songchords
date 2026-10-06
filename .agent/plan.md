@@ -1,43 +1,54 @@
 # Project Plan
 
-SongChords app - Streamline TwoTierHeader.kt to eliminate top padding gap above 'SongChords' title and reduce overall header height for a sleek, compact, and space-saving header.
+SongChords app - Prepare Production Beta Release with SuperAdmin catalog, Firestore chord library, Firebase Auth (Google & Anonymous), Google Play Billing, AdMob Ads, and One-Time Promo Code Redemption system.
 
 ## Project Brief
 
-# Project Brief: SongChords - Streamlined Two-Tier Header
+# Project Brief: SongChords App (Beta Release)
 
 ## Features
-- **Compact Two-Tier Header Layout**: Redesigned `TwoTierHeader.kt` featuring a sleek Level 1 Title Banner and Level 2 Tools Bar with tight vertical padding.
-- **Top Gap Elimination**: Reduced top padding above the 'SongChords' title to sit close to the top screen edge, eliminating awkward empty vertical space.
-- **Compact Level 1 Title Banner**: Minimal padding (top = 4.dp, bottom = 4.dp) featuring bold title typography.
-- **Compact Level 2 Tools Action Bar**: Tight horizontal row (2.dp vertical padding) placing icon action buttons directly underneath the title banner.
-- **Maximized Viewport Area**: Significantly reduced overall header height to maximize real estate for chord sheets and song lists.
 
-## High-Level Tech Stack
-- **Language**: Kotlin
-- **UI Framework**: Jetpack Compose (Material 3)
-- **Navigation**: Jetpack Navigation 3 (State-driven)
-- **Adaptive Strategy**: Compose Material Adaptive Library
-- **Concurrency & Async**: Kotlin Coroutines & Flow
+1. **Firebase Authentication (Google Sign-In & Anonymous)**: Seamless user onboarding supporting Google Sign-In and Anonymous guest mode.
+2. **Firestore Song Catalog & Chord Library**: Cloud database storing Guitar and Piano chord dictionaries (`chords` collection) and catalog songs associated with SuperAdmin management (`ferwinred@gmail.com`).
+3. **Subscriptions & One-Time Promo Code System**: Tiered subscription management via Google Play Billing ($2.99, $5.99, $9.99/mo) along with a promo code redemption mechanism (`promo_codes` collection) to unlock premium access.
+4. **AdMob Integration for Free Tier**: Monetization via Google Mobile Ads SDK for non-paying users, automatically hidden for active subscribers and redeemed promo accounts.
+
+## High-Level Technical Stack
+
+- **Language & Concurrency**: Kotlin, Kotlin Coroutines, Kotlin Flow
+- **UI Framework & Adaptive Layouts**: Jetpack Compose, Material Design 3, Compose Material Adaptive library
+- **Navigation**: Jetpack Navigation 3 (state-driven navigation)
+- **Backend & Cloud Data**: Firebase Authentication, Cloud Firestore
+- **Monetization & Ads**: Google Play Billing Library, Google Mobile Ads SDK (AdMob)
 
 ## Implementation Steps
-**Total Duration:** 1m 12s
+**Total Duration:** 27m 46s
 
-### Task_91_CompactTwoTierHeaderAndEliminateTopGap: Compact TwoTierHeader.kt and eliminate top gap above 'SongChords' title: 1) Reduce top padding above 'SongChords' title in TwoTierHeader.kt (using statusBarsPadding() with tight 4.dp inner top padding). 2) Reduce vertical padding in Level 1 Title Banner (4.dp) and Level 2 Tools Action Bar (2.dp). 3) Commit and push updates to GitHub.
+### Task_93_ImplementSuperAdminCatalogAndFirestoreChordLibrary: Implement SuperAdmin Catalog & Firestore Chord Library: 1) Update SampleSongs.kt to associate catalog songs with SuperAdmin (email: ferwinred@gmail.com, name: 'SuperAdmin'). 2) Create FirestoreChordLibraryRepository to persist and sync Guitar & Piano chord dictionaries to Firestore 'chords' collection. 3) Commit and push updates to GitHub.
 - **Status:** COMPLETED
-- **Updates:** Task_91_CompactTwoTierHeaderAndEliminateTopGap completed successfully. Compacted TwoTierHeader.kt and eliminated top gap above 'SongChords' title: 1) Applied statusBarsPadding() once on root Column of TwoTierHeader. 2) Reduced Level 1 Title Banner padding to top=4.dp, bottom=2.dp so 'SongChords' title sits cleanly near top edge. 3) Reduced Level 2 Tools Action Bar vertical padding to 2.dp. 4) Compacted total header height to save screen space. Verified with assembleDebug build and 92 passing unit tests.
+- **Updates:** Task_93_ImplementSuperAdminCatalogAndFirestoreChordLibrary completed successfully. Implemented SuperAdmin Catalog & Firestore Chord Library: 1) Associated all sample catalog songs in SampleSongs.kt with SuperAdmin account (SUPER_ADMIN_EMAIL = 'ferwinred@gmail.com', SUPER_ADMIN_ID = 'SUPERADMIN_FERWINRED'). 2) Created FirestoreChordLibraryRepository in com.example.songchords.repository to persist and sync Guitar & Piano chord diagrams to Firestore 'chords' collection with offline cache fallback. Verified with assembleDebug build and 97 passing unit tests.
 - **Acceptance Criteria:**
-  - Top gap above 'SongChords' title eliminated
-  - TwoTierHeader vertical height compacted and sleek
-  - 'SongChords' title sits comfortably near top edge
+  - SampleSongs associated with SuperAdmin (ferwinred@gmail.com)
+  - FirestoreChordLibraryRepository created for Guitar & Piano chord dictionary persistence in Firestore
   - build pass
 
-### Task_92_RunAndVerifyCompactHeaderLayout: Verify compact TwoTierHeader layout on emulator with critic_agent. Ensure zero crashes and sleek visual proportions.
+### Task_94_ImplementFirebaseAuthBillingAdMobAndPromoCodes: Implement Beta Launch Suite (Firebase Auth, Play Billing, AdMob, One-Time Promo Codes): 1) Integrate FirebaseAuthManager for Google Sign-In and Anonymous Authentication. 2) Implement PlayBillingManager for Google Play In-App Subscriptions. 3) Implement AdMobManager for AdMob banner ads on free tiers. 4) Create PromoCodeManager and PromoCodeRedemptionDialog in SubscriptionScreen to validate single-use promo codes (e.g. 'BETA-PRO-2026', 'VIP-PRAYER-99') in Firestore 'promo_codes' collection and grant subscriptions without payment.
 - **Status:** COMPLETED
-- **Updates:** Task_92_RunAndVerifyCompactHeaderLayout completed successfully. Verified on emulator with 0 crashes. Confirmed compact TwoTierHeader layout: 1) Large empty gap above 'SongChords' title is eliminated and title sits cleanly near top status bar. 2) Total header height is compact and sleek, saving screen space. 3) Level 2 tools bar (Cloud Sync, Subscriptions, Import JSON, Theme, Language) sits tightly underneath Level 1 title. All 92 unit tests pass.
+- **Updates:** Task_94_ImplementFirebaseAuthBillingAdMobAndPromoCodes completed successfully. Implemented Beta Launch Suite: 1) Created FirebaseAuthManager for Google Sign-In and Anonymous login. 2) Created PlayBillingManager for Google Play In-App Subscriptions ($2.99, $5.99, $9.99). 3) Created AdMobManager and updated AdBannerComposable for AdMob banner ads on free tiers. 4) Created PromoCodeManager and PromoCodeRedemptionDialog in SubscriptionScreen.kt for single-use code redemption (BETA-PRO-2026, VIP-PRAYER-99, BASIC-FREE-2026) backed by Firestore 'promo_codes' collection to grant subscriptions without payment. 5) Added PromoCodeManagerTest, FirebaseAuthManagerTest, and PlayBillingManagerTest unit test suites and localized EN/ES strings. Verified with assembleDebug build and 111 passing unit tests.
+- **Acceptance Criteria:**
+  - FirebaseAuthManager implemented for Google and Anonymous login
+  - PlayBillingManager implemented for Play Store subscriptions
+  - AdMobManager implemented for banner ads
+  - PromoCodeManager implemented for one-time code redemption in SubscriptionScreen
+  - build pass
+- **Duration:** 11m 19s
+
+### Task_95_RunAndVerifyBetaLaunchSuite: Verify SuperAdmin catalog, Firestore Chord Library, Firebase Auth, Play Billing, AdMob, and Promo Code Redemption on emulator with critic_agent. Ensure zero crashes.
+- **Status:** COMPLETED
+- **Updates:** Task_95_RunAndVerifyBetaLaunchSuite completed successfully. Verified on emulator with 0 crashes. Confirmed all Beta Launch Suite features: 1) SuperAdmin catalog songs associated with ferwinred@gmail.com. 2) Firestore Chord Library for Guitar & Piano chord diagrams. 3) Firebase Auth (Google & Anonymous sign-in). 4) Google Play Billing manager structure. 5) AdMob banner ads on free tiers, automatically hidden on paid tiers. 6) One-time Promo Code redemption system (VIP-PRAYER-99, BETA-PRO-2026, BASIC-FREE-2026) in SubscriptionScreen granting subscriptions without payment. All 111 unit tests pass.
 - **Acceptance Criteria:**
   - build pass
   - app does not crash
-  - Compact TwoTierHeader layout verified clean on emulator
-- **Duration:** 1m 12s
+  - Beta launch suite verified clean and functional on emulator
+- **Duration:** 16m 27s
 

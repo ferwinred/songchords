@@ -1,5 +1,6 @@
 package com.example.songchords.repository
 
+import com.example.songchords.auth.UserIdentityManager
 import com.example.songchords.model.Song
 
 object SampleSongs {
@@ -12,6 +13,8 @@ object SampleSongs {
         tempo = 72,
         timeSignature = "4/4",
         tags = listOf("Alabanza", "Adoración", "Worship", "Praise", "Spanish"),
+        createdByUserId = UserIdentityManager.SUPER_ADMIN_ID,
+        createdByName = UserIdentityManager.SUPER_ADMIN_NAME,
         content = """
             [Intro]
             [G]  [Cadd2]  [D]  [Em]
@@ -72,20 +75,22 @@ object SampleSongs {
         tempo = 68,
         timeSignature = "4/4",
         tags = listOf("Adoración", "Worship", "Alabanza", "Praise"),
+        createdByUserId = UserIdentityManager.SUPER_ADMIN_ID,
+        createdByName = UserIdentityManager.SUPER_ADMIN_NAME,
         content = """
             [Intro]
             [D]  [G]  [A]  [D]
 
             [Verse 1]
-            [D]Renuéva[G]me, Se[A]ñor Je[Bm]sús
+            [D]Renuéva[G]me, Se[A]ñor Jes[Bm]ús
             [G]Ya no quie[Em]ro ser igual[A]
-            [D]Renuéva[G]me, Se[A]ñor Je[Bm]sús
-            [G]Pon en mí tu [Em]corazón[A]
+            [D]Renuéva[G]me, Se[A]ñor Jes[Bm]ús
+            [G]Pon en mí tu c[Em]orazón[A]
 
             [Chorus]
             Porque [D]todo lo que hay [A/C#]dentro de [Bm]mí[A]
-            [G]Necesita [Em]ser cambiado, Se[A]ñor
-            Porque [D]todo lo que hay [A/C#]dentro de mi [Bm]corazón[A]
+            [G]Necesita ser cambi[Em]ado, Se[A]ñor
+            Porque [D]todo lo que hay [A/C#]dentro de mi cor[Bm]azón[A]
             [G]Necesita [A]más de [D]ti
 
             [Outro]
@@ -101,6 +106,8 @@ object SampleSongs {
         tempo = 70,
         timeSignature = "4/4",
         tags = listOf("Adoración", "Worship", "Alabanza", "Praise"),
+        createdByUserId = UserIdentityManager.SUPER_ADMIN_ID,
+        createdByName = UserIdentityManager.SUPER_ADMIN_NAME,
         content = """
             [Intro]
             [G]  [C]  [G]  [C]
@@ -153,6 +160,8 @@ object SampleSongs {
         tempo = 74,
         timeSignature = "4/4",
         tags = listOf("Himno", "Adoración", "Worship", "Praise"),
+        createdByUserId = UserIdentityManager.SUPER_ADMIN_ID,
+        createdByName = UserIdentityManager.SUPER_ADMIN_NAME,
         content = """
             [Intro]
             [A]  [D]  [A]  [E]  [A]
@@ -176,47 +185,45 @@ object SampleSongs {
             Y el mu[A]rmurar del cla[E]ro manant[A]ial
 
             [Verse 3]
-            Cu[A]ndo recuerdo
+            Cu[A]ndo recuerdo del amor div[A]ino
+            Que desde el cie[A]lo al sa[E]lvador enví[A]o
+            Aque[A]l Jesús que por salvarme vi[D]no
+            Y en una cr[A]uz sufri[E]ó y por mi muri[A]ó
             
             [Verse 4]
+            Cuando el seño[A]r me llame a su prese[D]ncia
+            Al dulce hoga[A]r, al cie[E]lo de esplendo[A]r
+            Le adorar[A]é cantando su grande[D]za
+            De su pod[A]er y s[E]u infinto am[A]or
+            
         """.trimIndent()
     )
 
     val WAY_MAKER = Song(
         id = "sample_way_maker",
         title = "Way Maker (Es El Que Abre Caminos)",
-        artist = "Sinach / Generación 12",
+        artist = "Sinach / Way Maker Spanish",
         originalKey = "E",
         tempo = 68,
         timeSignature = "4/4",
-        tags = listOf("Alabanza", "Adoración", "Worship", "Praise"),
+        tags = listOf("Adoración", "Worship", "Alabanza", "Praise"),
+        createdByUserId = UserIdentityManager.SUPER_ADMIN_ID,
+        createdByName = UserIdentityManager.SUPER_ADMIN_NAME,
         content = """
             [Intro]
-            [A]  [E]  [B]  [C#m]
+            [E]  [B]  [F#m]  [A]
 
             [Verse 1]
-            Aqui es[A]tás, te vemos mo[E]ver
-            Te ado[B]raré, te ado[C#m]raré
-            Aqui es[A]tás, obrando en mi [E]ser
-            Te ado[B]raré, te ado[C#m]raré
+            [E]Aquí estás, te vemos mo[B]ver
+            Te adora[F#m]ré, te adora[A]ré
+            [E]Aquí estás, obrando en mí[B]
+            Te adora[F#m]ré, te adora[A]ré
 
             [Chorus]
-            [A]Milagroso, abres caminos, [E]cumples promesas
-            Luz en tinieblas, [B]mi Dios, así eres [C#m]Tú
-            [A]Milagroso, abres caminos, [E]cumples promesas
-            Luz en tinieblas, [B]mi Dios, así eres [C#m]Tú
-
-            [Verse 2]
-            Aqui es[A]tás, tocando mi co[E]razón
-            Te ado[B]raré, te ado[C#m]raré
-            Aqui es[A]tás, sanando mi [E]corazón
-            Te ado[B]raré, te ado[C#m]raré
-
-            [Chorus]
-            [A]Milagroso, abres caminos, [E]cumples promesas
-            Luz en tinieblas, [B]mi Dios, así eres [C#m]Tú
-            [A]Milagroso, abres caminos, [E]cumples promesas
-            Luz en tinieblas, [B]mi Dios, así eres [C#m]Tú
+            [E]Milagroso, abres camino, cumples prome[B]sas
+            Luz en tinieblas, mi Dios, así eres [F#m]tú
+            Milagroso, abres camino, cumples prome[A]sas
+            Luz en tinieblas, mi Dios, así eres tú
         """.trimIndent()
     )
 
@@ -228,30 +235,36 @@ object SampleSongs {
         tempo = 70,
         timeSignature = "3/4",
         tags = listOf("Himno", "Adoración", "Worship", "Praise"),
+        createdByUserId = UserIdentityManager.SUPER_ADMIN_ID,
+        createdByName = UserIdentityManager.SUPER_ADMIN_NAME,
         content = """
             [Intro]
             [G]  [C/G]  [G]  [D/G]
 
             [Verse 1]
-            Su[G]blime gracia del [C]Se[G]ñor
-            Que a un [G]infeliz sal[D]vó
-            Fui [G]ciego mas hoy [C]veo [G]yo
-            Per[Em]dido y [D]él me ha[G]lló
+            Su[G]blime gracia de[C]l Se[G]ñor
+            Que a un [G]infeliz salv[D]ó
+            Fui ci[G]ego mas hoy [C]miro [G]yo
+            Perd[Em]ido y [D]él me ha[G]lló
 
             [Verse 2]
             Su [G]gracia me ense[C]ñó a te[G]mer
-            Mis [G]dudas ahuen[D]tó
-            ¡Oh [G]cuán preciosa [C]fue esa [G]gracia
-            Al [Em]mudar [D]mi ser![G]
+            Mis [G]dudas ahuyen[D]tó
+            ¡Oh [G]cuán preciosa [C]fue a mi se[G]r
+            Cuando [Em]él me tra[D]nsform[G]ó
 
-            [Chorus]
-            Mi ca[G/B]denas ya [C]rotas es[G]tán
-            Libre [G/B]soy, he re[C]nacido hoy
-            Por su [Em]amor, por su [D]gran per[C]dón
-            Sublime [G/B]gracia, [D]gran amor[G]
+            [Verse 3]
+            En l[G]os peligros y a[C]flicció[G]n
+            Que yo he tenido aqu[D]í
+            Su gra[G]cia siempre m[C]e libr[G]ó
+            Y m[Em]e guiar[D]á fel[G]iz
 
-            [Outro]
-            [G]  [C/G]  [G]
+            [Verse 4]
+            Y cu[G]ando sion por s[C]iglos m[G]il
+            Brillando esté cual s[D]ol
+            Yo ca[G]ntaré por si[C]empre all[G]í
+            Su am[Em]or que m[D]e salv[G]ó
+            
         """.trimIndent()
     )
 

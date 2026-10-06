@@ -276,4 +276,15 @@
     <string name="ai_unlock_premium_button">Ver Planes de Suscripción</string>
     <string name="ai_generating_response">Gemini IA está pensando&#8230;</string>
     <string name="ai_welcome_message">¡Hola! Soy tu Asistente IA Musical de Gemini. ¿En qué puedo ayudarte hoy con tu guitarra, piano, armonía o ministerio de alabanza?</string>
+
+    <!-- Códigos Promocionales y Canje -->
+    <string name="redeem_promo_code_button">🎁 Canjear Código Promocional</string>
+    <string name="redeem_promo_code_dialog_title">🎁 Canjear Código Promocional</string>
+    <string name="promo_code_input_label">Código Promocional</string>
+    <string name="promo_code_placeholder">Ej. BETA-PRO-2026</string>
+    <string name="redeem_button">Canjear</string>
+    <string name="promo_code_success">¡Código canjeado con éxito!</string>
+    <string name="promo_code_invalid">Código promocional no válido.</string>
+    <string name="promo_code_already_redeemed">Este código promocional ya ha sido canjeado.</string>
+    <string name="promo_code_empty_error">Por favor ingrese un código promocional.</string>
 </resources>

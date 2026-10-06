@@ -18,10 +18,12 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.ArrowBack
 import androidx.compose.material.icons.rounded.AccountCircle
+import androidx.compose.material.icons.rounded.CardGiftcard
 import androidx.compose.material.icons.rounded.CheckCircle
 import androidx.compose.material.icons.rounded.Close
 import androidx.compose.material.icons.rounded.Star
 import androidx.compose.material.icons.rounded.WorkspacePremium
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
@@ -31,13 +33,18 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -63,6 +70,10 @@ fun SubscriptionScreen(
     val currentTier by viewModel.currentTier.collectAsStateWithLifecycle()
     val displayPlans = viewModel.displayPlans
     val context = LocalContext.current
+
+    var showPromoDialog by remember { mutableStateOf(false) }
+    var promoCodeInput by remember { mutableStateOf("") }
+    var promoErrorMessage by remember { mutableStateOf<String?>(null) }
 
     Scaffold(
         modifier = modifier.fillMaxSize(),
@@ -122,6 +133,30 @@ fun SubscriptionScreen(
                 }
             }
 
+            item {
+                OutlinedButton(
+                    onClick = {
+                        promoCodeInput = ""
+                        promoErrorMessage = null
+                        showPromoDialog = true
+                    },
+                    modifier = Modifier.fillMaxWidth(),
+                    shape = RoundedCornerShape(12.dp)
+                ) {
+                    Icon(
+                        imageVector = Icons.Rounded.CardGiftcard,
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.primary
+                    )
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Text(
+                        text = stringResource(R.string.redeem_promo_code_button),
+                        fontWeight = FontWeight.Bold,
+                        style = MaterialTheme.typography.labelLarge
+                    )
+                }
+            }
+
             items(displayPlans) { tier ->
                 PlanCard(
                     tier = tier,
@@ -135,6 +170,77 @@ fun SubscriptionScreen(
                 )
             }
         }
+    }
+
+    if (showPromoDialog) {
+        AlertDialog(
+            onDismissRequest = { showPromoDialog = false },
+            title = {
+                Text(
+                    text = stringResource(R.string.redeem_promo_code_dialog_title),
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold
+                )
+            },
+            text = {
+                Column(modifier = Modifier.fillMaxWidth()) {
+                    Text(
+                        text = stringResource(R.string.subscription_subtitle),
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                    Spacer(modifier = Modifier.height(12.dp))
+                    OutlinedTextField(
+                        value = promoCodeInput,
+                        onValueChange = {
+                            promoCodeInput = it
+                            promoErrorMessage = null
+                        },
+                        label = { Text(stringResource(R.string.promo_code_input_label)) },
+                        placeholder = { Text(stringResource(R.string.promo_code_placeholder)) },
+                        singleLine = true,
+                        isError = promoErrorMessage != null,
+                        supportingText = promoErrorMessage?.let { errorText ->
+                            { Text(text = errorText, color = MaterialTheme.colorScheme.error) }
+                        },
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                }
+            },
+            confirmButton = {
+                Button(
+                    onClick = {
+                        if (promoCodeInput.isBlank()) {
+                            promoErrorMessage = context.getString(R.string.promo_code_empty_error)
+                            return@Button
+                        }
+                        viewModel.redeemPromoCode(promoCodeInput) { result ->
+                            result.fold(
+                                onSuccess = {
+                                    showPromoDialog = false
+                                    val successMessage = context.getString(R.string.promo_code_success)
+                                    Toast.makeText(context, successMessage, Toast.LENGTH_LONG).show()
+                                },
+                                onFailure = { exception ->
+                                    promoErrorMessage = exception.message ?: context.getString(R.string.promo_code_invalid)
+                                }
+                            )
+                        }
+                    },
+                    shape = RoundedCornerShape(8.dp)
+                ) {
+                    Text(
+                        text = stringResource(R.string.redeem_button),
+                        fontWeight = FontWeight.Bold
+                    )
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { showPromoDialog = false }) {
+                    Text(text = stringResource(R.string.cancel))
+                }
+            }
+        )
     }
 }
 
