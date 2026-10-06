@@ -6,6 +6,8 @@ import com.example.songchords.model.Setlist
 import com.example.songchords.model.Song
 import com.example.songchords.repository.local.LocalPersistentStorage
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.FirebaseFirestoreSettings
+import com.google.firebase.firestore.PersistentCacheSettings
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -66,7 +68,16 @@ class CloudSyncEngine(
         if (!userIdentityManager.isFirestoreSeeded()) {
             try {
                 val firestore = try {
-                    FirebaseFirestore.getInstance()
+                    val instance = FirebaseFirestore.getInstance()
+                    try {
+                        val settings = FirebaseFirestoreSettings.Builder()
+                            .setLocalCacheSettings(PersistentCacheSettings.newBuilder().build())
+                            .build()
+                        instance.firestoreSettings = settings
+                    } catch (_: Throwable) {
+                        // Ignore if settings were already set or instance initialized
+                    }
+                    instance
                 } catch (_: Throwable) {
                     null
                 }

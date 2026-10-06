@@ -18,6 +18,8 @@ import com.example.songchords.subscription.PromoCodeManager
 import com.example.songchords.subscription.UserTier
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.FirebaseFirestoreException
+import com.google.firebase.firestore.FirebaseFirestoreSettings
+import com.google.firebase.firestore.PersistentCacheSettings
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
@@ -66,7 +68,16 @@ object FirestoreSeeder {
 
     fun getFirestore(): FirebaseFirestore? {
         return try {
-            FirebaseFirestore.getInstance()
+            val firestore = FirebaseFirestore.getInstance()
+            try {
+                val settings = FirebaseFirestoreSettings.Builder()
+                    .setLocalCacheSettings(PersistentCacheSettings.newBuilder().build())
+                    .build()
+                firestore.firestoreSettings = settings
+            } catch (_: Throwable) {
+                // Ignore if settings were already set or instance initialized
+            }
+            firestore
         } catch (_: Throwable) {
             null
         }

@@ -1,25 +1,47 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
-    // Helper function to check if the user is SuperAdmin or authenticated
+    // Helper function to check if the user is SuperAdmin
     function isSuperAdmin() {
-      return request.auth != null && request.auth.token.email == 'ferwinred@gmail.com';
+      return request.auth != null && (
+        request.auth.token.email == 'ferwinred@gmail.com' ||
+        request.auth.uid == 'SUPERADMIN_FERWINRED' ||
+        request.auth.uid == 'ferwinred@gmail.com'
+      );
+    }
+
+    // Helper function to check if the user is owner of the document or SuperAdmin
+    function isOwnerOrSuperAdmin() {
+      return isSuperAdmin() || (
+        request.auth != null && (
+          ('createdByUserId' in resource.data && resource.data.createdByUserId == request.auth.uid) ||
+          ('createdByUserId' in resource.data && resource.data.createdByUserId == request.auth.token.email)
+        )
+      );
     }
 
     match /songs/{songId} {
-      allow read, write: if true;
-    }
-
-    match /chords/{chordId} {
-      allow read, write: if true;
-    }
-
-    match /promo_codes/{codeId} {
-      allow read, write: if true;
+      allow read: if true;
+      allow create: if true;
+      allow update, delete: if isOwnerOrSuperAdmin();
     }
 
     match /setlists/{setlistId} {
-      allow read, write: if true;
+      allow read: if true;
+      allow create: if true;
+      allow update, delete: if isOwnerOrSuperAdmin();
+    }
+
+    match /chords/{chordId} {
+      allow read: if true;
+      allow create: if true;
+      allow update, delete: if isSuperAdmin();
+    }
+
+    match /promo_codes/{codeId} {
+      allow read: if true;
+      allow create: if true;
+      allow update, delete: if isSuperAdmin();
     }
   }
 }

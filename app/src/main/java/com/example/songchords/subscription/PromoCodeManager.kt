@@ -34,7 +34,16 @@ object PromoCodeManager {
 
     private fun getFirestore(): FirebaseFirestore? {
         return try {
-            FirebaseFirestore.getInstance()
+            val firestore = FirebaseFirestore.getInstance()
+            try {
+                val settings = com.google.firebase.firestore.FirebaseFirestoreSettings.Builder()
+                    .setLocalCacheSettings(com.google.firebase.firestore.PersistentCacheSettings.newBuilder().build())
+                    .build()
+                firestore.firestoreSettings = settings
+            } catch (_: Throwable) {
+                // Ignore if settings were already set or instance initialized
+            }
+            firestore
         } catch (_: Exception) {
             null
         }
