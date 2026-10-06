@@ -1,5 +1,6 @@
 package com.example.songchords
 
+import com.example.songchords.auth.UserIdentityManager
 import com.example.songchords.model.Song
 import com.example.songchords.repository.CloudSyncEngine
 import com.example.songchords.repository.CloudSyncRepository
@@ -146,5 +147,15 @@ class CloudSyncEngineTest {
         val resolvedLocal = localRepository.getSongById("conflict_1")
         assertNotNull(resolvedLocal)
         assertEquals("New Title", resolvedLocal!!.title)
+    }
+
+    @Test
+    fun testFirstLaunchSeeding_marksFirestoreSeeded() = runBlocking {
+        UserIdentityManager.resetToDefault()
+        org.junit.Assert.assertFalse(UserIdentityManager.isFirestoreSeeded())
+
+        syncEngine.triggerSync()
+
+        assertTrue(UserIdentityManager.isFirestoreSeeded())
     }
 }

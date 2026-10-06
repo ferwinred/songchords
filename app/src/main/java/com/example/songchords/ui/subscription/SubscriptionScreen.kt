@@ -21,7 +21,6 @@ import androidx.compose.material.icons.rounded.AccountCircle
 import androidx.compose.material.icons.rounded.CardGiftcard
 import androidx.compose.material.icons.rounded.CheckCircle
 import androidx.compose.material.icons.rounded.Close
-import androidx.compose.material.icons.rounded.LocalFireDepartment
 import androidx.compose.material.icons.rounded.Star
 import androidx.compose.material.icons.rounded.WorkspacePremium
 import androidx.compose.material3.AlertDialog
@@ -45,7 +44,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -58,11 +56,9 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.songchords.R
-import com.example.songchords.firestore.FirestoreSeeder
 import com.example.songchords.subscription.UserTier
 import com.example.songchords.ui.theme.DarkNavyBlue
 import com.example.songchords.ui.theme.SongChordsTheme
-import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -74,7 +70,6 @@ fun SubscriptionScreen(
     val currentTier by viewModel.currentTier.collectAsStateWithLifecycle()
     val displayPlans = viewModel.displayPlans
     val context = LocalContext.current
-    val coroutineScope = rememberCoroutineScope()
 
     var showPromoDialog by remember { mutableStateOf(false) }
     var promoCodeInput by remember { mutableStateOf("") }
@@ -156,37 +151,6 @@ fun SubscriptionScreen(
                     Spacer(modifier = Modifier.width(8.dp))
                     Text(
                         text = stringResource(R.string.redeem_promo_code_button),
-                        fontWeight = FontWeight.Bold,
-                        style = MaterialTheme.typography.labelLarge
-                    )
-                }
-            }
-
-            item {
-                OutlinedButton(
-                    onClick = {
-                        coroutineScope.launch {
-                            val report = FirestoreSeeder.seedAllCollections()
-                            val toastMsg = context.getString(
-                                R.string.firestore_seeding_success_toast,
-                                report.successfulCollections,
-                                report.totalCollections,
-                                report.totalDocumentsSeeded
-                            )
-                            Toast.makeText(context, toastMsg, Toast.LENGTH_LONG).show()
-                        }
-                    },
-                    modifier = Modifier.fillMaxWidth(),
-                    shape = RoundedCornerShape(12.dp)
-                ) {
-                    Icon(
-                        imageVector = Icons.Rounded.LocalFireDepartment,
-                        contentDescription = null,
-                        tint = MaterialTheme.colorScheme.primary
-                    )
-                    Spacer(modifier = Modifier.width(8.dp))
-                    Text(
-                        text = stringResource(R.string.seed_firestore_button),
                         fontWeight = FontWeight.Bold,
                         style = MaterialTheme.typography.labelLarge
                     )

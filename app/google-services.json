@@ -12,7 +12,12 @@
           "package_name": "com.example.songchords"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "350365509264-bos9dis3ejvpn63e7kpoungb6qnr9old.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyCHZBiY9vYvPRAOtgPisPy6FemEIYlRWkc"
@@ -20,7 +25,12 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "350365509264-bos9dis3ejvpn63e7kpoungb6qnr9old.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         }
       }
     }

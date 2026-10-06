@@ -114,6 +114,17 @@ class SongOwnershipTest {
     }
 
     @Test
+    fun testUserIdentityManager_firestoreSeedingState() {
+        assertFalse(UserIdentityManager.isFirestoreSeeded())
+
+        UserIdentityManager.markFirestoreSeeded()
+        assertTrue(UserIdentityManager.isFirestoreSeeded())
+
+        UserIdentityManager.resetToDefault()
+        assertFalse(UserIdentityManager.isFirestoreSeeded())
+    }
+
+    @Test
     fun testSongJsonUtils_preservesOwnershipFieldsOnExportAndImport() {
         val songWithOwnership = Song(
             id = UUID.randomUUID().toString(),

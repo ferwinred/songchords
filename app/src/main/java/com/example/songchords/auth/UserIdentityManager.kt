@@ -13,6 +13,7 @@ object UserIdentityManager {
 
     private var _currentUserId: String = UUID.randomUUID().toString()
     private var _currentUserName: String = "User " + _currentUserId.take(4)
+    private var _isFirestoreSeeded: Boolean = false
 
     var currentUserId: String
         get() = _currentUserId
@@ -26,6 +27,12 @@ object UserIdentityManager {
             _currentUserName = value
         }
 
+    fun isFirestoreSeeded(): Boolean = _isFirestoreSeeded
+
+    fun markFirestoreSeeded() {
+        _isFirestoreSeeded = true
+    }
+
     fun setUserIdentity(userId: String, userName: String) {
         _currentUserId = userId
         _currentUserName = userName
@@ -34,5 +41,6 @@ object UserIdentityManager {
     fun resetToDefault() {
         _currentUserId = UUID.randomUUID().toString()
         _currentUserName = "User " + _currentUserId.take(4)
+        _isFirestoreSeeded = false
     }
 }
