@@ -277,7 +277,7 @@
     <string name="ai_generating_response">Gemini AI is thinking&#8230;</string>
     <string name="ai_welcome_message">Hello! I am your Gemini AI Music Assistant. How can I help you today with your guitar, piano, chord progressions, or praise ministry?</string>
 
-    <!-- Promo Codes &amp; Redemption -->
+    <!-- Promo Codes & Redemption -->
     <string name="redeem_promo_code_button">🎁 Canjear Código Promocional</string>
     <string name="redeem_promo_code_dialog_title">🎁 Canjear Código Promocional</string>
     <string name="promo_code_input_label">Promo Code</string>
@@ -287,4 +287,8 @@
     <string name="promo_code_invalid">Invalid promo code.</string>
     <string name="promo_code_already_redeemed">This promo code has already been redeemed.</string>
     <string name="promo_code_empty_error">Please enter a promo code.</string>
+
+    <!-- Firestore Seeding -->
+    <string name="seed_firestore_button">🔥 Inicializar / Sembrar Colecciones de Firestore</string>
+    <string name="firestore_seeding_success_toast">Firestore seeded: %1$d/%2$d collections (%3$d docs)</string>
 </resources>

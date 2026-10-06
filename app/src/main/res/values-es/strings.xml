@@ -287,4 +287,8 @@
     <string name="promo_code_invalid">Código promocional no válido.</string>
     <string name="promo_code_already_redeemed">Este código promocional ya ha sido canjeado.</string>
     <string name="promo_code_empty_error">Por favor ingrese un código promocional.</string>
+
+    <!-- Sembrado de Firestore -->
+    <string name="seed_firestore_button">🔥 Inicializar / Sembrar Colecciones de Firestore</string>
+    <string name="firestore_seeding_success_toast">Base de datos de Firestore sembrada: %1$d/%2$d colecciones (%3$d docs)</string>
 </resources>

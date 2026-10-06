@@ -1,5 +1,6 @@
 package com.example.songchords.repository
 
+import com.example.songchords.firestore.FirestoreSeeder
 import com.example.songchords.model.Song
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -42,6 +43,7 @@ class CloudSyncEngine(
 
     /**
      * Triggers bidirectional sync merging local catalog with remote cloud songs.
+     * Performs an automatic Firestore database seeding check if the remote collection is empty.
      */
     suspend fun triggerSync(): SyncStatus {
         _syncStatus.value = SyncStatus.SYNCING
@@ -49,6 +51,12 @@ class CloudSyncEngine(
             if (!cloudProvider.isOnline) {
                 _syncStatus.value = SyncStatus.OFFLINE_ERROR
                 return SyncStatus.OFFLINE_ERROR
+            }
+
+            // Automatic Firestore seeding check on cloud sync trigger
+            val initialRemote = try { cloudProvider.fetchRemoteSongs() } catch (_: Exception) { emptyList() }
+            if (initialRemote.isEmpty()) {
+                FirestoreSeeder.seedAllCollections(cloudProvider = cloudProvider)
             }
 
             val remoteSongs = cloudProvider.fetchRemoteSongs()

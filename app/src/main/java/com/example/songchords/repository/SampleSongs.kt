@@ -276,4 +276,6 @@ object SampleSongs {
         WAY_MAKER,
         SUBLIME_GRACIA
     )
+
+    fun getSampleSongs(): List<Song> = ALL_SONGS
 }
