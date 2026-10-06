@@ -1,6 +1,9 @@
 package com.example.songchords.repository
 
+import android.content.Context
+import com.example.songchords.model.Setlist
 import com.example.songchords.model.Song
+import com.example.songchords.repository.local.LocalPersistentStorage
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.StateFlow
 import java.io.IOException
@@ -10,11 +13,16 @@ import java.io.IOException
  */
 class FirestoreRestCloudSyncProvider(
     initialRemoteSongs: List<Song> = emptyList(),
+    initialRemoteSetlists: List<Setlist> = emptyList(),
     override var isOnline: Boolean = true
 ) : CloudSyncProvider {
 
     private val remoteDatabase = mutableMapOf<String, Song>().apply {
         initialRemoteSongs.forEach { put(it.id, it) }
+    }
+
+    private val remoteSetlistsDatabase = mutableMapOf<String, Setlist>().apply {
+        initialRemoteSetlists.forEach { put(it.id, it) }
     }
 
     override suspend fun fetchRemoteSongs(): List<Song> {
@@ -39,8 +47,32 @@ class FirestoreRestCloudSyncProvider(
         return remoteDatabase.remove(id) != null
     }
 
+    override suspend fun fetchRemoteSetlists(): List<Setlist> {
+        if (!isOnline) {
+            throw IOException("Cloud REST/Firestore backend unreachable: Offline mode")
+        }
+        return remoteSetlistsDatabase.values.toList()
+    }
+
+    override suspend fun saveRemoteSetlist(setlist: Setlist): Boolean {
+        if (!isOnline) {
+            throw IOException("Failed to save remote setlist: Cloud offline")
+        }
+        remoteSetlistsDatabase[setlist.id] = setlist
+        return true
+    }
+
+    override suspend fun deleteRemoteSetlist(id: String): Boolean {
+        if (!isOnline) {
+            throw IOException("Failed to delete remote setlist: Cloud offline")
+        }
+        return remoteSetlistsDatabase.remove(id) != null
+    }
+
     fun getRemoteSong(id: String): Song? = remoteDatabase[id]
     fun getAllRemoteSongs(): List<Song> = remoteDatabase.values.toList()
+    fun getRemoteSetlist(id: String): Setlist? = remoteSetlistsDatabase[id]
+    fun getAllRemoteSetlists(): List<Setlist> = remoteSetlistsDatabase.values.toList()
 }
 
 /**
@@ -49,8 +81,27 @@ class FirestoreRestCloudSyncProvider(
 class CloudSyncRepository(
     val localRepository: LocalSongRepository = LocalSongRepository(),
     val cloudProvider: CloudSyncProvider = FirestoreRestCloudSyncProvider(),
-    val syncEngine: CloudSyncEngine = CloudSyncEngine(localRepository, cloudProvider)
+    val syncEngine: CloudSyncEngine = CloudSyncEngine(
+        localRepository = localRepository,
+        cloudProvider = cloudProvider
+    ),
+    val persistentStorage: LocalPersistentStorage? = null
 ) : SongRepository {
+
+    constructor(persistentStorage: LocalPersistentStorage) : this(
+        localRepository = LocalSongRepository(persistentStorage = persistentStorage),
+        cloudProvider = FirestoreRestCloudSyncProvider(),
+        syncEngine = CloudSyncEngine(
+            localRepository = LocalSongRepository(persistentStorage = persistentStorage),
+            cloudProvider = FirestoreRestCloudSyncProvider(),
+            persistentStorage = persistentStorage
+        ),
+        persistentStorage = persistentStorage
+    )
+
+    constructor(context: Context) : this(
+        persistentStorage = LocalPersistentStorage(context)
+    )
 
     val syncStatus: StateFlow<SyncStatus> = syncEngine.syncStatus
     val lastSyncedAt: StateFlow<Long?> = syncEngine.lastSyncedAt

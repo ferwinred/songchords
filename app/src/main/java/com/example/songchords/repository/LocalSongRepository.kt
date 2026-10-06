@@ -1,15 +1,19 @@
 package com.example.songchords.repository
 
 import com.example.songchords.model.Song
+import com.example.songchords.repository.local.LocalPersistentStorage
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 
 class LocalSongRepository(
-    initialSongs: List<Song> = SampleSongs.ALL_SONGS
+    initialSongs: List<Song>? = null,
+    private val persistentStorage: LocalPersistentStorage? = null
 ) : SongRepository {
 
-    private val songsState = MutableStateFlow(initialSongs)
+    private val songsState = MutableStateFlow(
+        initialSongs ?: persistentStorage?.loadLocalSongs() ?: SampleSongs.ALL_SONGS
+    )
 
     override fun getSongs(): Flow<List<Song>> = songsState.asStateFlow()
 
@@ -43,6 +47,7 @@ class LocalSongRepository(
             val existing = current[index]
             current[index] = existing.copy(isFavorite = !existing.isFavorite)
             songsState.value = current
+            persistentStorage?.saveLocalSongs(current)
         }
     }
 
@@ -50,6 +55,7 @@ class LocalSongRepository(
         val current = songsState.value.toMutableList()
         current.add(0, song)
         songsState.value = current
+        persistentStorage?.saveLocalSongs(current)
     }
 
     override suspend fun updateSong(song: Song) {
@@ -58,6 +64,7 @@ class LocalSongRepository(
         if (index != -1) {
             current[index] = song
             songsState.value = current
+            persistentStorage?.saveLocalSongs(current)
         }
     }
 
@@ -65,5 +72,6 @@ class LocalSongRepository(
         val current = songsState.value.toMutableList()
         current.removeAll { it.id == id }
         songsState.value = current
+        persistentStorage?.saveLocalSongs(current)
     }
 }

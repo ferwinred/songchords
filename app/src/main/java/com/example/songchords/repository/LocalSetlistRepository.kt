@@ -3,15 +3,19 @@ package com.example.songchords.repository
 import com.example.songchords.model.Setlist
 import com.example.songchords.model.SetlistSong
 import com.example.songchords.model.Song
+import com.example.songchords.repository.local.LocalPersistentStorage
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 
 class LocalSetlistRepository(
-    initialSetlists: List<Setlist> = createSampleSetlists()
+    initialSetlists: List<Setlist>? = null,
+    private val persistentStorage: LocalPersistentStorage? = null
 ) : SetlistRepository {
 
-    private val setlistsState = MutableStateFlow(initialSetlists)
+    private val setlistsState = MutableStateFlow(
+        initialSetlists ?: persistentStorage?.loadLocalSetlists() ?: createSampleSetlists()
+    )
 
     override fun getSetlists(): Flow<List<Setlist>> = setlistsState.asStateFlow()
 
@@ -23,6 +27,20 @@ class LocalSetlistRepository(
         val current = setlistsState.value.toMutableList()
         current.add(0, setlist)
         setlistsState.value = current
+        persistentStorage?.saveLocalSetlists(current)
+    }
+
+    override suspend fun updateSetlist(setlist: Setlist) {
+        val current = setlistsState.value.toMutableList()
+        val index = current.indexOfFirst { it.id == setlist.id }
+        if (index != -1) {
+            current[index] = setlist
+            setlistsState.value = current
+        } else {
+            current.add(0, setlist)
+            setlistsState.value = current
+        }
+        persistentStorage?.saveLocalSetlists(current)
     }
 
     override suspend fun addSongToSetlist(setlistId: String, song: Song, transposedKey: String) {
@@ -49,6 +67,7 @@ class LocalSetlistRepository(
 
             current[index] = setlist.copy(songs = updatedSongs)
             setlistsState.value = current
+            persistentStorage?.saveLocalSetlists(current)
         }
     }
 
@@ -60,6 +79,7 @@ class LocalSetlistRepository(
             val updatedSongs = setlist.songs.filterNot { it.songId == songId }
             current[index] = setlist.copy(songs = updatedSongs)
             setlistsState.value = current
+            persistentStorage?.saveLocalSetlists(current)
         }
     }
 
@@ -81,6 +101,7 @@ class LocalSetlistRepository(
             }
             current[index] = setlist.copy(songs = updatedSongs)
             setlistsState.value = current
+            persistentStorage?.saveLocalSetlists(current)
         }
     }
 
@@ -88,6 +109,7 @@ class LocalSetlistRepository(
         val current = setlistsState.value.toMutableList()
         current.removeAll { it.id == id }
         setlistsState.value = current
+        persistentStorage?.saveLocalSetlists(current)
     }
 
     companion object {

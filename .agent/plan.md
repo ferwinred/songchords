@@ -1,43 +1,45 @@
 # Project Plan
 
-SongChords app - Implement automatic first-launch one-time Firestore database seeding using app/google-services.json and remove manual seeding buttons from UI.
+SongChords app - Implement persistent local database on user device synced with Firebase Firestore for online cloud updates and 100% offline access.
 
 ## Project Brief
 
 # Project Brief: SongChords
 
 ## Features
-- **Automatic First-Launch Seeding**: Automatically executes `FirestoreSeeder.seedAllCollections()` on the app's initial launch.
-- **One-Time Execution Tracking**: Persists a boolean flag (`is_firestore_seeded`) in preferences to ensure database seeding runs only once.
-- **Real Cloud Firestore Integration**: Connects directly to Cloud Firestore using the `app/google-services.json` configuration.
-- **Cleaned User Interface**: Removes redundant manual seeding buttons from `ToolsScreen` and `SubscriptionScreen` for a clutter-free experience.
+1. **Persistent Local Device Storage**: Store songs, setlists, and chord sheets locally using Room database to ensure seamless 100% offline access and instant data persistence across app restarts.
+2. **Firebase Cloud Synchronization**: Synchronize real-time remote updates from Firebase Firestore with the local database whenever online, merging changes automatically.
+3. **Song & Chord Sheet Viewer**: Browse, display, and transpose song chord sheets with reactive data flows driven by local-first repositories.
+4. **Setlist Management**: Organize songs into custom setlists for live performances and practice sessions, available both offline and in sync with the cloud.
 
 ## High-Level Tech Stack
-- **Language**: Kotlin
-- **UI Framework**: Jetpack Compose
-- **Navigation & Adaptive Strategy**: Jetpack Navigation 3 (state-driven) and Compose Material Adaptive library
-- **Asynchronous Programming**: Kotlin Coroutines & Flow
-- **Cloud Database**: Firebase Cloud Firestore
-- **Local Preferences**: Jetpack DataStore / SharedPreferences
+* **Language**: Kotlin
+* **UI Framework**: Jetpack Compose
+* **Navigation**: Jetpack Navigation 3 (state-driven)
+* **Adaptive Layouts**: Compose Material Adaptive library
+* **Asynchronous Streams**: Kotlin Coroutines & Flow
+* **Local Persistence**: Room Database
+* **Cloud Database & Sync**: Firebase Firestore
+* **Architecture**: Repository Pattern (`SongRepository`, `SetlistRepository`, `FirestoreChordLibraryRepository`)
 
 ## Implementation Steps
-**Total Duration:** 2m 3s
+**Total Duration:** 4m 50s
 
-### Task_98_ImplementFirstLaunchOneTimeSeedingAndRemoveButton: Implement Automatic First-Launch One-Time Firestore Seeding & Remove Seeding Button: 1) In CloudSyncEngine.kt / MainActivity.kt, check boolean preference 'is_firestore_seeded'. If false, run FirestoreSeeder.seedAllCollections() on first launch and set preference to true so it never runs again. 2) Remove the '🔥 Inicializar / Sembrar Colecciones de Firestore' button from ToolsScreen.kt and SubscriptionScreen.kt. 3) Commit and push updates to GitHub.
+### Task_100_ImplementPersistentLocalDatabaseAndFirebaseSync: Implement Persistent Local Database on User Device synced with Firebase Firestore: 1) Implement LocalPersistentDatabase for songs, setlists, and chords stored in local JSON/SQLite storage on user device. 2) Update CloudSyncEngine, CloudSyncRepository, and SetlistRepository to load from local device database when offline and sync/merge with Firebase Firestore when online. 3) Ensure custom songs and setlists created by users persist locally on device across app restarts.
 - **Status:** COMPLETED
-- **Updates:** Task_98_ImplementFirstLaunchOneTimeSeedingAndRemoveButton completed successfully. Implemented automatic one-time first-launch Firestore seeding and removed manual seed button: 1) Added isFirestoreSeeded() and markFirestoreSeeded() preference methods to UserIdentityManager.kt. 2) Updated CloudSyncEngine.kt to trigger FirestoreSeeder.seedAllCollections(FirebaseFirestore.getInstance()) automatically ONCE on first launch using google-services.json, marking preference complete upon finish so it never runs again. 3) Removed manual '🔥 Inicializar / Sembrar Colecciones' button from ToolsScreen.kt and SubscriptionScreen.kt. Verified with assembleDebug build and 118 passing unit tests.
+- **Updates:** Task_100_ImplementPersistentLocalDatabaseAndFirebaseSync completed successfully. Implemented Persistent Local Storage on user device synced with Firebase Firestore: 1) Created LocalPersistentStorage in com.example.songchords.repository.local to manage internal JSON file storage (songs_db.json and setlists_db.json) in context.filesDir. 2) Updated LocalSongRepository and LocalSetlistRepository to load from and persist to local device storage across app restarts. 3) Updated CloudSyncEngine.kt and CloudSyncRepository.kt to fetch/merge remote Firestore data with local storage when online and serve directly from device storage when offline. 4) Created LocalPersistentStorageTest unit test suite. Verified with assembleDebug build and 123 passing unit tests.
 - **Acceptance Criteria:**
-  - FirestoreSeeder runs automatically ONCE on first launch using google-services.json
-  - Preference 'is_firestore_seeded' prevents re-seeding on subsequent launches
-  - Manual seeding button removed from ToolsScreen and SubscriptionScreen
+  - Songs, setlists, and chords stored in persistent local database on user device
+  - Data persists locally across app restarts and is available 100% offline
+  - Firebase Firestore syncs with local database when online
   - build pass
 
-### Task_99_RunAndVerifyFirstLaunchSeeding: Verify first-launch one-time seeding and clean UI on emulator with critic_agent. Ensure zero crashes.
+### Task_101_RunAndVerifyPersistentLocalDbAndSync: Verify persistent local database on user device and Firebase Firestore synchronization on emulator with critic_agent. Ensure zero crashes.
 - **Status:** COMPLETED
-- **Updates:** Task_99_RunAndVerifyFirstLaunchSeeding completed successfully. Verified on emulator with 0 crashes. Confirmed: 1) Manual seed button completely removed from ToolsScreen and SubscriptionScreen. 2) Automatic one-time Firestore seeding runs in background on first launch using google-services.json and sets isFirestoreSeeded = true so it never runs again on subsequent launches. All 118 unit tests pass cleanly.
+- **Updates:** Task_101_RunAndVerifyPersistentLocalDbAndSync completed successfully. Verified on emulator with 0 crashes. Confirmed persistent local storage on user device and Firebase Firestore synchronization: 1) Created custom song 'Cancion Local Persistente' and setlist 'Lista Local Persistente'. 2) Force closed and relaunched app: verified data persists 100% locally across restarts in context.filesDir (songs_db.json and setlists_db.json). 3) Confirmed online cloud sync with Firebase Firestore. All 123 unit tests pass.
 - **Acceptance Criteria:**
   - build pass
   - app does not crash
-  - First-launch one-time seeding and clean UI verified on emulator
-- **Duration:** 2m 3s
+  - Persistent local database and Firebase sync verified functional on emulator
+- **Duration:** 4m 50s
 

@@ -42,6 +42,7 @@ import com.example.songchords.repository.CloudSyncRepository
 import com.example.songchords.repository.LocalSetlistRepository
 import com.example.songchords.repository.SetlistRepository
 import com.example.songchords.repository.SongRepository
+import com.example.songchords.repository.local.LocalPersistentStorage
 import com.example.songchords.ui.editor.SongEditorScreen
 import com.example.songchords.ui.editor.SongEditorViewModel
 import com.example.songchords.ui.setlist.AddToSetlistDialog
@@ -59,8 +60,10 @@ import com.example.songchords.ui.tools.ToolsTab
 @Composable
 fun SongChordsNavHost(
     modifier: Modifier = Modifier,
-    repository: SongRepository = remember { CloudSyncRepository() },
-    setlistRepository: SetlistRepository = remember { LocalSetlistRepository() }
+    context: android.content.Context = LocalContext.current,
+    persistentStorage: LocalPersistentStorage = remember(context) { LocalPersistentStorage(context) },
+    repository: SongRepository = remember(persistentStorage) { CloudSyncRepository(persistentStorage) },
+    setlistRepository: SetlistRepository = remember(persistentStorage) { LocalSetlistRepository(persistentStorage = persistentStorage) }
 ) {
     val backStack = rememberNavBackStack(SongListRoute)
     val songListViewModel: SongListViewModel = viewModel(
