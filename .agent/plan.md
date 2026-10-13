@@ -1,37 +1,40 @@
 # Project Plan
 
-SongChords app - Verify Firebase integration via app/google-services.json and provide step-by-step guide for Firebase Console database & authentication initialization.
+SongChords app - Perform final production build verification, generate release APK/AAB artifacts, validate Codemagic CI/CD workflows, and push final release to GitHub.
 
 ## Project Brief
 
-# Project Brief: SongChords App
+# Project Brief: SongChords
 
 ## Features
-1. **Authentication & User Profiles**: Secure access via Firebase Authentication supporting both Google Sign-In and Anonymous guest modes.
-2. **Song & Chord Library**: Real-time browsing, viewing, and searching of songs and chord sheets synced live with Cloud Firestore.
-3. **Setlist Management**: Create, organize, and manage custom setlists for practice sessions and live performances.
-4. **Promo Code Redemption**: Unlock feature access or premium content by redeeming promotional codes verified against Cloud Firestore.
+1. **Interactive Chord & Lyrics Viewer**: Displays song lyrics with synchronized chord overlays, real-time transposition, and auto-scrolling for performance.
+2. **Firebase Authentication**: Secure user sign-in and session management via Firebase Auth.
+3. **Live Cloud Sync (Firestore)**: Real-time cloud synchronization of chord charts, custom songbooks, and user favorites across devices using Firebase Firestore.
+4. **Automated Production & CI/CD Pipeline**: Release packaging configuration (signed APK and AAB) integrated with Codemagic CI/CD (`codemagic.yaml`) workflows for automated distribution.
 
-## High-Level Technical Stack
+## High-Level Tech Stack
 - **Language**: Kotlin
 - **UI Framework**: Jetpack Compose
-- **Navigation & Adaptive Strategy**: Jetpack Navigation 3 (state-driven) and Compose Material Adaptive library
-- **Asynchronous & Reactive Streams**: Kotlin Coroutines & Flow
-- **Backend & Cloud Services**: Firebase Authentication SDK & Cloud Firestore SDK (`songs`, `chords`, `promo_codes`, `setlists`)
+- **Navigation Strategy**: Jetpack Navigation 3 (state-driven)
+- **Adaptive Layouts**: Compose Material Adaptive library
+- **Asynchronous & Flow**: Kotlin Coroutines & Flow
+- **Backend Services**: Firebase Authentication & Firebase Firestore
+- **CI/CD & Deployment**: Codemagic (`codemagic.yaml`)
 
 ## Implementation Steps
 
-### Task_106_VerifyFirebaseIntegrationAndGuide: Verify Firebase App-Side Integration & Provide Console Setup Guide: 1) Confirm app/google-services.json, FirebaseAuthManager, CloudSyncEngine, and FirestoreSeeder are connected to Firebase SDK. 2) Provide step-by-step setup guide for Firebase Console (Firestore Database creation, firestore.rules publishing, Google & Anonymous Auth activation). 3) Commit and push updates to GitHub.
+### Task_108_CompileProductionReleaseArtifactsAndPushToGitHub: Compile Production Release Artifacts & Push to GitHub: 1) Execute ./gradlew assembleRelease bundleRelease testDebugUnitTest to compile signed app-release.apk and app-release.aab artifacts. 2) Verify Codemagic workflows in codemagic.yaml. 3) Commit final release changes and push to GitHub repository main branch.
 - **Status:** IN_PROGRESS
 - **Acceptance Criteria:**
-  - App-side Firebase SDK integration verified clean
-  - Firebase Console setup guide provided
+  - assembleRelease and bundleRelease compile cleanly producing signed APK and AAB
+  - Codemagic workflows validated
+  - Final release committed and pushed to GitHub main branch
   - build pass
 
-### Task_107_RunAndVerifyFirebaseIntegration: Verify Firebase integration and unit tests on emulator with critic_agent. Ensure zero crashes.
+### Task_109_RunAndVerifyFinalProductionRelease: Verify production release build, unit tests, and git status on emulator with critic_agent. Ensure zero crashes.
 - **Status:** PENDING
 - **Acceptance Criteria:**
   - build pass
   - app does not crash
-  - Firebase integration verified clean on emulator
+  - Production release verified clean on emulator
 
