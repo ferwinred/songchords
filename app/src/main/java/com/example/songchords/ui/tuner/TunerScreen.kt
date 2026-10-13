@@ -1,5 +1,8 @@
 package com.example.songchords.ui.tuner
 
+import android.Manifest
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
@@ -25,7 +28,8 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.VolumeOff
 import androidx.compose.material.icons.automirrored.rounded.VolumeUp
-import androidx.compose.material.icons.rounded.MusicNote
+import androidx.compose.material.icons.rounded.Mic
+import androidx.compose.material.icons.rounded.MicNone
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
@@ -33,7 +37,6 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ElevatedFilterChip
 import androidx.compose.material3.FilterChipDefaults
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Slider
@@ -41,8 +44,9 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableDoubleStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -54,7 +58,6 @@ import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.Stroke
-import androidx.compose.ui.graphics.drawscope.rotate
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
@@ -64,6 +67,7 @@ import androidx.compose.ui.text.rememberTextMeasurer
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.songchords.R
 import com.example.songchords.ui.theme.SongChordsTheme
 import kotlin.math.cos
@@ -72,26 +76,48 @@ import kotlin.math.sin
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun TunerScreen(
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    viewModel: TunerViewModel = viewModel()
 ) {
-    var selectedInstrument by remember { mutableStateOf(InstrumentType.GUITAR_6) }
+    val context = LocalContext.current
+    val selectedInstrument by viewModel.selectedInstrument.collectAsState()
+    val selectedStringIndex by viewModel.selectedStringIndex.collectAsState()
+    val hasMicPermission by viewModel.hasMicPermission.collectAsState()
+    val detectedFrequency by viewModel.detectedFrequency.collectAsState()
+    val centsOffset by viewModel.simulatedCentsOffset.collectAsState()
+    val isLivePitchActive by viewModel.isLivePitchActive.collectAsState()
+
     val stringList = remember(selectedInstrument) {
         TunerEngine.getStringsForInstrument(selectedInstrument)
     }
-    var selectedStringIndex by remember(selectedInstrument) { mutableStateOf(0) }
 
     val activeTargetString = stringList.getOrElse(selectedStringIndex) { stringList.first() }
 
-    var simulatedCentsOffset by remember { mutableDoubleStateOf(0.0) }
-    val actualFrequency = TunerEngine.frequencyFromCents(activeTargetString.frequencyHz, simulatedCentsOffset)
-    val status = TunerEngine.getTuningStatus(simulatedCentsOffset)
+    val actualFrequency = if (isLivePitchActive && detectedFrequency > 0f) {
+        detectedFrequency.toDouble()
+    } else {
+        TunerEngine.frequencyFromCents(activeTargetString.frequencyHz, centsOffset)
+    }
+
+    val status = TunerEngine.getTuningStatus(centsOffset)
 
     val toneGenerator = remember { AudioToneGenerator() }
     var isPlayingTone by remember { mutableStateOf(false) }
     val coroutineScope = rememberCoroutineScope()
 
+    val permissionLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.RequestPermission()
+    ) { isGranted ->
+        viewModel.onPermissionResult(isGranted)
+    }
+
+    LaunchedEffect(Unit) {
+        viewModel.checkMicPermission(context)
+    }
+
     DisposableEffect(Unit) {
         onDispose {
+            viewModel.stopListening()
             toneGenerator.stopTone()
         }
     }
@@ -112,6 +138,82 @@ fun TunerScreen(
 
         Spacer(modifier = Modifier.height(12.dp))
 
+        // Microphone Access & Status Card
+        if (!hasMicPermission) {
+            Card(
+                modifier = Modifier.fillMaxWidth(),
+                colors = CardDefaults.cardColors(
+                    containerColor = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.4f)
+                ),
+                shape = RoundedCornerShape(16.dp)
+            ) {
+                Column(
+                    modifier = Modifier.padding(16.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Icon(
+                        imageVector = Icons.Rounded.MicNone,
+                        contentDescription = null,
+                        modifier = Modifier.size(36.dp),
+                        tint = MaterialTheme.colorScheme.primary
+                    )
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Text(
+                        text = stringResource(R.string.mic_permission_title),
+                        style = MaterialTheme.typography.titleMedium,
+                        fontWeight = FontWeight.Bold,
+                        color = MaterialTheme.colorScheme.onSurface
+                    )
+                    Spacer(modifier = Modifier.height(4.dp))
+                    Text(
+                        text = stringResource(R.string.mic_permission_desc),
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                    Spacer(modifier = Modifier.height(12.dp))
+                    Button(
+                        onClick = { permissionLauncher.launch(Manifest.permission.RECORD_AUDIO) },
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = MaterialTheme.colorScheme.primary
+                        )
+                    ) {
+                        Text(
+                            text = stringResource(R.string.grant_mic_permission),
+                            fontWeight = FontWeight.Bold
+                        )
+                    }
+                }
+            }
+        } else {
+            Surface(
+                color = MaterialTheme.colorScheme.tertiaryContainer.copy(alpha = 0.5f),
+                shape = RoundedCornerShape(16.dp),
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Row(
+                    modifier = Modifier.padding(horizontal = 16.dp, vertical = 10.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.Center
+                ) {
+                    Icon(
+                        imageVector = Icons.Rounded.Mic,
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.tertiary,
+                        modifier = Modifier.size(20.dp)
+                    )
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Text(
+                        text = stringResource(R.string.listening_to_instrument),
+                        style = MaterialTheme.typography.bodyMedium,
+                        fontWeight = FontWeight.SemiBold,
+                        color = MaterialTheme.colorScheme.onTertiaryContainer
+                    )
+                }
+            }
+        }
+
+        Spacer(modifier = Modifier.height(16.dp))
+
         // Instrument Selector Chips
         FlowRow(
             horizontalArrangement = Arrangement.spacedBy(8.dp),
@@ -124,9 +226,7 @@ fun TunerScreen(
                     selected = isSelected,
                     onClick = {
                         if (!isSelected) {
-                            selectedInstrument = instrument
-                            selectedStringIndex = 0
-                            simulatedCentsOffset = 0.0
+                            viewModel.selectInstrument(instrument)
                             if (isPlayingTone) {
                                 toneGenerator.stopTone()
                                 isPlayingTone = false
@@ -178,8 +278,7 @@ fun TunerScreen(
                         ElevatedFilterChip(
                             selected = isSelected,
                             onClick = {
-                                selectedStringIndex = index
-                                simulatedCentsOffset = 0.0
+                                viewModel.selectStringIndex(index)
                                 if (isPlayingTone) {
                                     toneGenerator.stopTone()
                                     isPlayingTone = false
@@ -220,7 +319,7 @@ fun TunerScreen(
         TunerPitchGaugeMeter(
             targetString = activeTargetString,
             actualFrequencyHz = actualFrequency,
-            centsOffset = simulatedCentsOffset,
+            centsOffset = centsOffset,
             status = status,
             modifier = Modifier.fillMaxWidth()
         )
@@ -282,8 +381,8 @@ fun TunerScreen(
                 )
 
                 Slider(
-                    value = simulatedCentsOffset.toFloat(),
-                    onValueChange = { simulatedCentsOffset = it.toDouble() },
+                    value = centsOffset.toFloat(),
+                    onValueChange = { viewModel.updateSimulatedCents(it.toDouble()) },
                     valueRange = -50f..50f,
                     steps = 100,
                     modifier = Modifier.fillMaxWidth()
@@ -294,19 +393,19 @@ fun TunerScreen(
                     verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier.fillMaxWidth()
                 ) {
-                    OutlinedButton(onClick = { simulatedCentsOffset = (simulatedCentsOffset - 5.0).coerceAtLeast(-50.0) }) {
+                    OutlinedButton(onClick = { viewModel.updateSimulatedCents((centsOffset - 5.0).coerceAtLeast(-50.0)) }) {
                         Text("-5c")
                     }
-                    OutlinedButton(onClick = { simulatedCentsOffset = (simulatedCentsOffset - 1.0).coerceAtLeast(-50.0) }) {
+                    OutlinedButton(onClick = { viewModel.updateSimulatedCents((centsOffset - 1.0).coerceAtLeast(-50.0)) }) {
                         Text("-1c")
                     }
-                    Button(onClick = { simulatedCentsOffset = 0.0 }) {
+                    Button(onClick = { viewModel.updateSimulatedCents(0.0) }) {
                         Text("Reset (0c)")
                     }
-                    OutlinedButton(onClick = { simulatedCentsOffset = (simulatedCentsOffset + 1.0).coerceAtMost(50.0) }) {
+                    OutlinedButton(onClick = { viewModel.updateSimulatedCents((centsOffset + 1.0).coerceAtMost(50.0)) }) {
                         Text("+1c")
                     }
-                    OutlinedButton(onClick = { simulatedCentsOffset = (simulatedCentsOffset + 5.0).coerceAtMost(50.0) }) {
+                    OutlinedButton(onClick = { viewModel.updateSimulatedCents((centsOffset + 5.0).coerceAtMost(50.0)) }) {
                         Text("+5c")
                     }
                 }

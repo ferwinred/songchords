@@ -168,6 +168,10 @@
     <string name="detected_frequency">Detected: %1$.2f Hz</string>
     <string name="string_label">String %1$d: %2$s</string>
     <string name="pitch_adjust_label">Simulated Pitch Offset (-50 to +50 cents)</string>
+    <string name="mic_permission_title">Microphone Access Required</string>
+    <string name="mic_permission_desc">Allow microphone access to detect real-time pitch from your instrument.</string>
+    <string name="grant_mic_permission">🎙️ Allow Microphone Access for Tuning</string>
+    <string name="listening_to_instrument">🎙️ Listening to instrument live pitch…</string>
 
     <!-- Chord Library -->
     <string name="chord_library_title">Chord Library</string>

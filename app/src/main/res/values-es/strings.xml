@@ -168,6 +168,10 @@
     <string name="detected_frequency">Detectado: %1$.2f Hz</string>
     <string name="string_label">Cuerda %1$d: %2$s</string>
     <string name="pitch_adjust_label">Desviación Simulación (-50 a +50 cents)</string>
+    <string name="mic_permission_title">Acceso al Micrófono Requerido</string>
+    <string name="mic_permission_desc">Permite el acceso al micrófono para detectar la afinación en tiempo real de tu instrumento.</string>
+    <string name="grant_mic_permission">🎙️ Permitir Acceso al Micrófono para Afinar</string>
+    <string name="listening_to_instrument">🎙️ Escuchando la frecuencia del instrumento en vivo…</string>
 
     <!-- Biblioteca de Acordes -->
     <string name="chord_library_title">Biblioteca de Acordes</string>
