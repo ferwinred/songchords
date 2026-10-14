@@ -1,7 +1,8 @@
 package com.example.songchords.repository
 
+import android.content.Context
 import com.example.songchords.auth.UserIdentityManager
-import com.example.songchords.firestore.FirestoreSeeder
+import com.example.songchords.firestore.AutomaticFirestoreInitializer
 import com.example.songchords.model.Setlist
 import com.example.songchords.model.Song
 import com.example.songchords.repository.local.LocalPersistentStorage
@@ -48,7 +49,8 @@ class CloudSyncEngine(
     private val cloudProvider: CloudSyncProvider,
     private val userIdentityManager: UserIdentityManager = UserIdentityManager,
     private val localSetlistRepository: LocalSetlistRepository? = null,
-    private val persistentStorage: LocalPersistentStorage? = null
+    private val persistentStorage: LocalPersistentStorage? = null,
+    private val context: Context? = null,
 ) {
     private val _syncStatus = MutableStateFlow(SyncStatus.IDLE)
     val syncStatus: StateFlow<SyncStatus> = _syncStatus.asStateFlow()
@@ -57,39 +59,22 @@ class CloudSyncEngine(
     val lastSyncedAt: StateFlow<Long?> = _lastSyncedAt.asStateFlow()
 
     init {
-        if (!userIdentityManager.isFirestoreSeeded()) {
-            CoroutineScope(Dispatchers.IO).launch {
-                runOneTimeSeeding()
-            }
+        CoroutineScope(Dispatchers.IO).launch {
+            runOneTimeSeeding()
         }
     }
 
     private suspend fun runOneTimeSeeding() {
-        if (!userIdentityManager.isFirestoreSeeded()) {
-            try {
-                val firestore = try {
-                    val instance = FirebaseFirestore.getInstance()
-                    try {
-                        val settings = FirebaseFirestoreSettings.Builder()
-                            .setLocalCacheSettings(PersistentCacheSettings.newBuilder().build())
-                            .build()
-                        instance.firestoreSettings = settings
-                    } catch (_: Throwable) {
-                        // Ignore if settings were already set or instance initialized
-                    }
-                    instance
-                } catch (_: Throwable) {
-                    null
-                }
-                FirestoreSeeder.seedAllCollections(
-                    firestore = firestore,
-                    cloudProvider = cloudProvider
-                )
-            } catch (_: Exception) {
-                // Gracefully handle uninitialized Firebase or network issues
-            }
-            userIdentityManager.markFirestoreSeeded()
+        try {
+            val firestore = AutomaticFirestoreInitializer.getFirestore()
+            AutomaticFirestoreInitializer.checkAndSeedIfEmpty(
+                context = context,
+                firestore = firestore
+            )
+        } catch (_: Exception) {
+            // Gracefully handle uninitialized Firebase or network issues
         }
+        userIdentityManager.markFirestoreSeeded()
     }
 
     /**

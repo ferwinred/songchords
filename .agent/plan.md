@@ -1,42 +1,44 @@
 # Project Plan
 
-SongChords app - Implement Production Firestore Initializer and SuperAdmin user document creation in 'users' collection with 1-tap production seed action.
+SongChords app - Implement automatic empty-database Firestore initializer on app startup checking if database is empty before populating songs, chords, promo_codes, setlists, and SuperAdmin user to prevent duplications.
 
 ## Project Brief
 
-# Project Brief: SongChords - Production Firestore Initializer & SuperAdmin Setup
+# SongChords App - Project Brief
 
 ## Features
-- **SuperAdmin Profile Provisioning**: Automatically creates and configures the SuperAdmin user document (`SUPERADMIN_FERWINRED`, `ferwinred@gmail.com`) with `SUPER_ADMIN` role and `PREMIUM_AI_SUB` tier in the `users` Firestore collection.
-- **Production Data Seeder**: `ProductionFirestoreInitializer` utility that executes batch writes to populate 131 production documents across the `songs`, `chords`, `promo_codes`, `setlists`, and `users` collections in Cloud Firestore.
-- **1-Tap Production Seed Action**: Prominent "🔥 Inicializar Producción en Firebase" button integrated into `SubscriptionScreen` and `ToolsScreen` featuring real-time progress dialogs and Toast notification feedback.
-- **Database Synchronization & Status Tracking**: Asynchronous batch writing and status reporting to ensure reliable cloud database setup and user feedback.
+1. **Automatic Firestore Empty Check**: On app startup, queries the Firestore `songs` collection with a limit of 1 to efficiently determine if the database is empty.
+2. **Zero-Duplication Seeding Engine**: Automatically seeds full initial data across `users` (including SuperAdmin user), `songs`, `chords`, `promo_codes`, and `setlists` collections only when Firestore is empty, preventing duplicate entries.
+3. **Explicit Instant Document Creation**: Utilizes direct document creation (`firestore.collection().document().set()`) with Kotlin coroutine/listener await logic to guarantee documents are immediately created and visible in the Firebase Console.
+4. **Song & Chord Viewer**: Displays songs, chord sheets, and setlists in a clean, responsive interface.
 
-## High-Level Tech Stack
+## High-Level Technical Stack
 - **Language**: Kotlin
-- **UI Framework**: Jetpack Compose (Material 3)
-- **Navigation & Adaptive Strategy**: Jetpack Navigation 3 (state-driven) and Compose Material Adaptive library
-- **Asynchronous & State Management**: Kotlin Coroutines & Flow, ViewModel
-- **Cloud Database**: Firebase Cloud Firestore
+- **UI Framework**: Jetpack Compose
+- **Navigation Strategy**: Jetpack Navigation 3 (state-driven navigation)
+- **Adaptive Layouts**: Compose Material Adaptive library
+- **Asynchronous Operations**: Kotlin Coroutines & Flow
+- **Cloud Backend**: Firebase Cloud Firestore & Firebase Auth
+- **Architecture**: MVVM with Repository pattern (`CloudSyncEngine` for startup synchronization)
 
 ## Implementation Steps
-**Total Duration:** 15m 49s
+**Total Duration:** 1m 42s
 
-### Task_112_ImplementProductionFirestoreInitializerAndSuperAdminUser: Implement Production Firestore Initializer & SuperAdmin User Document: 1) Create ProductionFirestoreInitializer.kt in com.example.songchords.firestore to write SuperAdmin profile ('users/SUPERADMIN_FERWINRED' with email 'ferwinred@gmail.com', role 'SUPER_ADMIN', tier 'PREMIUM_AI_SUB'), 6 songs in 'songs', 120 chords in 'chords', 3 promo codes in 'promo_codes', and 2 setlists in 'setlists' via batch writes. 2) Add prominent '🔥 Inicializar Producción en Firebase' action button in SubscriptionScreen.kt and ToolsScreen.kt with Toast feedback. 3) Commit and push updates to GitHub.
+### Task_114_ImplementAutomaticEmptyDatabaseFirestoreInitializer: Implement Automatic Empty-Database Firestore Initializer: 1) Create AutomaticFirestoreInitializer.kt in com.example.songchords.firestore. 2) On app startup (in CloudSyncEngine.kt), query firestore.collection('songs').limit(1).get(). 3) If empty (snapshot.isEmpty), execute direct document writes across 'users/SUPERADMIN_FERWINRED', 'songs', 'chords', 'promo_codes', and 'setlists'. If not empty (snapshot.isNotEmpty), skip seeding completely to prevent duplications. 4) Commit and push updates to GitHub.
 - **Status:** COMPLETED
-- **Updates:** Task_112_ImplementProductionFirestoreInitializerAndSuperAdminUser completed successfully. Implemented Production Firestore Initializer & SuperAdmin User Document Creation: 1) Created ProductionFirestoreInitializer.kt in com.example.songchords.firestore. 2) Provisions SuperAdmin document 'users/SUPERADMIN_FERWINRED' with email 'ferwinred@gmail.com', role 'SUPER_ADMIN', and tier 'PREMIUM_AI_SUB'. 3) Writes 132 documents across 'users', 'songs', 'chords', 'promo_codes', and 'setlists' collections in Cloud Firestore. 4) Added '🔥 Inicializar Producción en Firebase' action button in SubscriptionScreen.kt and ToolsScreen.kt with Toast feedback. 5) Created ProductionFirestoreInitializerTest unit test suite and localized EN/ES strings. Verified with assembleDebug build and 138 passing unit tests.
+- **Updates:** Task_114_ImplementAutomaticEmptyDatabaseFirestoreInitializer completed successfully. Implemented Automatic Empty-Database Firestore Initializer in AutomaticFirestoreInitializer.kt: 1) Queries firestore.collection('songs').limit(1).get() on app launch. 2) If empty (snapshot.isEmpty), automatically executes full initial seeding of 132 documents across 5 collections ('users/SUPERADMIN_FERWINRED', 'songs', 'chords', 'promo_codes', 'setlists') using direct document.set() writes. 3) If not empty (snapshot.isNotEmpty), skips seeding completely to guarantee ZERO DUPLICATION. 4) Integrated in CloudSyncEngine.kt init scope. 5) Created AutomaticFirestoreInitializerTest unit test suite. Verified with assembleDebug build and 143 passing unit tests.
 - **Acceptance Criteria:**
-  - ProductionFirestoreInitializer creates 'users/SUPERADMIN_FERWINRED' document with ferwinred@gmail.com
-  - Batch writes all 131 production documents across 'users', 'songs', 'chords', 'promo_codes', 'setlists'
-  - Action button added to SubscriptionScreen and ToolsScreen with Toast notification
+  - Automatic empty-database check performed on app startup
+  - Populates 132 documents across 5 collections when Firestore is empty
+  - Skips seeding when Firestore contains data (zero duplication)
   - build pass
 
-### Task_113_RunAndVerifyProductionFirestoreInitializer: Verify Production Firestore Initializer, SuperAdmin user document, unit tests, and git status. Ensure zero errors.
+### Task_115_RunAndVerifyAutomaticFirestoreInitializer: Verify Automatic Empty-Database Firestore Initializer, unit tests, and git status. Ensure zero errors.
 - **Status:** COMPLETED
-- **Updates:** Task_113_RunAndVerifyProductionFirestoreInitializer completed successfully. Verified on emulator with 0 crashes. Confirmed Production Firestore Initializer (ProductionFirestoreInitializer.kt) and SuperAdmin user document creation: 1) Tapping '🔥 Inicializar Producción en Firebase' populates all 132 production documents (1 SuperAdmin user 'users/SUPERADMIN_FERWINRED' for ferwinred@gmail.com, 6 catalog songs, 120 chord diagrams, 3 promo codes, 2 setlists) across local device storage and Cloud Firestore. 2) Toast feedback verified: '¡132 documentos de producción inicializados! (SuperAdmin: ferwinred@gmail.com)'. All 139 unit tests pass.
+- **Updates:** Task_115_RunAndVerifyAutomaticFirestoreInitializer completed successfully. Verified on emulator with 0 crashes. Confirmed Automatic Empty-Database Firestore Initializer (AutomaticFirestoreInitializer.kt): 1) Automatically queries firestore.collection('songs').limit(1).get() on app startup. 2) If Firestore is empty (snapshot.isEmpty == true), seeds all 5 collections (users/SUPERADMIN_FERWINRED, songs, chords, promo_codes, setlists) totaling 132 documents. 3) If Firestore contains documents (snapshot.isEmpty == false), skips seeding completely enforcing ZERO DUPLICATION. All 143 unit tests pass cleanly.
 - **Acceptance Criteria:**
   - build pass
   - app does not crash
-  - Production Firestore Initializer verified functional on emulator
-- **Duration:** 15m 49s
+  - Automatic empty-database Firestore initializer verified functional on emulator
+- **Duration:** 1m 42s
 
