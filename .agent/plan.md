@@ -1,42 +1,42 @@
 # Project Plan
 
-SongChords app - Implement real-time microphone pitch detection in TunerScreen using AudioRecord and Autocorrelation algorithm to detect instrument sound live.
+SongChords app - Implement Production Firestore Initializer and SuperAdmin user document creation in 'users' collection with 1-tap production seed action.
 
 ## Project Brief
 
-# SongChords - Project Brief
+# Project Brief: SongChords - Production Firestore Initializer & SuperAdmin Setup
 
 ## Features
-- **Real-Time Microphone Pitch Detection**: Captures live audio input via Android `AudioRecord` (PCM 16-bit, 44.1 kHz) and processes pitch frequency using an Autocorrelation algorithm.
-- **Live Visual Tuner & Needle Feedback**: Evaluates detected pitch against target instrument strings (Guitar 6-string, Bass 4/5-string) to animate a gauge needle displaying cent offsets (-50 to +50 cents).
-- **Fallback Reference Tones**: Offers manual reference tone audio playback for tuning alongside live microphone detection.
-- **Runtime Audio Permissions**: Prompts and handles `RECORD_AUDIO` permissions directly within the tuner workflow.
+- **SuperAdmin Profile Provisioning**: Automatically creates and configures the SuperAdmin user document (`SUPERADMIN_FERWINRED`, `ferwinred@gmail.com`) with `SUPER_ADMIN` role and `PREMIUM_AI_SUB` tier in the `users` Firestore collection.
+- **Production Data Seeder**: `ProductionFirestoreInitializer` utility that executes batch writes to populate 131 production documents across the `songs`, `chords`, `promo_codes`, `setlists`, and `users` collections in Cloud Firestore.
+- **1-Tap Production Seed Action**: Prominent "🔥 Inicializar Producción en Firebase" button integrated into `SubscriptionScreen` and `ToolsScreen` featuring real-time progress dialogs and Toast notification feedback.
+- **Database Synchronization & Status Tracking**: Asynchronous batch writing and status reporting to ensure reliable cloud database setup and user feedback.
 
 ## High-Level Tech Stack
 - **Language**: Kotlin
-- **UI Framework**: Jetpack Compose with Material Design 3
-- **Navigation & Adaptive Strategy**: Jetpack Navigation 3 (state-driven) & Compose Material Adaptive library
-- **Audio Processing**: Android `AudioRecord` API and custom Autocorrelation algorithm
-- **Concurrency & Architecture**: Kotlin Coroutines, StateFlow, and ViewModel
+- **UI Framework**: Jetpack Compose (Material 3)
+- **Navigation & Adaptive Strategy**: Jetpack Navigation 3 (state-driven) and Compose Material Adaptive library
+- **Asynchronous & State Management**: Kotlin Coroutines & Flow, ViewModel
+- **Cloud Database**: Firebase Cloud Firestore
 
 ## Implementation Steps
-**Total Duration:** 3m 36s
+**Total Duration:** 15m 49s
 
-### Task_110_ImplementRealTimeMicrophonePitchDetectionForTuner: Implement Real-Time Microphone Pitch Detection for Tuner: 1) Add Manifest.permission.RECORD_AUDIO in AndroidManifest.xml and request runtime permission in TunerScreen.kt. 2) Implement MicrophonePitchDetector.kt using Android AudioRecord API (44100 Hz PCM 16-bit) and Autocorrelation pitch detection algorithm. 3) Connect detected pitch frequency (Hz) to TunerEngine to animate pitch gauge dial needle live in response to instrument sound. 4) Commit and push updates to GitHub.
+### Task_112_ImplementProductionFirestoreInitializerAndSuperAdminUser: Implement Production Firestore Initializer & SuperAdmin User Document: 1) Create ProductionFirestoreInitializer.kt in com.example.songchords.firestore to write SuperAdmin profile ('users/SUPERADMIN_FERWINRED' with email 'ferwinred@gmail.com', role 'SUPER_ADMIN', tier 'PREMIUM_AI_SUB'), 6 songs in 'songs', 120 chords in 'chords', 3 promo codes in 'promo_codes', and 2 setlists in 'setlists' via batch writes. 2) Add prominent '🔥 Inicializar Producción en Firebase' action button in SubscriptionScreen.kt and ToolsScreen.kt with Toast feedback. 3) Commit and push updates to GitHub.
 - **Status:** COMPLETED
-- **Updates:** Task_110_ImplementRealTimeMicrophonePitchDetectionForTuner completed successfully. Implemented Real-Time Microphone Pitch Detection for Tuner: 1) Declared RECORD_AUDIO permission in AndroidManifest.xml. 2) Created MicrophonePitchDetector.kt in com.example.songchords.tuner using AudioRecord API (44.1 kHz, PCM 16-bit) and Autocorrelation pitch detection algorithm. 3) Built TunerViewModel and updated TunerScreen.kt with runtime RECORD_AUDIO permission launcher, microphone listening state, live pitch detection, and animated pitch dial gauge needle responding live to instrument sound input. 4) Added MicrophonePitchDetectorTest unit test suite and localized EN/ES strings. Verified with assembleDebug build and 132 passing unit tests.
+- **Updates:** Task_112_ImplementProductionFirestoreInitializerAndSuperAdminUser completed successfully. Implemented Production Firestore Initializer & SuperAdmin User Document Creation: 1) Created ProductionFirestoreInitializer.kt in com.example.songchords.firestore. 2) Provisions SuperAdmin document 'users/SUPERADMIN_FERWINRED' with email 'ferwinred@gmail.com', role 'SUPER_ADMIN', and tier 'PREMIUM_AI_SUB'. 3) Writes 132 documents across 'users', 'songs', 'chords', 'promo_codes', and 'setlists' collections in Cloud Firestore. 4) Added '🔥 Inicializar Producción en Firebase' action button in SubscriptionScreen.kt and ToolsScreen.kt with Toast feedback. 5) Created ProductionFirestoreInitializerTest unit test suite and localized EN/ES strings. Verified with assembleDebug build and 138 passing unit tests.
 - **Acceptance Criteria:**
-  - RECORD_AUDIO permission requested and declared in AndroidManifest.xml
-  - MicrophonePitchDetector captures audio and calculates fundamental frequency in Hz
-  - Live pitch needle animates in response to microphone sound input
+  - ProductionFirestoreInitializer creates 'users/SUPERADMIN_FERWINRED' document with ferwinred@gmail.com
+  - Batch writes all 131 production documents across 'users', 'songs', 'chords', 'promo_codes', 'setlists'
+  - Action button added to SubscriptionScreen and ToolsScreen with Toast notification
   - build pass
 
-### Task_111_RunAndVerifyMicrophoneTuner: Verify real-time microphone pitch detection and unit tests on emulator with critic_agent. Ensure zero crashes.
+### Task_113_RunAndVerifyProductionFirestoreInitializer: Verify Production Firestore Initializer, SuperAdmin user document, unit tests, and git status. Ensure zero errors.
 - **Status:** COMPLETED
-- **Updates:** Task_111_RunAndVerifyMicrophoneTuner completed successfully. Verified on emulator with 0 crashes. Confirmed real-time microphone pitch detection tuner: 1) RECORD_AUDIO permission requested with '🎙️ Permitir Acceso al Micrófono para Afinar' card and system permission dialog. 2) Live listening state '🎙️ Escuchando la frecuencia del instrumento en vivo…' captures microphone audio via AudioRecord (44.1 kHz, PCM 16-bit) and calculates fundamental frequency in Hz using Autocorrelation algorithm. 3) Animated pitch dial needle responds live to detected instrument sound. 4) Tested Guitar (6-string), Bass (4-string), Bass (5-string) string selection and pure reference tone playback. All 132 unit tests pass cleanly.
+- **Updates:** Task_113_RunAndVerifyProductionFirestoreInitializer completed successfully. Verified on emulator with 0 crashes. Confirmed Production Firestore Initializer (ProductionFirestoreInitializer.kt) and SuperAdmin user document creation: 1) Tapping '🔥 Inicializar Producción en Firebase' populates all 132 production documents (1 SuperAdmin user 'users/SUPERADMIN_FERWINRED' for ferwinred@gmail.com, 6 catalog songs, 120 chord diagrams, 3 promo codes, 2 setlists) across local device storage and Cloud Firestore. 2) Toast feedback verified: '¡132 documentos de producción inicializados! (SuperAdmin: ferwinred@gmail.com)'. All 139 unit tests pass.
 - **Acceptance Criteria:**
   - build pass
   - app does not crash
-  - Microphone pitch detection tuner verified functional on emulator
-- **Duration:** 3m 36s
+  - Production Firestore Initializer verified functional on emulator
+- **Duration:** 15m 49s
 

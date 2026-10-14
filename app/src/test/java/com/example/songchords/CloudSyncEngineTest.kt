@@ -25,6 +25,7 @@ class CloudSyncEngineTest {
 
     @Before
     fun setUp() {
+        UserIdentityManager.markFirestoreSeeded()
         localRepository = LocalSongRepository(initialSongs = emptyList())
         cloudProvider = FirestoreRestCloudSyncProvider(initialRemoteSongs = emptyList(), isOnline = true)
         syncEngine = CloudSyncEngine(localRepository, cloudProvider)

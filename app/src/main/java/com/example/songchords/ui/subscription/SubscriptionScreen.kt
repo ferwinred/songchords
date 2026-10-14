@@ -48,7 +48,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
-import com.example.songchords.firestore.FirestoreSeeder
+import com.example.songchords.firestore.ProductionFirestoreInitializer
 import kotlinx.coroutines.launch
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -171,20 +171,8 @@ fun SubscriptionScreen(
                         if (isSeeding) return@Button
                         isSeeding = true
                         coroutineScope.launch {
-                            Toast.makeText(
-                                context,
-                                "🔥 Iniciando siembra de Cloud Firestore (131 documentos)...",
-                                Toast.LENGTH_SHORT
-                            ).show()
-                            val report = FirestoreSeeder.seedAllCollections(context = context)
+                            ProductionFirestoreInitializer.initializeAll(context = context)
                             isSeeding = false
-                            if (report.successfulCollections == report.totalCollections) {
-                                Toast.makeText(
-                                    context,
-                                    "✅ Base de Datos Firestore sembrada con éxito (${report.totalDocumentsSeeded} documentos en ${report.totalCollections} colecciones)",
-                                    Toast.LENGTH_LONG
-                                ).show()
-                            }
                         }
                     },
                     enabled = !isSeeding,
@@ -202,10 +190,10 @@ fun SubscriptionScreen(
                             strokeWidth = 2.dp
                         )
                         Spacer(modifier = Modifier.width(8.dp))
-                        Text("Sembrando Firestore...")
+                        Text("Inicializando Firestore...")
                     } else {
                         Text(
-                            text = "🔥 Sembrar Base de Datos Firestore",
+                            text = stringResource(R.string.init_production_firestore),
                             fontWeight = FontWeight.Bold,
                             style = MaterialTheme.typography.labelLarge
                         )

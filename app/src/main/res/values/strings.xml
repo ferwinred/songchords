@@ -297,4 +297,6 @@
     <!-- Firestore Seeding -->
     <string name="seed_firestore_button">🔥 Inicializar / Sembrar Colecciones de Firestore</string>
     <string name="firestore_seeding_success_toast">Firestore seeded: %1$d/%2$d collections (%3$d docs)</string>
+    <string name="init_production_firestore">🔥 Inicializar Producción en Firebase</string>
+    <string name="production_firestore_success">¡%1$d documentos de producción inicializados! (SuperAdmin: %2$s)</string>
 </resources>
