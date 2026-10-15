@@ -24,6 +24,13 @@ class AutomaticFirestoreInitializerTest {
     }
 
     @Test
+    fun testEnsureFirebaseAuthAnonymously_handlesUninitializedFirebaseGracefully() = runBlocking {
+        val result = AutomaticFirestoreInitializer.ensureFirebaseAuthAnonymously()
+        // Should handle headless JVM testing environment gracefully without throwing exception
+        assertFalse(result)
+    }
+
+    @Test
     fun testCheckAndSeedIfEmpty_whenEmpty_seedsAll5Collections() = runBlocking {
         var callbackResult: Boolean? = null
         val seeded = AutomaticFirestoreInitializer.checkAndSeedIfEmpty(

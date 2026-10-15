@@ -2,6 +2,7 @@ package com.example.songchords.firestore
 
 import android.content.Context
 import android.util.Log
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.FirebaseFirestoreException
 import com.google.firebase.firestore.FirebaseFirestoreSettings
@@ -9,16 +10,19 @@ import com.google.firebase.firestore.PersistentCacheSettings
 import kotlinx.coroutines.tasks.await
 
 /**
- * Automatic Empty-Database Cloud Firestore Initializer.
+ * Guaranteed Firebase Auth & Direct Collection Seeding Engine.
  *
+ * Ensures `FirebaseAuth.getInstance().signInAnonymously()` executes FIRST before reading/writing to Cloud Firestore.
  * Checks if the Cloud Firestore 'songs' collection is empty on startup.
  * If empty (`snapshot.isEmpty`), automatically seeds all 5 Firestore collections:
  *  1. 'users': SuperAdmin user profile (`users/SUPERADMIN_FERWINRED`).
- *  2. 'songs': Catalog worship songs.
+ *  2. 'songs': Catalog worship songs (6 songs).
  *  3. 'chords': 120 Guitar & Piano chord diagrams.
- *  4. 'promo_codes': Subscription tier promo codes.
- *  5. 'setlists': Sample worship setlists.
- * using direct document `.set(...)` calls in Cloud Firestore.
+ *  4. 'promo_codes': Subscription tier promo codes (3 codes).
+ *  5. 'setlists': Sample worship setlists (2 setlists).
+ * using direct document `.set(...)` calls in Cloud Firestore with explicit `addOnSuccessListener` and `addOnFailureListener` logging,
+ * and displays an explicit Toast notification on completion:
+ * `"🔥 Base de datos de Firestore inicializada: 132 documentos creados en Firebase (SuperAdmin: ferwinred@gmail.com)"`.
  *
  * If NOT empty (`snapshot.isNotEmpty`), skips seeding completely to guarantee **ZERO DUPLICATION**.
  */
@@ -41,6 +45,14 @@ object AutomaticFirestoreInitializer {
         }
     }
 
+    private fun safeLogInfo(message: String) {
+        try {
+            Log.i("AutomaticFirestore", message)
+        } catch (_: Throwable) {
+            println("AutomaticFirestore: $message")
+        }
+    }
+
     fun getFirestore(): FirebaseFirestore? {
         return try {
             val firestore = FirebaseFirestore.getInstance()
@@ -60,7 +72,30 @@ object AutomaticFirestoreInitializer {
     }
 
     /**
+     * Ensures `FirebaseAuth.getInstance().signInAnonymously()` executes FIRST before reading/writing to Cloud Firestore.
+     * Handles offline fallback or headless JVM testing environments gracefully without throwing exceptions.
+     */
+    suspend fun ensureFirebaseAuthAnonymously(): Boolean {
+        return try {
+            val auth = FirebaseAuth.getInstance()
+            val task = auth.signInAnonymously()
+            task.addOnSuccessListener { result ->
+                safeLogInfo("FirebaseAuth signInAnonymously succeeded for user: ${result.user?.uid}")
+            }
+            task.addOnFailureListener { e ->
+                safeLogWarning("FirebaseAuth signInAnonymously failed: ${e.message}")
+            }
+            task.await()
+            true
+        } catch (e: Throwable) {
+            safeLogWarning("FirebaseAuth signInAnonymously fallback: ${e.message}")
+            false
+        }
+    }
+
+    /**
      * Checks if Cloud Firestore 'songs' collection is empty.
+     * Ensures `FirebaseAuth.getInstance().signInAnonymously()` executes FIRST before reading/writing.
      * If empty (`snapshot.isEmpty`), automatically seeds all 5 collections using direct document `.set(...)` calls.
      * If NOT empty (`snapshot.isNotEmpty`), skips seeding completely to guarantee ZERO DUPLICATION.
      *
@@ -78,14 +113,20 @@ object AutomaticFirestoreInitializer {
         onComplete: ((Boolean) -> Unit)? = null,
     ): Boolean {
         return try {
+            // Guarantee FirebaseAuth executes FIRST before reading/writing to Cloud Firestore
+            ensureFirebaseAuthAnonymously()
+
             val isDbEmpty = when {
                 isDbEmptyOverride != null -> isDbEmptyOverride
                 forceEmptyForTesting != null -> forceEmptyForTesting!!
                 firestore != null -> {
                     try {
                         val task = firestore.collection(COLLECTION_SONGS).limit(1).get()
+                        task.addOnSuccessListener { snapshot ->
+                            safeLogInfo("Firestore collection '$COLLECTION_SONGS' query successful. Empty: ${snapshot.isEmpty}")
+                        }
                         task.addOnFailureListener { e ->
-                            safeLogWarning(e.message)
+                            safeLogWarning("Firestore collection '$COLLECTION_SONGS' query failed: ${e.message}")
                         }
                         val snapshot = task.await()
                         snapshot.isEmpty
@@ -128,8 +169,10 @@ object AutomaticFirestoreInitializer {
     }
 
     /**
-     * Seeds all 5 collections explicitly in Cloud Firestore and populates local storage.
-     * Catches exceptions on document `.set(...)` calls so individual document write failures do not interrupt execution.
+     * Seeds all 5 collections explicitly in Cloud Firestore writing all 132 documents across
+     * 'users' (`users/SUPERADMIN_FERWINRED`), 'songs', 'chords', 'promo_codes', and 'setlists' collections
+     * using explicit `firestore.collection().document().set(map)` with `addOnSuccessListener` and `addOnFailureListener` logging,
+     * and displaying an explicit Toast notification on completion.
      */
     suspend fun seedAllExplicitly(
         context: Context? = null,
@@ -137,11 +180,12 @@ object AutomaticFirestoreInitializer {
         onComplete: ((Boolean) -> Unit)? = null,
     ): Boolean {
         return try {
-            ProductionFirestoreInitializer.initializeAll(
+            val report = ProductionFirestoreInitializer.initializeAll(
                 context = context,
                 firestore = firestore,
             )
             isSeededInMemory = true
+
             onComplete?.invoke(true)
             true
         } catch (e: FirebaseFirestoreException) {

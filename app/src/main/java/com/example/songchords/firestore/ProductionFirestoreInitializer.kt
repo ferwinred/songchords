@@ -91,6 +91,14 @@ object ProductionFirestoreInitializer {
         }
     }
 
+    private fun safeLogInfo(message: String) {
+        try {
+            android.util.Log.i("ProductionFirestore", message)
+        } catch (_: Throwable) {
+            println("ProductionFirestore: $message")
+        }
+    }
+
     fun getFirestore(): FirebaseFirestore? {
         return try {
             val firestore = FirebaseFirestore.getInstance()
@@ -133,6 +141,9 @@ object ProductionFirestoreInitializer {
         if (firestore != null) {
             try {
                 val task = firestore.collection(COLLECTION_USERS).document(SUPERADMIN_DOC_ID).set(userMap)
+                task.addOnSuccessListener {
+                    safeLogInfo("SuperAdmin user '$COLLECTION_USERS/$SUPERADMIN_DOC_ID' written successfully.")
+                }
                 task.addOnFailureListener { e ->
                     safeLogWarning("SUPERADMIN_FERWINRED set failure: ${e.message}")
                 }
@@ -199,6 +210,9 @@ object ProductionFirestoreInitializer {
                         "createdAt" to song.createdAt,
                     )
                     val task = firestore.collection(COLLECTION_SONGS).document(song.id).set(data)
+                    task.addOnSuccessListener {
+                        safeLogInfo("Song document '${song.id}' written successfully to '$COLLECTION_SONGS'.")
+                    }
                     task.addOnFailureListener { e ->
                         safeLogWarning("Song ${song.id} set failure: ${e.message}")
                     }
@@ -283,6 +297,9 @@ object ProductionFirestoreInitializer {
                         "updatedAt" to doc.updatedAt,
                     )
                     val task = firestore.collection(COLLECTION_CHORDS).document(doc.id).set(data)
+                    task.addOnSuccessListener {
+                        safeLogInfo("Chord document '${doc.id}' written successfully to '$COLLECTION_CHORDS'.")
+                    }
                     task.addOnFailureListener { e ->
                         safeLogWarning("Chord ${doc.id} set failure: ${e.message}")
                     }
@@ -331,6 +348,9 @@ object ProductionFirestoreInitializer {
                         "redeemedAtTimestamp" to promo.redeemedAtTimestamp,
                     )
                     val task = firestore.collection(COLLECTION_PROMO_CODES).document(promo.code).set(data)
+                    task.addOnSuccessListener {
+                        safeLogInfo("Promo code document '${promo.code}' written successfully to '$COLLECTION_PROMO_CODES'.")
+                    }
                     task.addOnFailureListener { e ->
                         safeLogWarning("Promo code ${promo.code} set failure: ${e.message}")
                     }
@@ -401,6 +421,9 @@ object ProductionFirestoreInitializer {
                         "createdAt" to setlist.createdAt,
                     )
                     val task = firestore.collection(COLLECTION_SETLISTS).document(setlist.id).set(data)
+                    task.addOnSuccessListener {
+                        safeLogInfo("Setlist document '${setlist.id}' written successfully to '$COLLECTION_SETLISTS'.")
+                    }
                     task.addOnFailureListener { e ->
                         safeLogWarning("Setlist ${setlist.id} set failure: ${e.message}")
                     }
@@ -443,8 +466,8 @@ object ProductionFirestoreInitializer {
      * Executes full production initialization across all 5 collections and local device storage.
      * Returns status report and total document count (132 docs total).
      *
-     * Notifies user with Toast feedback: "¡132 documentos de producción inicializados! (SuperAdmin: ferwinred@gmail.com)"
-     * when complete or encountering network permission status.
+     * Notifies user with Toast feedback: "🔥 Base de datos de Firestore inicializada: 132 documentos creados en Firebase (SuperAdmin: ferwinred@gmail.com)"
+     * when complete.
      */
     suspend fun initializeAll(
         context: Context? = null,
@@ -483,9 +506,13 @@ object ProductionFirestoreInitializer {
         )
 
         context?.let { ctx ->
-            withContext(Dispatchers.Main) {
-                val feedbackMessage = "¡$totalDocumentsUploaded documentos de producción inicializados! (SuperAdmin: $SUPERADMIN_EMAIL)"
-                Toast.makeText(ctx, feedbackMessage, Toast.LENGTH_LONG).show()
+            try {
+                withContext(Dispatchers.Main) {
+                    val feedbackMessage = "🔥 Base de datos de Firestore inicializada: $totalDocumentsUploaded documentos creados en Firebase (SuperAdmin: $SUPERADMIN_EMAIL)"
+                    Toast.makeText(ctx, feedbackMessage, Toast.LENGTH_LONG).show()
+                }
+            } catch (_: Throwable) {
+                // Safe fallback for unit tests or headless contexts
             }
         }
 
