@@ -101,7 +101,8 @@ object ProductionFirestoreInitializer {
 
     fun getFirestore(): FirebaseFirestore? {
         return try {
-            val firestore = FirebaseFirestore.getInstance()
+            val app = com.google.firebase.FirebaseApp.getInstance()
+            val firestore = FirebaseFirestore.getInstance(app, "songchords")
             try {
                 val settings = FirebaseFirestoreSettings.Builder()
                     .setLocalCacheSettings(PersistentCacheSettings.newBuilder().build())

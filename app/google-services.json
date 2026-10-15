@@ -14,6 +14,51 @@
       },
       "oauth_client": [
         {
+          "client_id": "350365509264-5arvp5bcls5egtn1hfrrs7u98v6frscf.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.songchords",
+            "certificate_hash": "4e45885b39852b965565d6c9084f3931cc9ba153"
+          }
+        },
+        {
+          "client_id": "350365509264-bos9dis3ejvpn63e7kpoungb6qnr9old.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCHZBiY9vYvPRAOtgPisPy6FemEIYlRWkc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "350365509264-bos9dis3ejvpn63e7kpoungb6qnr9old.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:350365509264:android:982b911effe6ab61691a15",
+        "android_client_info": {
+          "package_name": "com.ferwinstudio.songchords"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "350365509264-kqd3ifleacc7bvm1clsqlsl18boa20i5.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.ferwinstudio.songchords",
+            "certificate_hash": "ffbd1105bf8643d68954f627e8c3e5e99a205345"
+          }
+        },
+        {
           "client_id": "350365509264-bos9dis3ejvpn63e7kpoungb6qnr9old.apps.googleusercontent.com",
           "client_type": 3
         }

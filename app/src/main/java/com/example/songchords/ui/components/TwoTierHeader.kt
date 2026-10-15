@@ -7,11 +7,23 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.Policy
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -19,6 +31,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.core.text.HtmlCompat
 import com.example.songchords.R
 import com.example.songchords.repository.SyncStatus
 import com.example.songchords.ui.theme.LocalOnToggleThemeMode
@@ -45,6 +58,7 @@ fun TwoTierHeader(
     }
     // Brand Dark Navy background: #020873 Light / #1E2558 Dark
     val brandDarkNavy = if (isDark) Color(0xFF1E2558) else Color(0xFF020873)
+    var showPrivacyPolicy by remember { mutableStateOf(false) }
 
     Surface(
         color = brandDarkNavy,
@@ -112,10 +126,48 @@ fun TwoTierHeader(
                     themeMode = themeMode,
                     onToggleTheme = onToggleTheme,
                 )
+                IconButton(onClick = { showPrivacyPolicy = true }) {
+                    Icon(
+                        imageVector = Icons.Rounded.Policy,
+                        contentDescription = stringResource(R.string.privacy_policy_title),
+                        tint = Color.White
+                    )
+                }
                 LanguageSelector(
                     tint = Color.White,
                 )
             }
         }
+    }
+
+    if (showPrivacyPolicy) {
+        val rawHtml = stringResource(R.string.privacy_policy_content)
+        // Convert HTML breaks and bold tags to simple text formatting (since Android's AlertDialog doesn't render HTML directly out of the box in Compose Text easily without AndroidView, we strip/replace or just show it as is. A better way in simple Compose is stripping HTML tags for simple text or just showing plain text version.)
+        val parsedText = remember(rawHtml) {
+            HtmlCompat.fromHtml(rawHtml, HtmlCompat.FROM_HTML_MODE_COMPACT).toString()
+        }
+
+        AlertDialog(
+            onDismissRequest = { showPrivacyPolicy = false },
+            title = {
+                Text(
+                    text = stringResource(R.string.privacy_policy_title),
+                    style = MaterialTheme.typography.headlineSmall,
+                    fontWeight = FontWeight.Bold
+                )
+            },
+            text = {
+                Text(
+                    text = parsedText,
+                    style = MaterialTheme.typography.bodyMedium,
+                    modifier = Modifier.verticalScroll(rememberScrollState())
+                )
+            },
+            confirmButton = {
+                TextButton(onClick = { showPrivacyPolicy = false }) {
+                    Text(stringResource(android.R.string.ok))
+                }
+            }
+        )
     }
 }

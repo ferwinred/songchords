@@ -34,7 +34,8 @@ object PromoCodeManager {
 
     private fun getFirestore(): FirebaseFirestore? {
         return try {
-            val firestore = FirebaseFirestore.getInstance()
+            val app = com.google.firebase.FirebaseApp.getInstance()
+            val firestore = FirebaseFirestore.getInstance(app, "songchords")
             try {
                 val settings = com.google.firebase.firestore.FirebaseFirestoreSettings.Builder()
                     .setLocalCacheSettings(com.google.firebase.firestore.PersistentCacheSettings.newBuilder().build())

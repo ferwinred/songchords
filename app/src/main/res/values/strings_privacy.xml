@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
+    <string name="privacy_policy_title">Políticas de Privacidad</string>
+    <string name="privacy_policy_content"><![CDATA[
+<b>1. Información que recopilamos</b><br/>
+Recopilamos información básica para proporcionar y mejorar nuestros servicios, como tu dirección de correo electrónico, nombre (si te registras) y datos de uso de la aplicación. Para compras integradas, utilizamos la plataforma de Google Play, por lo que no tenemos acceso a la información de tu tarjeta de crédito o métodos de pago.<br/><br/>
+
+<b>2. Uso de la información</b><br/>
+La información recopilada se utiliza para sincronizar tus listas de canciones (Setlists), ofrecerte la función de guardado en la nube a través de Firebase, administrar tu suscripción a las distintas categorías (Básica, Pro, Premium AI) y mejorar la experiencia general de la aplicación.<br/><br/>
+
+<b>3. Compartir tu información</b><br/>
+No vendemos ni alquilamos tus datos personales a terceros. Tu información se almacena de forma segura en los servidores de Google (Firebase) y solo se comparte en la medida necesaria para cumplir con los servicios, como la verificación de suscripciones con Google Play.<br/><br/>
+
+<b>4. Servicios de terceros</b><br/>
+Utilizamos servicios de terceros que pueden recopilar información utilizada para identificarte:<br/>
+• Google Play Services (Facturación y Suscripciones)<br/>
+• Firebase (Autenticación y Base de datos en la nube)<br/>
+• AdMob (Anuncios para la versión gratuita)<br/><br/>
+
+<b>5. Seguridad de los datos</b><br/>
+Implementamos medidas de seguridad estándar de la industria para proteger tu información contra acceso no autorizado, alteración, divulgación o destrucción. Sin embargo, ningún método de transmisión por Internet o almacenamiento electrónico es 100% seguro.<br/><br/>
+
+<b>6. Cambios a esta política</b><br/>
+Podemos actualizar nuestras Políticas de Privacidad periódicamente. Te notificaremos cualquier cambio publicando la nueva Política de Privacidad en esta página.<br/><br/>
+
+<i>Última actualización: 15 de Octubre de 2026</i>
+    ]]></string>
+</resources>
