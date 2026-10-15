@@ -1,0 +1,53 @@
+===== APP NAME =====
+SongChords: Chords & Lyrics
+
+===== SHORT DESCRIPTION =====
+Worship songbook with chords, transposition, a tuner and setlists.
+
+===== FULL DESCRIPTION =====
+SongChords is the digital songbook for musicians and praise & worship teams. Keep your songs with lyrics and chords at hand, change them to the key you need, and prepare every service or rehearsal from your phone.
+
+🎵 YOUR SONGBOOK IN ONE PLACE
+• Search songs by title or artist.
+• Filter by favorites, key, artist or tag (Praise, Worship and more).
+• See the tempo (BPM) and time signature of every song.
+
+🎼 INSTANT TRANSPOSITION
+• Move up or down a half step or a whole step with one tap.
+• Every chord in the song updates automatically.
+• Go back to the original key at any time.
+• Standard (C D E) or solfège (Do Re Mi) notation.
+
+🎸 CHORD LIBRARY FOR GUITAR AND PIANO
+• All 12 keys and 10 chord types: major, minor, 7, m7, maj7, sus2, sus4, add9, dim and aug.
+• Clear diagrams showing the fingering for every chord.
+
+🎯 BUILT-IN TUNER
+• Tune string by string with your phone's microphone.
+• 6-string guitar and 4- and 5-string bass.
+• Cents meter and a reference tone for tuning by ear.
+
+📋 SETLISTS FOR YOUR SERVICE
+• Create lists for every service, meeting or rehearsal.
+• Save the key your team will use for each song in the list.
+
+✍️ WRITE YOUR OWN SONGS
+• Put chords in brackets, e.g. [G]When I woke up [C]there.
+• Quick insertion helper for chords, sections and comments.
+• Live preview with the chords shown above the lyrics.
+
+📤 EXPORT AND SHARE
+• Export your songs as PDF, plain text or JSON.
+• Import songs from JSON files.
+• Sync your songs to the cloud with your Google account.
+
+🤖 AI MUSIC ASSISTANT (Premium AI)
+• Ask about scales, chords, progressions and music theory for guitar and piano.
+
+🌙 AND MORE
+• Dark mode.
+• Available in English and Spanish.
+
+SongChords is free with ads. Optional subscriptions (Basic, Pro and Premium AI) raise the limits on setlists and your own songs, remove ads and unlock the AI assistant.
+
+Download SongChords and take your worship repertoire wherever you go!

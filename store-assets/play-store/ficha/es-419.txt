@@ -1,0 +1,53 @@
+===== NOMBRE DE LA APP =====
+SongChords: Acordes y Letras
+
+===== DESCRIPCIÓN BREVE =====
+Cancionero de alabanza con acordes, transposición, afinador y setlists.
+
+===== DESCRIPCIÓN COMPLETA =====
+SongChords es el cancionero digital para músicos y equipos de alabanza y adoración. Ten tus canciones con letra y acordes siempre a mano, cámbialas al tono que necesitas y prepara cada servicio o ensayo desde tu teléfono.
+
+🎵 TU CANCIONERO EN UN SOLO LUGAR
+• Busca canciones por título o artista.
+• Filtra por favoritos, tono, artista o etiqueta (Alabanza, Adoración y más).
+• Consulta el tempo (BPM) y el compás de cada canción.
+
+🎼 TRANSPOSICIÓN AL INSTANTE
+• Sube o baja medio tono o un tono completo con un toque.
+• Todos los acordes de la canción se ajustan automáticamente.
+• Vuelve al tono original cuando quieras.
+• Notación estándar (C D E) o solfeo (Do Re Mi).
+
+🎸 BIBLIOTECA DE ACORDES PARA GUITARRA Y PIANO
+• Los 12 tonos y 10 tipos de acorde: mayor, menor, 7, m7, maj7, sus2, sus4, add9, dim y aug.
+• Diagramas claros con la digitación de cada acorde.
+
+🎯 AFINADOR INTEGRADO
+• Afina con el micrófono de tu teléfono, cuerda por cuerda.
+• Guitarra de 6 cuerdas y bajo de 4 y 5 cuerdas.
+• Indicador de cents y tono de referencia para afinar de oído.
+
+📋 SETLISTS PARA TU SERVICIO
+• Crea listas para cada culto, reunión o ensayo.
+• Guarda el tono que usará tu equipo para cada canción de la lista.
+
+✍️ ESCRIBE TUS PROPIAS CANCIONES
+• Escribe los acordes entre corchetes, por ejemplo: [G]Tu poeta, [Cadd2]tu canción.
+• Ayudante de inserción rápida para acordes, secciones y comentarios.
+• Vista previa en vivo de la canción con los acordes sobre la letra.
+
+📤 EXPORTA Y COMPARTE
+• Exporta tus canciones en PDF, texto plano o JSON.
+• Importa canciones desde archivos JSON.
+• Sincroniza tus canciones en la nube con tu cuenta de Google.
+
+🤖 ASISTENTE MUSICAL CON IA (Premium IA)
+• Pregunta sobre escalas, acordes, progresiones y teoría musical para guitarra y piano.
+
+🌙 Y ADEMÁS
+• Modo oscuro.
+• Disponible en español e inglés.
+
+SongChords es gratis, con anuncios. Las suscripciones opcionales (Básica, Pro y Premium IA) amplían los setlists y las canciones propias, quitan los anuncios y desbloquean el asistente de IA.
+
+¡Descarga SongChords y lleva tu repertorio de alabanza a donde vayas!
