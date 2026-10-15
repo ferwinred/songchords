@@ -6,9 +6,6 @@ import com.example.songchords.firestore.AutomaticFirestoreInitializer
 import com.example.songchords.model.Setlist
 import com.example.songchords.model.Song
 import com.example.songchords.repository.local.LocalPersistentStorage
-import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.FirebaseFirestoreSettings
-import com.google.firebase.firestore.PersistentCacheSettings
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -60,7 +57,11 @@ class CloudSyncEngine(
 
     init {
         CoroutineScope(Dispatchers.IO).launch {
-            runOneTimeSeeding()
+            try {
+                runOneTimeSeeding()
+            } catch (_: Throwable) {
+                _syncStatus.value = SyncStatus.IDLE
+            }
         }
     }
 
@@ -71,10 +72,13 @@ class CloudSyncEngine(
                 context = context,
                 firestore = firestore
             )
-        } catch (_: Exception) {
+        } catch (_: Throwable) {
             // Gracefully handle uninitialized Firebase or network issues
         }
-        userIdentityManager.markFirestoreSeeded()
+        try {
+            userIdentityManager.markFirestoreSeeded()
+        } catch (_: Throwable) {
+        }
     }
 
     /**
@@ -88,45 +92,70 @@ class CloudSyncEngine(
         try {
             if (!cloudProvider.isOnline) {
                 _syncStatus.value = SyncStatus.OFFLINE_ERROR
+                serveFromLocalPersistentStorage()
                 return SyncStatus.OFFLINE_ERROR
             }
 
             // Automatic Firestore seeding check on cloud sync trigger
-            runOneTimeSeeding()
+            try {
+                runOneTimeSeeding()
+            } catch (_: Throwable) {
+            }
 
-            val remoteSongs = cloudProvider.fetchRemoteSongs()
+            val remoteSongs = try {
+                cloudProvider.fetchRemoteSongs()
+            } catch (_: Throwable) {
+                _syncStatus.value = SyncStatus.OFFLINE_ERROR
+                serveFromLocalPersistentStorage()
+                return SyncStatus.OFFLINE_ERROR
+            }
+
             val remoteSetlists = try {
                 cloudProvider.fetchRemoteSetlists()
-            } catch (_: Exception) {
+            } catch (_: Throwable) {
                 emptyList()
             }
 
-            val localSongs = localRepository.getSongs().first()
-            val localSetlists = localSetlistRepository?.getSetlists()?.first() ?: emptyList()
+            val localSongs = try {
+                localRepository.getSongs().first()
+            } catch (_: Throwable) {
+                persistentStorage?.loadLocalSongs() ?: emptyList()
+            }
+
+            val localSetlists = try {
+                localSetlistRepository?.getSetlists()?.first() ?: emptyList()
+            } catch (_: Throwable) {
+                persistentStorage?.loadLocalSetlists() ?: emptyList()
+            }
 
             val localMap = localSongs.associateBy { it.id }
             val remoteMap = remoteSongs.associateBy { it.id }
 
             // 1. Sync local songs up to remote
             for (localSong in localSongs) {
-                val remoteSong = remoteMap[localSong.id]
-                if (remoteSong == null) {
-                    // Local custom or modified song not in cloud -> push to cloud
-                    cloudProvider.saveRemoteSong(localSong)
-                } else if (localSong != remoteSong) {
-                    // Conflict resolution: prefer newer timestamp
-                    if (localSong.createdAt >= remoteSong.createdAt) {
+                try {
+                    val remoteSong = remoteMap[localSong.id]
+                    if (remoteSong == null) {
                         cloudProvider.saveRemoteSong(localSong)
-                    } else {
-                        localRepository.updateSong(remoteSong)
+                    } else if (localSong != remoteSong) {
+                        if (localSong.createdAt >= remoteSong.createdAt) {
+                            cloudProvider.saveRemoteSong(localSong)
+                        } else {
+                            localRepository.updateSong(remoteSong)
+                        }
                     }
+                } catch (_: Throwable) {
+                    // Ignore individual remote song save failure
                 }
             }
 
             // 2. Sync remote songs down to local
             for (remoteSong in remoteSongs) {
-                if (!localMap.containsKey(remoteSong.id)) {
-                    localRepository.addSong(remoteSong)
+                try {
+                    if (!localMap.containsKey(remoteSong.id)) {
+                        localRepository.addSong(remoteSong)
+                    }
+                } catch (_: Throwable) {
                 }
             }
 
@@ -136,41 +165,60 @@ class CloudSyncEngine(
                 val remoteSetlistMap = remoteSetlists.associateBy { it.id }
 
                 for (localSetlist in localSetlists) {
-                    val remoteSetlist = remoteSetlistMap[localSetlist.id]
-                    if (remoteSetlist == null) {
-                        cloudProvider.saveRemoteSetlist(localSetlist)
-                    } else if (localSetlist != remoteSetlist) {
-                        if (localSetlist.createdAt >= remoteSetlist.createdAt) {
+                    try {
+                        val remoteSetlist = remoteSetlistMap[localSetlist.id]
+                        if (remoteSetlist == null) {
                             cloudProvider.saveRemoteSetlist(localSetlist)
-                        } else {
-                            localSetlistRepository.updateSetlist(remoteSetlist)
+                        } else if (localSetlist != remoteSetlist) {
+                            if (localSetlist.createdAt >= remoteSetlist.createdAt) {
+                                cloudProvider.saveRemoteSetlist(localSetlist)
+                            } else {
+                                localSetlistRepository.updateSetlist(remoteSetlist)
+                            }
                         }
+                    } catch (_: Throwable) {
                     }
                 }
 
                 for (remoteSetlist in remoteSetlists) {
-                    if (!localSetlistMap.containsKey(remoteSetlist.id)) {
-                        localSetlistRepository.createSetlist(remoteSetlist)
+                    try {
+                        if (!localSetlistMap.containsKey(remoteSetlist.id)) {
+                            localSetlistRepository.createSetlist(remoteSetlist)
+                        }
+                    } catch (_: Throwable) {
                     }
                 }
             }
 
             // Ensure merged data is explicitly saved to local persistent storage
-            val updatedSongs = localRepository.getSongs().first()
-            persistentStorage?.saveLocalSongs(updatedSongs)
-
-            localSetlistRepository?.let { repo ->
-                val updatedSetlists = repo.getSetlists().first()
-                persistentStorage?.saveLocalSetlists(updatedSetlists)
-            }
+            serveFromLocalPersistentStorage()
 
             val now = System.currentTimeMillis()
             _lastSyncedAt.value = now
             _syncStatus.value = SyncStatus.SYNCED
             return SyncStatus.SYNCED
-        } catch (_: Exception) {
+        } catch (_: Throwable) {
             _syncStatus.value = SyncStatus.OFFLINE_ERROR
+            serveFromLocalPersistentStorage()
             return SyncStatus.OFFLINE_ERROR
+        }
+    }
+
+    private suspend fun serveFromLocalPersistentStorage() {
+        try {
+            val songs = localRepository.getSongs().first()
+            persistentStorage?.saveLocalSongs(songs)
+        } catch (_: Throwable) {
+            persistentStorage?.loadLocalSongs()
+        }
+
+        try {
+            localSetlistRepository?.let { repo ->
+                val setlists = repo.getSetlists().first()
+                persistentStorage?.saveLocalSetlists(setlists)
+            }
+        } catch (_: Throwable) {
+            persistentStorage?.loadLocalSetlists()
         }
     }
 
@@ -181,7 +229,7 @@ class CloudSyncEngine(
         }
         try {
             cloudProvider.saveRemoteSong(song)
-        } catch (_: Exception) {
+        } catch (_: Throwable) {
             _syncStatus.value = SyncStatus.OFFLINE_ERROR
         }
     }
@@ -193,7 +241,7 @@ class CloudSyncEngine(
         }
         try {
             cloudProvider.deleteRemoteSong(id)
-        } catch (_: Exception) {
+        } catch (_: Throwable) {
             _syncStatus.value = SyncStatus.OFFLINE_ERROR
         }
     }
@@ -205,7 +253,7 @@ class CloudSyncEngine(
         }
         try {
             cloudProvider.saveRemoteSetlist(setlist)
-        } catch (_: Exception) {
+        } catch (_: Throwable) {
             _syncStatus.value = SyncStatus.OFFLINE_ERROR
         }
     }
@@ -217,7 +265,7 @@ class CloudSyncEngine(
         }
         try {
             cloudProvider.deleteRemoteSetlist(id)
-        } catch (_: Exception) {
+        } catch (_: Throwable) {
             _syncStatus.value = SyncStatus.OFFLINE_ERROR
         }
     }

@@ -83,6 +83,14 @@ object ProductionFirestoreInitializer {
     private val inMemoryPromoCodes = mutableMapOf<String, PromoCode>()
     private val inMemorySetlists = mutableMapOf<String, Setlist>()
 
+    private fun safeLogWarning(message: String?) {
+        try {
+            android.util.Log.w("ProductionFirestore", "Firestore initialization notice: $message")
+        } catch (_: Throwable) {
+            println("ProductionFirestore: Firestore initialization notice: $message")
+        }
+    }
+
     fun getFirestore(): FirebaseFirestore? {
         return try {
             val firestore = FirebaseFirestore.getInstance()
@@ -95,7 +103,8 @@ object ProductionFirestoreInitializer {
                 // Ignore if settings were already set or instance initialized
             }
             firestore
-        } catch (_: Throwable) {
+        } catch (e: Throwable) {
+            safeLogWarning(e.message)
             null
         }
     }
@@ -123,7 +132,11 @@ object ProductionFirestoreInitializer {
 
         if (firestore != null) {
             try {
-                firestore.collection(COLLECTION_USERS).document(SUPERADMIN_DOC_ID).set(userMap).await()
+                val task = firestore.collection(COLLECTION_USERS).document(SUPERADMIN_DOC_ID).set(userMap)
+                task.addOnFailureListener { e ->
+                    safeLogWarning("SUPERADMIN_FERWINRED set failure: ${e.message}")
+                }
+                task.await()
             } catch (e: Throwable) {
                 lastError = e
             }
@@ -185,7 +198,11 @@ object ProductionFirestoreInitializer {
                         "content" to song.content,
                         "createdAt" to song.createdAt,
                     )
-                    firestore.collection(COLLECTION_SONGS).document(song.id).set(data).await()
+                    val task = firestore.collection(COLLECTION_SONGS).document(song.id).set(data)
+                    task.addOnFailureListener { e ->
+                        safeLogWarning("Song ${song.id} set failure: ${e.message}")
+                    }
+                    task.await()
                 } catch (e: Throwable) {
                     lastError = e
                 }
@@ -265,7 +282,11 @@ object ProductionFirestoreInitializer {
                         "pianoBassPitchClass" to doc.pianoBassPitchClass,
                         "updatedAt" to doc.updatedAt,
                     )
-                    firestore.collection(COLLECTION_CHORDS).document(doc.id).set(data).await()
+                    val task = firestore.collection(COLLECTION_CHORDS).document(doc.id).set(data)
+                    task.addOnFailureListener { e ->
+                        safeLogWarning("Chord ${doc.id} set failure: ${e.message}")
+                    }
+                    task.await()
                 } catch (e: Throwable) {
                     lastError = e
                 }
@@ -309,7 +330,11 @@ object ProductionFirestoreInitializer {
                         "redeemedByUserId" to promo.redeemedByUserId,
                         "redeemedAtTimestamp" to promo.redeemedAtTimestamp,
                     )
-                    firestore.collection(COLLECTION_PROMO_CODES).document(promo.code).set(data).await()
+                    val task = firestore.collection(COLLECTION_PROMO_CODES).document(promo.code).set(data)
+                    task.addOnFailureListener { e ->
+                        safeLogWarning("Promo code ${promo.code} set failure: ${e.message}")
+                    }
+                    task.await()
                 } catch (e: Throwable) {
                     lastError = e
                 }
@@ -375,7 +400,11 @@ object ProductionFirestoreInitializer {
                         "songs" to songsData,
                         "createdAt" to setlist.createdAt,
                     )
-                    firestore.collection(COLLECTION_SETLISTS).document(setlist.id).set(data).await()
+                    val task = firestore.collection(COLLECTION_SETLISTS).document(setlist.id).set(data)
+                    task.addOnFailureListener { e ->
+                        safeLogWarning("Setlist ${setlist.id} set failure: ${e.message}")
+                    }
+                    task.await()
                 } catch (e: Throwable) {
                     lastError = e
                 }
@@ -388,6 +417,26 @@ object ProductionFirestoreInitializer {
             count = sampleSetlists.size,
             message = if (lastError == null) "Successfully uploaded ${sampleSetlists.size} setlists into '$COLLECTION_SETLISTS' collection." else "Initialized ${sampleSetlists.size} setlists in local device storage.",
         )
+    }
+
+    /**
+     * Seeds local persistent storage (songs_db.json, setlists_db.json) and in-memory stores 100%
+     * without writing to remote Firestore.
+     */
+    suspend fun seedLocalStores(context: Context? = null): InitializationReport {
+        val report = initializeAll(
+            context = context,
+            firestore = null,
+        )
+        context?.let { ctx ->
+            try {
+                val storage = LocalPersistentStorage(ctx)
+                storage.loadLocalSongs()
+                storage.loadLocalSetlists()
+            } catch (_: Throwable) {
+            }
+        }
+        return report
     }
 
     /**

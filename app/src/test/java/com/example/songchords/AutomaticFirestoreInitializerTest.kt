@@ -25,13 +25,16 @@ class AutomaticFirestoreInitializerTest {
 
     @Test
     fun testCheckAndSeedIfEmpty_whenEmpty_seedsAll5Collections() = runBlocking {
+        var callbackResult: Boolean? = null
         val seeded = AutomaticFirestoreInitializer.checkAndSeedIfEmpty(
             context = null,
             firestore = null,
             isDbEmptyOverride = true,
+            onComplete = { success -> callbackResult = success },
         )
 
         assertTrue(seeded)
+        assertEquals(true, callbackResult)
 
         // Verify all 5 collections are populated
         // 1. users/SUPERADMIN_FERWINRED
@@ -74,14 +77,17 @@ class AutomaticFirestoreInitializerTest {
         val initialSongCount = ProductionFirestoreInitializer.getSongs().size
         assertEquals(6, initialSongCount)
 
+        var callbackResult: Boolean? = null
         // Now attempt seeding when database is NOT empty
         val seededSecondTime = AutomaticFirestoreInitializer.checkAndSeedIfEmpty(
             context = null,
             firestore = null,
             isDbEmptyOverride = false,
+            onComplete = { success -> callbackResult = success },
         )
 
         assertFalse(seededSecondTime)
+        assertEquals(false, callbackResult)
         // Song count must remain unchanged to guarantee ZERO DUPLICATION
         assertEquals(initialSongCount, ProductionFirestoreInitializer.getSongs().size)
     }
@@ -108,6 +114,32 @@ class AutomaticFirestoreInitializerTest {
         assertEquals(120, ProductionFirestoreInitializer.getChords().size)
         assertEquals(3, ProductionFirestoreInitializer.getPromoCodes().size)
         assertEquals(2, ProductionFirestoreInitializer.getSetlists().size)
+    }
+
+    @Test
+    fun testSeedLocalStores_populatesAllLocalStores() = runBlocking {
+        val report = ProductionFirestoreInitializer.seedLocalStores(context = null)
+        assertEquals(132, report.totalDocumentsUploaded)
+        assertEquals(6, ProductionFirestoreInitializer.getSongs().size)
+        assertEquals(120, ProductionFirestoreInitializer.getChords().size)
+        assertEquals(3, ProductionFirestoreInitializer.getPromoCodes().size)
+        assertEquals(2, ProductionFirestoreInitializer.getSetlists().size)
+        assertNotNull(ProductionFirestoreInitializer.getSuperAdminUser())
+    }
+
+    @Test
+    fun testSeedAllExplicitly_invokesCallbackAndSeedsAllCollections() = runBlocking {
+        var callbackCompleted: Boolean? = null
+        val result = AutomaticFirestoreInitializer.seedAllExplicitly(
+            context = null,
+            firestore = null,
+            onComplete = { success -> callbackCompleted = success },
+        )
+
+        assertTrue(result)
+        assertEquals(true, callbackCompleted)
+        assertEquals(6, ProductionFirestoreInitializer.getSongs().size)
+        assertEquals(120, ProductionFirestoreInitializer.getChords().size)
     }
 
     @Test

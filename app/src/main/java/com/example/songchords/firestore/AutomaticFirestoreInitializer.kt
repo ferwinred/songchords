@@ -1,7 +1,9 @@
 package com.example.songchords.firestore
 
 import android.content.Context
+import android.util.Log
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.FirebaseFirestoreException
 import com.google.firebase.firestore.FirebaseFirestoreSettings
 import com.google.firebase.firestore.PersistentCacheSettings
 import kotlinx.coroutines.tasks.await
@@ -31,6 +33,14 @@ object AutomaticFirestoreInitializer {
     private var forceEmptyForTesting: Boolean? = null
     private var isSeededInMemory = false
 
+    private fun safeLogWarning(message: String?) {
+        try {
+            Log.w("AutomaticFirestore", "Firestore initialization notice: $message")
+        } catch (_: Throwable) {
+            println("AutomaticFirestore: Firestore initialization notice: $message")
+        }
+    }
+
     fun getFirestore(): FirebaseFirestore? {
         return try {
             val firestore = FirebaseFirestore.getInstance()
@@ -43,7 +53,8 @@ object AutomaticFirestoreInitializer {
                 // Ignore if settings were already set or instance initialized
             }
             firestore
-        } catch (_: Throwable) {
+        } catch (e: Throwable) {
+            safeLogWarning(e.message)
             null
         }
     }
@@ -53,42 +64,96 @@ object AutomaticFirestoreInitializer {
      * If empty (`snapshot.isEmpty`), automatically seeds all 5 collections using direct document `.set(...)` calls.
      * If NOT empty (`snapshot.isNotEmpty`), skips seeding completely to guarantee ZERO DUPLICATION.
      *
-     * @return `true` if database was empty and seeding was executed; `false` if skipped.
+     * On exception or failure:
+     *  - Logs diagnostic warning: `Log.w("AutomaticFirestore", "Firestore initialization notice: ${e.message}")`.
+     *  - Executes `ProductionFirestoreInitializer.seedLocalStores(context)` to guarantee local persistent storage (`songs_db.json`, `setlists_db.json`) is 100% seeded.
+     *  - Completes callback gracefully (`onComplete?.invoke(false)`).
+     *
+     * @return `true` if database was empty and seeding was executed; `false` if skipped or failed.
      */
     suspend fun checkAndSeedIfEmpty(
         context: Context? = null,
         firestore: FirebaseFirestore? = getFirestore(),
         isDbEmptyOverride: Boolean? = null,
+        onComplete: ((Boolean) -> Unit)? = null,
     ): Boolean {
-        val isDbEmpty = when {
-            isDbEmptyOverride != null -> isDbEmptyOverride
-            forceEmptyForTesting != null -> forceEmptyForTesting!!
-            firestore != null -> {
-                try {
-                    val snapshot = firestore.collection(COLLECTION_SONGS).limit(1).get().await()
-                    snapshot.isEmpty
-                } catch (_: Throwable) {
-                    // Fallback if network or uninitialized
-                    false
+        return try {
+            val isDbEmpty = when {
+                isDbEmptyOverride != null -> isDbEmptyOverride
+                forceEmptyForTesting != null -> forceEmptyForTesting!!
+                firestore != null -> {
+                    try {
+                        val task = firestore.collection(COLLECTION_SONGS).limit(1).get()
+                        task.addOnFailureListener { e ->
+                            safeLogWarning(e.message)
+                        }
+                        val snapshot = task.await()
+                        snapshot.isEmpty
+                    } catch (e: FirebaseFirestoreException) {
+                        safeLogWarning(e.message)
+                        ProductionFirestoreInitializer.seedLocalStores(context)
+                        onComplete?.invoke(false)
+                        return false
+                    } catch (e: Throwable) {
+                        safeLogWarning(e.message)
+                        ProductionFirestoreInitializer.seedLocalStores(context)
+                        onComplete?.invoke(false)
+                        return false
+                    }
+                }
+                else -> {
+                    // JVM Unit testing / offline fallback when firestore is null
+                    !isSeededInMemory && ProductionFirestoreInitializer.getSongs().isEmpty()
                 }
             }
-            else -> {
-                // JVM Unit testing / offline fallback when firestore is null
-                !isSeededInMemory && ProductionFirestoreInitializer.getSongs().isEmpty()
-            }
-        }
 
-        if (isDbEmpty) {
-            // Automatically seed all 5 collections using direct document .set(...) calls in Cloud Firestore
+            if (isDbEmpty) {
+                seedAllExplicitly(context, firestore, onComplete)
+            } else {
+                // Snapshot NOT empty -> SKIP seeding completely to guarantee ZERO DUPLICATION!
+                onComplete?.invoke(false)
+                false
+            }
+        } catch (e: FirebaseFirestoreException) {
+            safeLogWarning(e.message)
+            ProductionFirestoreInitializer.seedLocalStores(context)
+            onComplete?.invoke(false)
+            false
+        } catch (e: Throwable) {
+            safeLogWarning(e.message)
+            ProductionFirestoreInitializer.seedLocalStores(context)
+            onComplete?.invoke(false)
+            false
+        }
+    }
+
+    /**
+     * Seeds all 5 collections explicitly in Cloud Firestore and populates local storage.
+     * Catches exceptions on document `.set(...)` calls so individual document write failures do not interrupt execution.
+     */
+    suspend fun seedAllExplicitly(
+        context: Context? = null,
+        firestore: FirebaseFirestore? = getFirestore(),
+        onComplete: ((Boolean) -> Unit)? = null,
+    ): Boolean {
+        return try {
             ProductionFirestoreInitializer.initializeAll(
                 context = context,
                 firestore = firestore,
             )
             isSeededInMemory = true
-            return true
-        } else {
-            // Snapshot NOT empty -> SKIP seeding completely to guarantee ZERO DUPLICATION!
-            return false
+            onComplete?.invoke(true)
+            true
+        } catch (e: FirebaseFirestoreException) {
+            safeLogWarning(e.message)
+            ProductionFirestoreInitializer.seedLocalStores(context)
+            onComplete?.invoke(false)
+            false
+        } catch (e: Throwable) {
+            safeLogWarning(e.message)
+            ProductionFirestoreInitializer.seedLocalStores(context)
+            onComplete?.invoke(false)
+            false
         }
     }
 
