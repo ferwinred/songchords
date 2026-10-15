@@ -88,19 +88,21 @@ class CloudSyncRepository(
     val persistentStorage: LocalPersistentStorage? = null
 ) : SongRepository {
 
-    constructor(persistentStorage: LocalPersistentStorage) : this(
+    constructor(persistentStorage: LocalPersistentStorage, context: Context? = null) : this(
         localRepository = LocalSongRepository(persistentStorage = persistentStorage),
         cloudProvider = FirestoreRestCloudSyncProvider(),
         syncEngine = CloudSyncEngine(
             localRepository = LocalSongRepository(persistentStorage = persistentStorage),
             cloudProvider = FirestoreRestCloudSyncProvider(),
-            persistentStorage = persistentStorage
+            persistentStorage = persistentStorage,
+            context = context
         ),
         persistentStorage = persistentStorage
     )
 
     constructor(context: Context) : this(
-        persistentStorage = LocalPersistentStorage(context)
+        persistentStorage = LocalPersistentStorage(context),
+        context = context
     )
 
     val syncStatus: StateFlow<SyncStatus> = syncEngine.syncStatus

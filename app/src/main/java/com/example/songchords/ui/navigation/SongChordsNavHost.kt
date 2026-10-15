@@ -62,7 +62,7 @@ fun SongChordsNavHost(
     modifier: Modifier = Modifier,
     context: android.content.Context = LocalContext.current,
     persistentStorage: LocalPersistentStorage = remember(context) { LocalPersistentStorage(context) },
-    repository: SongRepository = remember(persistentStorage) { CloudSyncRepository(persistentStorage) },
+    repository: SongRepository = remember(persistentStorage) { CloudSyncRepository(persistentStorage, context) },
     setlistRepository: SetlistRepository = remember(persistentStorage) { LocalSetlistRepository(persistentStorage = persistentStorage) }
 ) {
     val backStack = rememberNavBackStack(SongListRoute)
