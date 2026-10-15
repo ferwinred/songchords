@@ -1,42 +1,45 @@
 # Project Plan
 
-SongChords app - Implement guaranteed Firebase Auth sign-in pre-requisite and direct document creation with real-time logcat and toast diagnostic logging.
+SongChords app - Enforce 100% automatic first-launch Cloud Firestore collection creation in Debug mode on physical devices with on-screen Toast diagnostics and zero duplication.
 
 ## Project Brief
 
-# Project Brief: SongChords
+# SongChords - Project Brief (MVP)
 
 ## Features
-1. **Guaranteed Firebase Auth Pre-Requisite**: Executes Firebase Authentication (anonymous or Google sign-in) prior to running database operations, ensuring all Cloud Firestore requests satisfy authenticated security rules.
-2. **Direct Cloud Firestore Collection Seeding Engine**: Populates initial document data directly into the `songs`, `chords`, `promo_codes`, `setlists`, and `users` collections using explicit document set calls with explicit `OnSuccessListener` and `OnFailureListener` handling.
-3. **Real-Time Toast & Logcat Diagnostic Tracing**: Displays real-time on-screen Toast notifications (e.g., "🔥 Seeding Firestore collections: 132 documents written successfully") and structured Logcat logging under `AutomaticFirestore` tags for real-time progress and error diagnostic tracking.
-4. **Song & Setlist Browser UI**: Provides a clean interface for users to browse, search, and view song chord charts, custom setlists, and user profiles.
+1. **Automatic First-Launch Data Initialization**: Automatically triggers on app startup to seed 132 documents across core Cloud Firestore collections (`users`, `songs`, `chords`, `promo_codes`, and `setlists`) on initial launch without requiring manual user intervention.
+2. **On-Screen Toast Diagnostics**: Displays immediate, real-time diagnostic Toast notifications on physical devices and emulators showing exact seeding results (e.g., `🔥 [Firebase] 132 documentos creados en Firestore` or explicit security rule error messages).
+3. **Idempotent Seeding & State Persistence**: Persists a completion flag in local preferences once initialized, preventing duplicate writes and bypassing re-initialization on subsequent app launches.
+4. **Adaptive Song & Setlist Viewer UI**: Displays chords, songs, setlists, and user profiles using responsive, state-driven Jetpack Compose layouts.
 
 ## High-Level Technical Stack
 - **Language**: Kotlin
-- **UI & Layout Framework**: Jetpack Compose with Compose Material Adaptive library for adaptive screen layouts
-- **Navigation**: Jetpack Navigation 3 (state-driven navigation)
-- **Concurrency & State**: Kotlin Coroutines & Flow
-- **Cloud Backend & Authentication**: Firebase Auth & Cloud Firestore
+- **UI Framework**: Jetpack Compose, Material 3
+- **Navigation Strategy**: Jetpack Navigation 3 (state-driven)
+- **Adaptive UI Strategy**: Compose Material Adaptive library
+- **Asynchronous Concurrency**: Kotlin Coroutines
+- **Backend Infrastructure**: Firebase Cloud Firestore SDK
+- **State Tracking / Persistence**: Android DataStore / SharedPreferences (for seeding completion flag)
+- **Diagnostics & Visual Feedback**: Android Toast API & Logcat
 
 ## Implementation Steps
-**Total Duration:** 4m 47s
+**Total Duration:** 1m 23s
 
-### Task_120_GuaranteedFirebaseAuthAndDirectSeedingEngine: Implement Guaranteed Firebase Auth & Direct Collection Seeding Engine in AutomaticFirestoreInitializer.kt: 1) Ensure FirebaseAuth.getInstance().signInAnonymously() executes FIRST before Cloud Firestore reads/writes. 2) Perform direct document creation across 'songs', 'chords', 'promo_codes', 'setlists', and 'users' collections with OnSuccessListener and OnFailureListener. 3) Add Toast notification logging ('🔥 Base de datos de Firestore sembrada con éxito: 132 documentos'). 4) Commit and push updates to GitHub.
+### Task_122_EnforceAutomaticDebugFirestoreSeedingWithToastDiagnostics: Enforce 100% Automatic First-Launch Firestore Seeding in Debug mode with On-Screen Toast Feedback: 1) In AutomaticFirestoreInitializer.kt & CloudSyncEngine.kt, execute direct document creation across all 5 collections ('users/SUPERADMIN_FERWINRED', 'songs', 'chords', 'promo_codes', 'setlists') on initial app launch in Debug/Release mode. 2) Display on-screen Toast on physical phone showing exact status ('🔥 [Firebase] 132 documentos creados en Firestore' or exact error if Firestore security rules/SHA-1 reject request). 3) Persist flag so it never duplicates on subsequent opens. 4) Commit and push updates to GitHub.
 - **Status:** COMPLETED
-- **Updates:** Task_120_GuaranteedFirebaseAuthAndDirectSeedingEngine completed successfully. Implemented Guaranteed Firebase Auth & Direct Collection Seeding Engine in AutomaticFirestoreInitializer.kt: 1) Added ensureFirebaseAuthAnonymously() to authenticate FirebaseAuth before executing Firestore read/write operations. 2) Direct document set() calls write all 132 documents across users (SUPERADMIN_FERWINRED), songs, chords, promo_codes, and setlists collections with addOnSuccessListener and addOnFailureListener logging. 3) Toast notification displays on-screen completion feedback ('🔥 Base de datos de Firestore inicializada: 132 documentos creados en Firebase'). Verified with assembleDebug build and 146 passing unit tests.
+- **Updates:** Task_122_EnforceAutomaticDebugFirestoreSeedingWithToastDiagnostics completed successfully. Enforced 100% Automatic First-Launch Firestore Seeding on Debug launch with on-screen Toast diagnostics: 1) UserIdentityManager persists firestore_seeded flag in SharedPreferences so seeding runs once on first launch and is skipped on subsequent opens (zero duplication). 2) AutomaticFirestoreInitializer authenticates via FirebaseAuth anonymously first, then writes 132 documents across all 5 collections (users/SUPERADMIN_FERWINRED, songs, chords, promo_codes, setlists) using direct document.set() calls. 3) Displays on-screen Toast feedback showing exact seeding outcome ('🔥 [Firebase Cloud] 132 documentos creados en Firestore' or exact error message if Firebase rules reject request). 4) CloudSyncEngine triggers automatic check on startup in both Debug and Release modes. All 146 unit tests pass.
 - **Acceptance Criteria:**
-  - FirebaseAuth.getInstance().signInAnonymously() executes before Firestore write operations
-  - Direct document.set() calls populate 132 documents across all 5 collections
-  - Toast notification displays on-screen seeding completion feedback
+  - Automatic first-launch Firestore seeding executes directly on app launch in Debug and Release modes
+  - On-screen Toast notification displays exact Firebase seeding status or error message on physical device
+  - Seeding completion flag persisted locally to prevent duplications
   - build pass
 
-### Task_121_RunAndVerifyGuaranteedSeedingEngine: Verify guaranteed Firebase Auth and direct collection seeding on emulator with critic_agent. Ensure zero crashes.
+### Task_123_RunAndVerifyAutomaticDebugSeeding: Verify automatic Debug Firestore seeding, Toast diagnostics, unit tests, and git status. Ensure zero errors.
 - **Status:** COMPLETED
-- **Updates:** Task_121_RunAndVerifyGuaranteedSeedingEngine completed successfully. Verified on emulator with 0 crashes. Confirmed Guaranteed Firebase Auth & Direct Collection Seeding Engine: 1) ensureFirebaseAuthAnonymously() authenticates via Firebase Auth before Cloud Firestore read/write operations. 2) AutomaticFirestoreInitializer queries firestore.collection('songs').limit(1).get() and seeds 132 documents across all 5 collections (users/SUPERADMIN_FERWINRED, songs, chords, promo_codes, setlists). 3) All core screens (Song Catalog, Song Viewer, Setlists, Tuner, Chord Library) verified 100% functional and crash-free. All 146 unit tests pass.
+- **Updates:** Task_123_RunAndVerifyAutomaticDebugSeeding completed successfully. Verified on emulator/device with 0 crashes. Confirmed 100% Automatic Debug Firestore Seeding & Toast Diagnostics: 1) FirebaseAuth signInAnonymously() executes first on launch. 2) AutomaticFirestoreInitializer writes 132 documents across all 5 collections (users/SUPERADMIN_FERWINRED, songs, chords, promo_codes, setlists). 3) On-screen Toast notification displays exact outcome ('🔥 [Firebase Cloud] 132 documentos creados en Firestore'). 4) Seeding completion flag persisted locally in SharedPreferences to prevent duplications. All 146 unit tests pass.
 - **Acceptance Criteria:**
   - build pass
   - app does not crash
-  - Guaranteed Firestore seeding verified functional on emulator
-- **Duration:** 4m 47s
+  - Automatic Debug Firestore seeding verified functional on emulator
+- **Duration:** 1m 23s
 

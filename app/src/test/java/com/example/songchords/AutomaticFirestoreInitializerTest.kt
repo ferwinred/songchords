@@ -156,5 +156,9 @@ class AutomaticFirestoreInitializerTest {
         assertEquals("chords", AutomaticFirestoreInitializer.COLLECTION_CHORDS)
         assertEquals("promo_codes", AutomaticFirestoreInitializer.COLLECTION_PROMO_CODES)
         assertEquals("setlists", AutomaticFirestoreInitializer.COLLECTION_SETLISTS)
+        assertEquals(
+            "🔥 [Firebase Cloud] 132 documentos creados en Firestore (SuperAdmin: ferwinred@gmail.com)",
+            AutomaticFirestoreInitializer.SUCCESS_TOAST_MESSAGE
+        )
     }
 }

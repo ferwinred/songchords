@@ -495,7 +495,7 @@ object ProductionFirestoreInitializer {
         val successfulCollections = results.count { it.success }
         val totalDocumentsUploaded = results.sumOf { it.count }
 
-        UserIdentityManager.markFirestoreSeeded()
+        UserIdentityManager.markFirestoreSeeded(context)
 
         val report = InitializationReport(
             totalCollections = totalCollections,
@@ -508,7 +508,7 @@ object ProductionFirestoreInitializer {
         context?.let { ctx ->
             try {
                 withContext(Dispatchers.Main) {
-                    val feedbackMessage = "🔥 Base de datos de Firestore inicializada: $totalDocumentsUploaded documentos creados en Firebase (SuperAdmin: $SUPERADMIN_EMAIL)"
+                    val feedbackMessage = "🔥 [Firebase Cloud] $totalDocumentsUploaded documentos creados en Firestore (SuperAdmin: $SUPERADMIN_EMAIL)"
                     Toast.makeText(ctx, feedbackMessage, Toast.LENGTH_LONG).show()
                 }
             } catch (_: Throwable) {

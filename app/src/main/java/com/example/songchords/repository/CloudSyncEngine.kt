@@ -66,18 +66,21 @@ class CloudSyncEngine(
     }
 
     private suspend fun runOneTimeSeeding() {
-        try {
-            val firestore = AutomaticFirestoreInitializer.getFirestore()
-            AutomaticFirestoreInitializer.checkAndSeedIfEmpty(
-                context = context,
-                firestore = firestore
-            )
-        } catch (_: Throwable) {
-            // Gracefully handle uninitialized Firebase or network issues
-        }
-        try {
-            userIdentityManager.markFirestoreSeeded()
-        } catch (_: Throwable) {
+        if (!userIdentityManager.isFirestoreSeeded(context)) {
+            try {
+                AutomaticFirestoreInitializer.ensureFirebaseAuthAnonymously()
+                val firestore = AutomaticFirestoreInitializer.getFirestore()
+                val seeded = AutomaticFirestoreInitializer.checkAndSeedIfEmpty(
+                    context = context,
+                    firestore = firestore,
+                    userIdentityManager = userIdentityManager
+                )
+                if (seeded) {
+                    userIdentityManager.markFirestoreSeeded(context)
+                }
+            } catch (_: Throwable) {
+                // Gracefully handle uninitialized Firebase or network issues
+            }
         }
     }
 
