@@ -1,48 +1,14 @@
-<!doctype html><html lang="es"><head><meta charset="utf-8"><link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700;800&display=swap" rel="stylesheet"><style>
-*{margin:0;padding:0;box-sizing:border-box}
-body{font-family:Poppins,sans-serif;background:#111}
+<!doctype html><html lang="es"><head><meta charset="utf-8"><link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700;800&display=swap" rel="stylesheet"><style>*{margin:0;padding:0;box-sizing:border-box}
+html,body{width:1080px;height:1920px;overflow:hidden;font-family:Poppins,sans-serif}
 .shot{position:relative;width:1080px;height:1920px;overflow:hidden;color:#F2F2F2;
- background:radial-gradient(circle at 50% 70%,#4a46b0 0%,rgba(56,53,140,0) 55%),linear-gradient(160deg,#020873 0%,#1a1a7e 55%,#38358C 100%)}
+ background:radial-gradient(circle at 50% 72%,#4a46b0 0%,rgba(56,53,140,0) 55%),linear-gradient(160deg,#020873 0%,#1a1a7e 55%,#38358C 100%)}
 .rays{position:absolute;left:50%;top:-200px;width:1400px;height:1600px;transform:translateX(-50%);
  background:conic-gradient(from 160deg at 50% 0%,transparent 0 8deg,rgba(217,30,46,.16) 8deg 16deg,transparent 16deg 26deg,rgba(255,255,255,.05) 26deg 34deg,transparent 34deg 44deg,rgba(217,30,46,.12) 44deg 52deg,transparent 52deg)}
-.head{position:absolute;top:110px;left:80px;right:80px;text-align:center}
-.tag{display:inline-block;font-size:30px;font-weight:600;letter-spacing:4px;text-transform:uppercase;color:#ff6a76;margin-bottom:22px}
-.head h1{font-size:76px;font-weight:800;line-height:1.1;letter-spacing:-1.5px}
-.head h1 em{font-style:normal;color:#ff4a58}
-.head p{font-size:34px;font-weight:500;opacity:.78;margin-top:22px;line-height:1.35}
-.phone{position:absolute;left:50%;top:620px;transform:translateX(-50%);width:780px;height:1560px;border-radius:96px;background:#0b0f30;padding:26px;
+.head{position:absolute;top:96px;left:70px;right:70px;text-align:center}
+.tag{font-size:28px;font-weight:600;letter-spacing:4px;text-transform:uppercase;color:#ff6a76;margin-bottom:18px}
+h1{font-size:72px;font-weight:800;line-height:1.1;letter-spacing:-1.5px}h1 em{font-style:normal;color:#ff4a58}
+p{font-size:32px;font-weight:500;opacity:.8;margin-top:20px}
+.phone{position:absolute;left:50%;top:540px;transform:translateX(-50%);width:640px;border-radius:70px;background:#0b0f30;padding:20px;
  box-shadow:0 50px 100px rgba(0,0,0,.55),0 0 0 4px #2b336f}
-.scr{position:relative;width:100%;height:100%;border-radius:72px;background:#F2F2F2;overflow:hidden;color:#020873;font-size:30px}
-.sb{height:70px;display:flex;justify-content:space-between;align-items:center;padding:0 56px;font-size:24px;font-weight:600}
-.top{background:#020873;color:#F2F2F2;padding:20px 44px 34px}
-.top .t{font-size:46px;font-weight:700}.top .s{font-size:26px;opacity:.72;margin-top:4px}
-.top .sb{color:#F2F2F2;padding:0 12px;margin:-20px -44px 10px;padding:0 56px}
-.body{padding:28px 40px}
-.nav{position:absolute;left:0;right:0;bottom:0;height:150px;background:#fff;border-top:2px solid #e2e2ef;display:flex;justify-content:space-around;align-items:center;padding-bottom:20px}
-.nav span{width:120px;height:64px;border-radius:32px;display:flex;align-items:center;justify-content:center;font-size:36px;color:#38358C}
-.nav span.on{background:#D91E2E;color:#fff}
-.search{background:#fff;border-radius:40px;padding:22px 30px;font-size:26px;color:#8a8db5;border:2px solid #dcdcec;display:flex;gap:16px;align-items:center}
-.chips{display:flex;gap:14px;margin:22px 0;flex-wrap:wrap}
-.chip{font-size:24px;font-weight:600;padding:10px 22px;border-radius:999px;border:2px solid #38358C;color:#38358C}
-.chip.on{background:#020873;color:#fff;border-color:#020873}
-.found{font-size:24px;font-weight:600;color:#38358C;opacity:.8;margin:6px 4px 14px}
-.item{background:#fff;border-radius:30px;padding:24px 26px;margin-bottom:18px;display:flex;gap:22px;align-items:center;box-shadow:0 4px 14px rgba(2,8,115,.07)}
-.av{width:84px;height:84px;border-radius:24px;background:linear-gradient(135deg,#020873,#38358C);color:#fff;display:flex;align-items:center;justify-content:center;font-size:40px;flex:none}
-.item .n{font-size:31px;font-weight:700;line-height:1.2}.item .a{font-size:24px;opacity:.65}
-.item .m{display:flex;gap:10px;margin-top:8px}.item .m i{font-style:normal;font-size:20px;font-weight:600;padding:4px 14px;border-radius:12px;background:#e8e8f6;color:#38358C}
-.item .m i.k{background:#ffe1e4;color:#D91E2E}
-.heart{margin-left:auto;font-size:36px;color:#D91E2E}
-.keyrow{display:flex;gap:12px;padding:22px 40px;border-bottom:2px solid #dcdcec;align-items:center;background:#fff}
-.k{font-size:24px;font-weight:700;padding:12px 20px;border-radius:20px;background:#e3e3f3;color:#38358C}
-.k.on{background:#D91E2E;color:#fff;font-size:30px;padding:10px 30px}
-.sec{font-size:24px;font-weight:700;color:#38358C;letter-spacing:3px;margin:24px 0 12px;text-transform:uppercase}
-.ln{margin-bottom:20px}.c{color:#D91E2E;font-weight:700;font-size:29px;white-space:pre;display:block;line-height:1.1}
-.l{white-space:pre;font-weight:500;font-size:33px;line-height:1.2}
-.callout{position:absolute;background:#fff;color:#020873;border-radius:36px;box-shadow:0 30px 60px rgba(0,0,0,.4);padding:26px 30px}
-.sd{position:absolute;left:0;right:0;bottom:0;height:480px;background:linear-gradient(transparent,rgba(242,242,242,1) 30%)}
-html,body{width:1080px;height:1920px;overflow:hidden}</style></head><body><section class="shot"><div class="rays"></div><div class="head"><div class="tag">Guitarra y piano</div><h1>Aprende cada acorde<br><em>en guitarra y piano</em></h1><p>Diagramas claros con la digitación de cada acorde.</p></div>
-<div class="phone"><div class="scr"><div class="top"><div class="sb"><span>9:41</span><span>▲ ● ▮</span></div><div class="t">Biblioteca de Acordes</div><div class="s">Diagramas de Acordes y Digitación</div></div><div class="body"><div style="display:flex;background:#e3e3f3;border-radius:28px;padding:8px;margin:10px 0 26px"><span style="flex:1;text-align:center;padding:14px;border-radius:22px;font-size:26px;font-weight:600;background:#020873;color:#fff">Ambos</span><span style="flex:1;text-align:center;padding:14px;font-size:26px;font-weight:600">Guitarra</span><span style="flex:1;text-align:center;padding:14px;font-size:26px;font-weight:600">Piano</span></div>
- <div style="text-align:center"><div style="font-size:100px;font-weight:800;color:#D91E2E;line-height:1">A</div><div style="font-size:28px;font-weight:600;opacity:.65">La Mayor · A – C# – E</div></div>
- <div style="background:#fff;border-radius:36px;padding:30px;margin:24px 0;display:flex;justify-content:center;box-shadow:0 4px 14px rgba(2,8,115,.07)"><svg viewBox="0 0 100 112" width="280"><g stroke="#020873" stroke-width="1.6"><line x1="10" y1="12" x2="90" y2="12" stroke-width="4"/><line x1="10" y1="34" x2="90" y2="34"/><line x1="10" y1="56" x2="90" y2="56"/><line x1="10" y1="78" x2="90" y2="78"/><line x1="10" y1="100" x2="90" y2="100"/><line x1="10" y1="12" x2="10" y2="100"/><line x1="26" y1="12" x2="26" y2="100"/><line x1="42" y1="12" x2="42" y2="100"/><line x1="58" y1="12" x2="58" y2="100"/><line x1="74" y1="12" x2="74" y2="100"/><line x1="90" y1="12" x2="90" y2="100"/></g><g fill="#D91E2E"><circle cx="42" cy="45" r="7"/><circle cx="58" cy="45" r="7"/><circle cx="74" cy="45" r="7"/></g><g fill="none" stroke="#020873" stroke-width="1.8"><circle cx="26" cy="4" r="3.5"/><circle cx="90" cy="4" r="3.5"/></g><text x="10" y="8" font-size="10" text-anchor="middle" fill="#020873" font-weight="700">×</text></svg></div>
- <div style="background:#fff;border-radius:36px;padding:30px;box-shadow:0 4px 14px rgba(2,8,115,.07)"><svg viewBox="0 0 616 200" width="100%"><rect x="0" y="0" width="42" height="200" rx="6" fill="#fff" stroke="#c9c9de" stroke-width="2"/><rect x="44" y="0" width="42" height="200" rx="6" fill="#fff" stroke="#c9c9de" stroke-width="2"/><rect x="88" y="0" width="42" height="200" rx="6" fill="#fff" stroke="#c9c9de" stroke-width="2"/><rect x="132" y="0" width="42" height="200" rx="6" fill="#fff" stroke="#c9c9de" stroke-width="2"/><rect x="176" y="0" width="42" height="200" rx="6" fill="#fff" stroke="#c9c9de" stroke-width="2"/><rect x="220" y="0" width="42" height="200" rx="6" fill="#ffccd1" stroke="#c9c9de" stroke-width="2"/><rect x="264" y="0" width="42" height="200" rx="6" fill="#fff" stroke="#c9c9de" stroke-width="2"/><rect x="308" y="0" width="42" height="200" rx="6" fill="#fff" stroke="#c9c9de" stroke-width="2"/><rect x="352" y="0" width="42" height="200" rx="6" fill="#fff" stroke="#c9c9de" stroke-width="2"/><rect x="396" y="0" width="42" height="200" rx="6" fill="#ffccd1" stroke="#c9c9de" stroke-width="2"/><rect x="440" y="0" width="42" height="200" rx="6" fill="#fff" stroke="#c9c9de" stroke-width="2"/><rect x="484" y="0" width="42" height="200" rx="6" fill="#fff" stroke="#c9c9de" stroke-width="2"/><rect x="528" y="0" width="42" height="200" rx="6" fill="#fff" stroke="#c9c9de" stroke-width="2"/><rect x="572" y="0" width="42" height="200" rx="6" fill="#fff" stroke="#c9c9de" stroke-width="2"/><rect x="30" y="0" width="28" height="122" rx="4" fill="#020873"/><rect x="74" y="0" width="28" height="122" rx="4" fill="#020873"/><rect x="162" y="0" width="28" height="122" rx="4" fill="#020873"/><rect x="206" y="0" width="28" height="122" rx="4" fill="#020873"/><rect x="250" y="0" width="28" height="122" rx="4" fill="#020873"/><rect x="338" y="0" width="28" height="122" rx="4" fill="#D91E2E"/><rect x="382" y="0" width="28" height="122" rx="4" fill="#020873"/><rect x="470" y="0" width="28" height="122" rx="4" fill="#020873"/><rect x="514" y="0" width="28" height="122" rx="4" fill="#020873"/><rect x="558" y="0" width="28" height="122" rx="4" fill="#020873"/><g font-size="22" font-weight="700" fill="#D91E2E" text-anchor="middle"><text x="241" y="186">A</text><text x="417" y="186">E</text><text x="352" y="110" fill="#fff">C#</text></g></svg></div>
- <div class="chips" style="margin-top:28px"><span class="chip on">Mayor</span><span class="chip">Menor</span><span class="chip">7</span><span class="chip">maj7</span><span class="chip">sus4</span><span class="chip">add9</span></div></div><div class="nav"><span class="">♪</span><span class="">☰</span><span class="">◎</span><span class="on">▦</span></div></div></div></section></body></html>
+.scr{width:600px;height:1299px;border-radius:52px;overflow:hidden;background:#F2F2F2}
+.scr img{width:600px;display:block;margin-top:-35px}</style></head><body><section class="shot"><div class="rays"></div><div class="head"><div class="tag">Biblioteca de acordes</div><h1>Aprende cada acorde<br><em>con su digitación</em></h1><p>12 tonos y 10 tipos de acorde con diagramas claros.</p></div><div class="phone"><div class="scr"><img src="reales/biblioteca.png"></div></div></section></body></html>
